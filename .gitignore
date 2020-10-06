@@ -16,3 +16,8 @@ database/*.sqlite
 # VSCode & Webstorm history directories
 .history
 .idea
+
+/test/*
+/*.sqlite
+/channels.js
+/[[]document]/

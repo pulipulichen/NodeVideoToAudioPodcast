@@ -16,4 +16,10 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-Route.on('/').render('welcome')
+Route.get('/test/video-info', 'Test.videoInfo')
+
+Route.get('/', 'OPML.index')
+Route.get('/list', 'OPML.list')
+
+Route.get('/:type/:id', 'Feed.index')
+Route.get('/:name', 'Feed.index')

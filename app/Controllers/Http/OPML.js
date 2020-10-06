@@ -1,0 +1,153 @@
+'use strict'
+
+const ChannelConfig = use('App/Helpers/channel-config.js')
+const youtubeInfo = use('App/Helpers/youtube-info.js')
+const Env = use('Env')
+
+class OPML {
+  async index ({response}) {
+    let configsMap = ChannelConfig.all()
+    
+    let keys = Object.keys(configsMap)
+    let configs = []
+    for (let i = 0; i < keys.length; i++) {
+      let config = configsMap[keys[i]]
+      let {title, url, feedLink, filters} = config
+      
+      if (!title) {
+        title = await this.getConfigTitle(config)
+      }
+      
+      configs.push({
+        title,
+        feedLink
+      })
+    }
+    
+    let output = []
+    let opmlTitle = Env.get('title')
+    
+    output.push(`<?xml version="1.0" encoding="UTF-8" standalone='no' ?>
+    <?xml-stylesheet href="${Env.get('APP_URL')}/styles/opml.css" type="text/css"?>
+<opml version="2.0">
+    <head>
+        <title>${opmlTitle}</title>
+    </head>
+    <body>`)
+    
+    configs.forEach(({title, feedLink}) => {
+      output.push(`<outline text="${title}" xmlUrl="${feedLink}" />`)
+    })
+    
+    output.push(`</body>
+</opml>`)
+    
+    
+    response.header('Content-type', 'text/xml')
+    response.header('Content-Disposition', `attachment;filename="${opmlTitle}.opml"`)
+    
+    return output.join('\n')
+  }
+  
+  async list () {
+    let configsMap = ChannelConfig.all()
+    
+    let keys = Object.keys(configsMap)
+    let configs = []
+    for (let i = 0; i < keys.length; i++) {
+      let config = configsMap[keys[i]]
+      let {title, url, feedLink, filters} = config
+      
+      if (!title) {
+        //console.log('load: ' + config.url)
+        title = await this.getConfigTitle(config)
+      }
+      
+      configs.push({
+        title,
+        feedLink
+      })
+    }
+    
+    let output = []
+    let opmlTitle = Env.get('title')
+    
+    output.push(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>${opmlTitle}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <h1>${opmlTitle}</h1>
+    <ul>`)
+    
+    configs.forEach(({title, feedLink}) => {
+      output.push(`<li><a href="${feedLink}">${title}</a></li>`)
+    })
+    
+    output.push(`</ul></body>
+</html>
+`)
+    
+    return output.join('\n')
+  }
+  
+  async getConfigTitle (config) {
+    if (config.title) {
+      return config.title
+    }
+    
+    let title = config.title
+    if (!title) {
+      //console.log('youtube info load: ' + config.url)
+      let info = await youtubeInfo.load(config.url)
+      title = info.title
+    }
+    
+    let filterAppend = []
+    
+    let {filters} = config
+    
+    if (!filters) {
+      return title
+    }
+    
+    if (Array.isArray(filters) === false 
+            && typeof(filters) === 'object') {
+      filters = [filters]
+    }
+    
+    filters.forEach((filter) => {
+      let key, value
+      Object.keys(filter).forEach(k => {
+        key = k
+        value = filter[k]
+      })
+
+      if (key === 'titlePrefix') {
+        filterAppend.push(value + '...')
+      }
+      else if (key === 'titleSuffix') {
+        filterAppend.push('...' + value)
+      }
+      else if (key === 'titleInclude') {
+        filterAppend.push('...' + value + '...')
+      }
+      else if (key === 'durationMinSec') {
+        filterAppend.push('> ' + value)
+      }
+      else if (key === 'durationMaxSec') {
+        filterAppend.push('< ' + value)
+      }
+    })
+    
+    if (filterAppend.length > 0) {
+      title = title + '(' + filterAppend.join(', ') + ')'
+    }
+    return title
+  }
+}
+
+module.exports = OPML
