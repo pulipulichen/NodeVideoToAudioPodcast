@@ -1,5 +1,6 @@
 let rawConfig = require('./../../local-folders.js')
 const path = use('path')
+const Env = use('Env')
 
 class LocalFolderConfig {
   constructor () {
@@ -23,6 +24,8 @@ class LocalFolderConfig {
       if (!c.title) {
         c.title = name
       }
+      
+      c.feedLink = Env.get('APP_URL') + '/local-folder/' + name
       
       // ---------------
       

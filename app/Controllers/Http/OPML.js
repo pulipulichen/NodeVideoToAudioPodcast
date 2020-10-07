@@ -4,6 +4,8 @@ const ChannelConfig = use('App/Helpers/channel-config.js')
 const youtubeInfo = use('App/Helpers/youtube-info.js')
 const Env = use('Env')
 
+//const ChannelConfig = use('App/Helpers/channel-config.js')
+
 class OPML {
   async index ({response}) {
     let configsMap = ChannelConfig.all()
@@ -68,6 +70,19 @@ class OPML {
         feedLink
       })
     }
+    
+    const LocalFolderConfig = use('App/Helpers/local-folder-config')
+    LocalFolderConfig.all().forEach(config => {
+      let title = config.name
+      let feedLink = config.feedLink
+      
+      configs.push({
+        title,
+        feedLink
+      })
+    })
+    
+    // --------------------------
     
     let output = []
     let opmlTitle = Env.get('title')
