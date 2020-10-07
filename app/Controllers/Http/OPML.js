@@ -8,23 +8,9 @@ const Env = use('Env')
 
 class OPML {
   async index ({response}) {
-    let configsMap = ChannelConfig.all()
+    let configs = await this.getConfigs()
     
-    let keys = Object.keys(configsMap)
-    let configs = []
-    for (let i = 0; i < keys.length; i++) {
-      let config = configsMap[keys[i]]
-      let {title, url, feedLink, filters} = config
-      
-      if (!title) {
-        title = await this.getConfigTitle(config)
-      }
-      
-      configs.push({
-        title,
-        feedLink
-      })
-    }
+    // -------------
     
     let output = []
     let opmlTitle = Env.get('title')
@@ -51,7 +37,7 @@ class OPML {
     return output.join('\n')
   }
   
-  async list () {
+  async getConfigs () {
     let configsMap = ChannelConfig.all()
     
     let keys = Object.keys(configsMap)
@@ -81,6 +67,12 @@ class OPML {
         feedLink
       })
     })
+    
+    return configs
+  }
+  
+  async list () {
+    let configs = await this.getConfigs()
     
     // --------------------------
     

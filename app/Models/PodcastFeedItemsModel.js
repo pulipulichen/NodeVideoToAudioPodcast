@@ -23,6 +23,8 @@ let isDownloading = false
 
 const moment = use('moment')
 
+const getMP3Duration = require('get-mp3-duration')
+
 class PodcastFeedItemsModel {
   
   constructor (param) {
@@ -201,28 +203,42 @@ class PodcastFeedItemsModel {
     
     let itemPath = this.getItemPath(item)
     //console.log(itemPath, fs.existsSync(itemPath))
-    if (fs.existsSync(itemPath) === false) {
-      console.log('start download: ' + itemPath)
-      //item.item_status = 1
-      //await item.save()
-      await this.mkdir(item)
-      
-      try {
-        await YouTubeMP3Downloader(item.feed_type, item.feed_name, item.item_id)
-      }
-      catch (e) {
-        console.error('download fail: ' + e)
-        console.log(item)
-        isDownloading = false
-        this.startDownloadItems()
-        return false
-      }
-      //console.log('end download: ' + item.item_id)
+    if (fs.existsSync(itemPath) === false 
+            || this.isDurationMatch (itemPath, item) === false) {
+      await this.downloadItem(itemPath, item)
     }
     item.item_status = 2
     await item.save()
     isDownloading = false
     this.startDownloadItems()
+  }
+  
+  isDurationMatch (itemPath, item) {
+    const buffer = fs.readFileSync(itemPath)
+    let duration = getMP3Duration(buffer)
+    duration = Math.round(duration / 1000)
+    
+    let info = JSON.parse(item.item_info)
+    return (info.duration === duration)
+  }
+  
+  async downloadItem (itemPath, item) {
+    console.log('start download: ' + itemPath)
+    //item.item_status = 1
+    //await item.save()
+    await this.mkdir(item)
+
+    try {
+      await YouTubeMP3Downloader(item.feed_type, item.feed_name, item.item_id)
+    }
+    catch (e) {
+      console.error('download fail: ' + e)
+      console.log(item)
+      isDownloading = false
+      this.startDownloadItems()
+      return false
+    }
+    //console.log('end download: ' + item.item_id)
   }
   
   async mkdir(item) {

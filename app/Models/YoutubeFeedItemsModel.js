@@ -156,7 +156,6 @@ class YoutubeFeedItemsModel {
           item[key] = info[key]
         }
         
-        
         if (!item.description) {
           item.description = item.link
         }
