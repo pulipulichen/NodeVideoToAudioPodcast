@@ -206,4 +206,32 @@ _this.get = async function (key, value, expire) {
   return cachedValue
 }
 
+_this.clear = async function (key) {
+  await _this.init()
+
+
+  if (typeof (key) !== 'string') {
+    if (typeof (key) === 'function') {
+      key = await key()
+    }
+    key = JSON.stringify(key)
+  }
+
+  while (isLoading === true) {
+    //console.log('cache wait while get')
+    await sleep()
+  }
+  //console.log('cache load by get')
+  isLoading = true
+  
+  await Cache.destroy({
+    where: {
+      key
+    }
+  })
+  isLoading = false
+  
+  return true
+}
+
 module.exports = _this

@@ -48,6 +48,11 @@ class YouTubeInfo {
       return await this.loadHTML(url)
     })
     let info = this.parseVideoHTML(html, url)
+    
+    if (info.isOffline) {
+      await NodeCacheSqlite.clear(['YouTubeInfo', url])
+    }
+    
     cache[url] = info
     return info
   }
