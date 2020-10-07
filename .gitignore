@@ -21,3 +21,4 @@ database/*.sqlite
 /*.sqlite
 /channels.js
 /[[]document]/
+/local-folders.js

@@ -117,6 +117,8 @@ class YouTubeInfo {
     
     let info = {}
     
+    info.isOffline = body.indexOf('"playabilityStatus":{"status":"LIVE_STREAM_OFFLINE"') > -1
+    
     //info.description = $('meta[itemprop="description"]').eq(0).attr('content')
     info.description = this.sliceBetween(body, `"},"description":{"simpleText":"`, `"},"lengthSeconds":"`)
     if (typeof(info.description) === 'string') {

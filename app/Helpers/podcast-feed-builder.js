@@ -39,6 +39,9 @@ module.exports = async function (options) {
   if (options.description) {
     options.description = options.description.trim().split('\\n').join('\n').trim()
   }
+  else if (options.link) {
+    options.description = options.link
+  }
   
   output.push(`<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0" xmlns:media="http://www.rssboard.org/media-rss" version="2.0">
   <channel>
@@ -83,7 +86,7 @@ module.exports = async function (options) {
 
 ${channelDescription}`
       }
-      else if (item.description.startsWith(item.link) === false) {
+      else if (item.link && item.description.startsWith(item.link) === false) {
         item.description = item.link + '\n' + item.description
       }
       

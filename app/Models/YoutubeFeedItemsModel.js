@@ -93,6 +93,12 @@ class YoutubeFeedItemsModel {
     
     for (let i = 0; i < maxItems; i++) {
       let item = items[i]
+      
+      let info = await youtubeInfo.load(item.link)
+      if (info.isOffline === true) {
+        continue
+      }
+        
       //let videoID = YouTubeVideoIDParser(item.link)
       
       let duration
@@ -146,7 +152,6 @@ class YoutubeFeedItemsModel {
         item.duration = duration
         item.date = item.isoDate
         
-        let info = await youtubeInfo.load(item.link)
         for (let key in info) {
           item[key] = info[key]
         }

@@ -54,6 +54,13 @@ _this.init = async function () {
   _this.inited = true
 }
 
+/**
+ * 
+ * @param {type} key
+ * @param {type} value
+ * @param {type} expire 單位是毫秒
+ * @returns {_this.set.originalValue|_this.set.value}
+ */
 _this.set = async function (key, value, expire = null) {
   await _this.init()
   

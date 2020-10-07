@@ -18,6 +18,8 @@ const Route = use('Route')
 
 Route.get('/test/video-info', 'Test.videoInfo')
 
+Route.get('/local-folder/:name', 'LocalFolder.index')
+
 Route.get('/', 'OPML.index')
 Route.get('/list', 'OPML.list')
 

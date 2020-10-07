@@ -6,7 +6,6 @@ module.exports = [
     url: 'https://www.youtube.com/playlist?list=PLKnvkZ00-pHrmEr4FbvzMueT5p7bdc18-',
     //title: '自訂的播放清單',
     //description: '自訂的說明',
-    thumbnail: 'https://pic4.zhimg.com/v2-9eb3918e243e78030304362518c7fba2_1440w.jpg?source=172ae18b',
     maxItems: 10, // default 10
     //filters: [
       //{ 'titlePrefix': 'cwise' },
@@ -32,4 +31,9 @@ module.exports = [
       //{ 'durationMaxSec': 120 },
     ]
   },
+  { 
+    title: '迷走大學 怎麽養出肥的象',
+    thumbnailBorderColor: '#f1c40f',
+    url: 'https://www.youtube.com/playlist?list=PLzYeVcpzcibbb44lqtqkPEtPQ7W1J8hdc',
+  }
 ]
