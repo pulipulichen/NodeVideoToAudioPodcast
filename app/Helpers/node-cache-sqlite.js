@@ -3,6 +3,7 @@ class Cache extends Model {
 }
 
 let _this = {}
+let enableCache = true
 
 _this.inited = false
 
@@ -62,6 +63,7 @@ _this.init = async function () {
  * @returns {_this.set.originalValue|_this.set.value}
  */
 _this.set = async function (key, value, expire = null) {
+  
   await _this.init()
   
   if (typeof (key) !== 'string') {
@@ -77,6 +79,9 @@ _this.set = async function (key, value, expire = null) {
     type = typeof (value)
   }
   let originalValue = value
+  if (enableCache === false) {
+    return originalValue
+  }
   if (type !== 'string') {
     value = JSON.stringify(value)
   }
@@ -182,16 +187,28 @@ _this.get = async function (key, value, expire) {
   }
   //console.log('cache load by get')
   isLoading = true
-  
-  let cache = await Cache.findOne({
-    where: {
-      key
-    }
-  })
+  let cache = null
+  if (enableCache === true) {
+    cache = await Cache.findOne({
+      where: {
+        key
+      }
+    })
+  }
   isLoading = false
-
-  if (cache === null) {
-    isLoading = false
+  /*
+  if (key === '["LocalFolder","harry-potter-and-the-sorcerers-stone","items"]') {
+    console.log([
+      (cache === null),
+      expire,
+      cache.expire,
+      (new Date()).getTime(),
+      (cache.expire < (new Date()).getTime())
+    ])
+  }
+  */
+  if ( (cache === null) 
+          || (expire && (!cache.expire || cache.expire < (new Date()).getTime())) ) {
     if (value !== undefined) {
       return await _this.set(key, value, expire)
     }

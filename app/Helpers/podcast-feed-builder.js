@@ -45,23 +45,29 @@ module.exports = async function (options) {
   
   output.push(`<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0" xmlns:media="http://www.rssboard.org/media-rss" version="2.0">
   <channel>
-    <title>${options.title}</title>
+    <title><![CDATA[${options.title}]]></title>
     <link>${options.feedLink}</link>
     <language>${options.language}</language>
     <atom:link href="${options.feedLink}" rel="self" type="application/rss+xml"/>
-    <copyright>${options.author}</copyright>
-    <itunes:author>${options.author}</itunes:author>
+    <copyright><![CDATA[${options.author}]]></copyright>
+    <itunes:author><![CDATA[${options.author}]]></itunes:author>
     <itunes:summary>
+      <![CDATA[
       ${options.description}
+      ]]>
     </itunes:summary>
     <description>
+      <![CDATA[
       ${options.description}
+      ]]>
     </description>
     <itunes:owner>
-      <itunes:name>${options.author}</itunes:name>
+      <itunes:name><![CDATA[${options.author}]]></itunes:name>
     </itunes:owner>
     <itunes:image href="${options.thumbnail}"/>
 `)
+  
+  // --------------------------------------------------
   
   let channelDescription = options.link + '\n' + options.title
   if (options.title !== options.author) {
@@ -94,26 +100,73 @@ ${channelDescription}`
         item.description = item.description.trim().split('\\n').join('\n').trim()
       }
       
+      let thumnails
+      if (Array.isArray(item.thumbnails) === true && item.thumbnails.length > 0) {
+        thumnails = item.thumbnails.map(url => {
+          return `<img src="${url}" />`
+        })
+        if (item.link) {
+          thumnails = `<a href="${item.link}">${thumnails}</a>`
+        }
+      }
+      
+      let subtitles
+      if (Array.isArray(item.subtitles) === true && item.subtitles.length > 0) {
+        subtitles = item.subtitles.map(({title, url}) => {
+          return `<a href="${url}">${title}</a>`
+        })
+      }
+      
+      if (!item.mediaURL && item.audioURL) {
+        item.mediaURL = item.audioURL
+      }
+      
+      if (!item.MIMEType && item.mediaURL) {
+        if (item.mediaURL.endsWith('.mp3')) {
+          item.MIMEType = 'audio/mpeg'
+        }
+        else if (item.mediaURL.endsWith('.mp4')) {
+          item.MIMEType = 'video/mp4'
+        }
+      }
+      
+      let description = []
+      let descriptionHTML = []
+      if (subtitles) {
+        description.push(subtitles.join('\n'))
+        descriptionHTML.push(subtitles.join('<br />\n'))
+      }
+      if (thumnails) {
+        description.push(thumnails)
+        descriptionHTML.push(thumnails)
+      }
+      if (item.description) {
+        description.push(item.description)
+        descriptionHTML.push(linkifyUrls(item.description.split("\n").join("\n<br />")))
+      }
+      
       output.push(`<item>
-      <title>${item.title}</title>
-      <itunes:title>${item.title}</itunes:title>
-      <itunes:author>${item.author}</itunes:author>
+      <title><![CDATA[${item.title}]]></title>
+      <itunes:title><![CDATA[${item.title}]]></itunes:title>
+      <itunes:author><![CDATA[${item.author}]]></itunes:author>
       <itunes:summary>
         <![CDATA[
-        ${item.description}
+        ${description.join('\n')}
         ]]>
       </itunes:summary>
       <description>
         <![CDATA[
-        ${item.description}
+        ${description.join('\n')}
         ]]>
       </description>
-      <content:encoded><![CDATA[<pre>${linkifyUrls(item.description.split("\n").join("\n<br />"))}</pre>]]></content:encoded>
+      <content:encoded><![CDATA[
+        <pre>${description.join('<br />\n')}</pre>
+      ]]></content:encoded>
       <itunes:image href="${item.thumbnail}"/>
-      <enclosure url="${item.audioURL}" length="LENGTH" type="audio/mpeg"/>
+      <enclosure url="${item.mediaURL}" type="${item.MIMEType}" length="${item.duration}" />
       <itunes:duration>${item.duration}</itunes:duration>
       <guid isPermaLink="false">
-        ${item.audioURL}
+        ${item.mediaURL}
       </guid>
       <pubDate>${item.date}</pubDate>
     </item>`)

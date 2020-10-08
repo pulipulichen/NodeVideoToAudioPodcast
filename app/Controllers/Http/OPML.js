@@ -59,7 +59,7 @@ class OPML {
     
     const LocalFolderConfig = use('App/Helpers/local-folder-config')
     LocalFolderConfig.all().forEach(config => {
-      let title = config.name
+      let title = config.title
       let feedLink = config.feedLink
       
       configs.push({
@@ -87,7 +87,7 @@ class OPML {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </head>
   <body>
-    <h1>${opmlTitle}</h1>
+    <h1><a href="/">${opmlTitle}</a></h1>
     <ul>`)
     
     configs.forEach(({title, feedLink}) => {

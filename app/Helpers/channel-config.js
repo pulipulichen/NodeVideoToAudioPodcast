@@ -47,10 +47,10 @@ for (let i = 0; i < config.length; i++) {
   }
   
   if (c.name) {
-    c.feedLink = Env.get('APP_URL') + '/' + c.name
+    c.feedLink = Env.get('APP_URL') + '/' + c.name + '.xml'
   }
   else {
-    c.feedLink = Env.get('APP_URL') + '/' + c.type + '/' + c.id
+    c.feedLink = Env.get('APP_URL') + '/' + c.type + '/' + c.id + '.xml'
   }
   
   if (!c.name && c.id) {

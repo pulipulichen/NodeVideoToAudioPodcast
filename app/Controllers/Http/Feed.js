@@ -15,7 +15,14 @@ const YoutubeFeedItemsModel = use('App/Models/YoutubeFeedItemsModel')
 const PodcastFeedItemsModel = use('App/Models/PodcastFeedItemsModel')
 
 class Feed {
-  async index ({ params }) {
+  async index ({ params, response }) {
+    if (params.id && params.id.endsWith('.xml')) {
+      params.id = params.id.slice(0, -4)
+    }
+    if (params.name && params.name.endsWith('.xml')) {
+      params.name = params.name.slice(0, -4)
+    }
+    
     this.config = ChannelConfig.get(params)
     
     // 放著讓它跑
@@ -34,6 +41,9 @@ class Feed {
     const outputFeed = await PodcastFeedBuilder(podcastOptions)
     //console.log(podcastOptions)
     //return feed
+    
+    response.header('Content-type', 'text/xml')
+    
     return outputFeed
   }
   

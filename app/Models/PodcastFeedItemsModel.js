@@ -25,6 +25,8 @@ const moment = use('moment')
 
 const getMP3Duration = require('get-mp3-duration')
 
+let cacheEnable = null
+
 class PodcastFeedItemsModel {
   
   constructor (param) {
@@ -396,7 +398,7 @@ class PodcastFeedItemsModel {
         //console.log(info)
         
         //item.date = item.isoDate
-        item.audioURL = this.getItemURL(item.
+        item.mediaURL = this.getItemURL(item.
                 videoID),
 
         options.items.push(item)

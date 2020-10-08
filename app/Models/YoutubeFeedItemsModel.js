@@ -11,6 +11,7 @@ const Env = use('Env')
 
 const fs = require('fs')
 const getMP3Duration = require('get-mp3-duration')
+const { getVideoDurationInSeconds } = require('get-video-duration')
 
 class YoutubeFeedItemsModel {
   
@@ -64,9 +65,14 @@ class YoutubeFeedItemsModel {
       let itemPath = this.getItemPath(item.videoID)
       //console.log('duration', itemPath, fs.existsSync(itemPath))
       if (fs.existsSync(itemPath) === true) {
-        const buffer = fs.readFileSync(itemPath)
-        const duration = getMP3Duration(buffer)
-        return Math.round(duration / 1000)
+        if (itemPath.endsWith('.mp3')) {
+          const buffer = fs.readFileSync(itemPath)
+          const duration = getMP3Duration(buffer)
+          return Math.round(duration / 1000)
+        }
+        else if (itemPath.endsWith('.mp4')) {
+          return await getVideoDurationInSeconds(itemPath)
+        }
       }
       else {
         return await youtubeInfo.loadDuration(item.link)
@@ -168,6 +174,14 @@ class YoutubeFeedItemsModel {
         }
         //item.thumbnail = `http://i3.ytimg.com/vi/${item.videoID}/maxresdefault.jpg`
         item.thumbnail = `http://i3.ytimg.com/vi/${item.videoID}/sddefault.jpg`
+        
+        item.thumbnails = [
+          `http://i3.ytimg.com/vi/${item.videoID}/1.jpg`,
+          `http://i3.ytimg.com/vi/${item.videoID}/2.jpg`,
+          `http://i3.ytimg.com/vi/${item.videoID}/3.jpg`,
+        ]
+        
+        item.MIMEType = 'audio/mpeg'
         
         outputItems.push(item)
       }

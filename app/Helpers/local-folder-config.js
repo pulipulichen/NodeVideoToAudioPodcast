@@ -25,7 +25,13 @@ class LocalFolderConfig {
         c.title = name
       }
       
-      c.feedLink = Env.get('APP_URL') + '/local-folder/' + name
+      if (!c.order) {
+        c.order = 'desc'
+      }
+      c.order = c.order.toLowerCase()
+      
+      c.feed_link = Env.get('APP_URL') + '/local-folder/' + name + '.xml'
+      c.feedLink = Env.get('APP_URL') + '/local-folder/' + name + '.xml'
       
       // ---------------
       
