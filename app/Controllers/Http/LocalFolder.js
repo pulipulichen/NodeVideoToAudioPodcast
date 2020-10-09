@@ -31,7 +31,7 @@ class LocalFolder {
     //console.log(config)
     let items = await NodeCacheSqlite.get(['LocalFolder', this.config.name, 'items'], async () => {
       return await this.getItems()
-    }, cacheExpire)
+    }, 24 * 60 * 60 * 1000)
     
     //return items.map(i => i.title)
     
