@@ -104,7 +104,7 @@ ${channelDescription}`
       if (Array.isArray(item.thumbnails) === true && item.thumbnails.length > 0) {
         thumnails = item.thumbnails.map(url => {
           return `<img src="${url}" />`
-        })
+        }).join('\n')
         if (item.link) {
           thumnails = `<a href="${item.link}">${thumnails}</a>`
         }
