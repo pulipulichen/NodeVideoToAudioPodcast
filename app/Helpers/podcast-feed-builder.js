@@ -136,13 +136,13 @@ ${channelDescription}`
         description.push(subtitles.join('\n'))
         descriptionHTML.push(subtitles.join('<br />\n'))
       }
-      if (thumnails) {
-        description.push(thumnails)
-        descriptionHTML.push(thumnails)
-      }
       if (item.description) {
         description.push(item.description)
         descriptionHTML.push(linkifyUrls(item.description.split("\n").join("\n<br />")))
+      }
+      if (thumnails) {
+        description.push(thumnails)
+        descriptionHTML.push(thumnails)
       }
       
       output.push(`<item>
@@ -150,24 +150,16 @@ ${channelDescription}`
       <itunes:title><![CDATA[${item.title}]]></itunes:title>
       <itunes:author><![CDATA[${item.author}]]></itunes:author>
       <itunes:summary>
-        <![CDATA[
-        ${description.join('\n')}
-        ]]>
+        <![CDATA[${description.join('\n')}]]>
       </itunes:summary>
       <description>
-        <![CDATA[
-        ${description.join('\n')}
-        ]]>
+        <![CDATA[${description.join('\n')}]]>
       </description>
-      <content:encoded><![CDATA[
-        <pre>${description.join('<br />\n')}</pre>
-      ]]></content:encoded>
+      <content:encoded><![CDATA[<pre>${description.join('<br />\n')}</pre>]]></content:encoded>
       <itunes:image href="${item.thumbnail}"/>
       <enclosure url="${item.mediaURL}" type="${item.MIMEType}" length="${item.duration}" />
       <itunes:duration>${item.duration}</itunes:duration>
-      <guid isPermaLink="false">
-        ${item.mediaURL}
-      </guid>
+      <guid isPermaLink="false">${item.mediaURL}</guid>
       <pubDate>${item.date}</pubDate>
     </item>`)
     }

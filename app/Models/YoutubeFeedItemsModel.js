@@ -176,6 +176,7 @@ class YoutubeFeedItemsModel {
         item.thumbnail = `http://i3.ytimg.com/vi/${item.videoID}/sddefault.jpg`
         
         item.thumbnails = [
+          `http://i3.ytimg.com/vi/${item.videoID}/maxdefault.jpg`,
           `http://i3.ytimg.com/vi/${item.videoID}/1.jpg`,
           `http://i3.ytimg.com/vi/${item.videoID}/2.jpg`,
           `http://i3.ytimg.com/vi/${item.videoID}/3.jpg`,
