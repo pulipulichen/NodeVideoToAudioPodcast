@@ -52,6 +52,11 @@ class Feed {
     if (maxItems > this.config.maxItems) {
       maxItems = this.config.maxItems
     }
+    
+    if (this.config.type === 'youtube-playlist') {
+      items.reverse()
+    }
+    
     for (let i = 0; i < maxItems; i++) {
       let subItems = [items[i]]
       
@@ -64,7 +69,15 @@ class Feed {
       
       //console.log('items filtered: ' + items.length)
       await this.podcastFeed.saveYouTubeItems(subItems)
+      
+      if (this.config.type === 'youtube-playlist') {
+        await this.sleep(300)
+      }
     }
+  }
+  
+  sleep (ms = 500) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 

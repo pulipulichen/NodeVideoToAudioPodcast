@@ -5,6 +5,7 @@ const YouTubeURLtoFeedURL = function (url) {
   
   // https://www.youtube.com/playlist?list=PLKnvkZ00-pHoryIGQYEKFLnFbAi-B_dxd
   // https://www.youtube.com/feeds/videos.xml?playlist_id=YOURPLAYLISTIDHERE
+  // https://www.youtube.com/feeds/videos.xml?playlist_id=PLKnvkZ00-pHrmEr4FbvzMueT5p7bdc18-
   
   let feedURL
   let urlObject = new URL(url);

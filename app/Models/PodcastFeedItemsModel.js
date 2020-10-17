@@ -204,7 +204,7 @@ class PodcastFeedItemsModel {
     //console.log(item)
     
     let itemPath = this.getItemPath(item)
-    //console.log(itemPath, fs.existsSync(itemPath))
+    //console.log(itemPath, fs.existsSync(itemPath), 'checkDurationMatch', this.isDurationMatch (itemPath, item))
     if (fs.existsSync(itemPath) === false 
             || this.isDurationMatch (itemPath, item) === false) {
       await this.downloadItem(itemPath, item)
@@ -218,9 +218,11 @@ class PodcastFeedItemsModel {
   isDurationMatch (itemPath, item) {
     const buffer = fs.readFileSync(itemPath)
     let duration = getMP3Duration(buffer)
-    duration = Math.round(duration / 1000)
+    duration = Math.ceil(duration / 1000)
     
     let info = JSON.parse(item.item_info)
+    //console.log(info)
+    //console.log('isDurationMatch', info.duration, duration, (info.duration === duration))
     return (info.duration === duration)
   }
   
@@ -346,6 +348,10 @@ class PodcastFeedItemsModel {
     
     let options = {}
     
+    for (let key in config) {
+      options[key] = config[key]
+    }
+    
     options.title = this.getConfigTitle(feed)
     options.link = config.url
     options.feedLink = Env.get('APP_URL') + '/' + this.type + '/' + this.name
@@ -404,6 +410,8 @@ class PodcastFeedItemsModel {
         options.items.push(item)
       }
     }
+    
+    
     
     return options
   }

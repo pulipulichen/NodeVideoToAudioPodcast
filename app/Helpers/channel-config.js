@@ -64,6 +64,13 @@ for (let i = 0; i < config.length; i++) {
     c.thumbnailBorderColor = c.thumbnailBorderColor.toUpperCase()
   }
   
+  if (c.type === 'youtube-playlist') {
+    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + c.id
+  }
+  else if (c.type === 'youtube-channel') {
+    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + c.id
+  }
+  
   configMap[key] = c
 }
 

@@ -43,6 +43,10 @@ module.exports = async function (options) {
     options.description = options.link
   }
   
+  if (options.feedURL) {
+    options.description = options.description + '\n' + options.feedURL
+  }
+  
   output.push(`<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0" xmlns:media="http://www.rssboard.org/media-rss" version="2.0">
   <channel>
     <title><![CDATA[${options.title}]]></title>

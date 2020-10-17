@@ -12,6 +12,7 @@ const Env = use('Env')
 const fs = require('fs')
 const getMP3Duration = require('get-mp3-duration')
 const { getVideoDurationInSeconds } = require('get-video-duration')
+const moment = use('moment')
 
 class YoutubeFeedItemsModel {
   
@@ -157,9 +158,16 @@ class YoutubeFeedItemsModel {
         }
         item.duration = duration
         item.date = item.isoDate
-        
         for (let key in info) {
           item[key] = info[key]
+        }
+        
+        if (this.config.type === 'youtube-playlist') {
+          // i
+          
+          //item.date = moment.unix(((new Date()).getTime() - (i * 1000 * 60 * 10)) / 1000)
+          item.date = new Date(new Date().getTime() - (i * 1000 * 60 * 10))
+          //console.log('playlist date', i, (new Date()).getTime() - (i * 1000 * 60 * 10), item.date, item.title)
         }
         
         if (!item.description) {
@@ -175,8 +183,9 @@ class YoutubeFeedItemsModel {
         //item.thumbnail = `http://i3.ytimg.com/vi/${item.videoID}/maxresdefault.jpg`
         item.thumbnail = `http://i3.ytimg.com/vi/${item.videoID}/sddefault.jpg`
         
+        // http://i3.ytimg.com/vi/FNDgos99-hQ/maxresdefault.jpg
         item.thumbnails = [
-          `http://i3.ytimg.com/vi/${item.videoID}/maxdefault.jpg`,
+          `http://i3.ytimg.com/vi/${item.videoID}/maxresdefault.jpg`,
           `http://i3.ytimg.com/vi/${item.videoID}/1.jpg`,
           `http://i3.ytimg.com/vi/${item.videoID}/2.jpg`,
           `http://i3.ytimg.com/vi/${item.videoID}/3.jpg`,
