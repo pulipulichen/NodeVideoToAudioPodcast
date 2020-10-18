@@ -6,6 +6,17 @@ if (!config) {
 
 const Env = use('Env')
 
+let getYouTubeURLID = function (url) {
+  
+  if (url.indexOf('www.youtube.com/playlist') > -1) {
+    return new URL(url).searchParams.get('list')
+  }
+  else if (url.indexOf('www.youtube.com/channel/') > -1) {
+    //c.type = 'youtube-channel'
+    return url.split('/')[4]
+  }
+}
+
 let configMap = {}
 for (let i = 0; i < config.length; i++) {
   let c = config[i]
@@ -32,10 +43,10 @@ for (let i = 0; i < config.length; i++) {
       c.id = c.name
     }
     else if (c.type === 'youtube-playlist') {
-      c.id = c.url.slice(c.url.lastIndexOf('=') + 1)
+      c.id = getYouTubeURLID(c.url)
     }
     else if (c.type === 'youtube-channel') {
-      c.id = c.url.slice(c.url.lastIndexOf('/') + 1)
+      c.id = getYouTubeURLID(c.url)
     }
   }
   
@@ -65,10 +76,10 @@ for (let i = 0; i < config.length; i++) {
   }
   
   if (c.type === 'youtube-playlist') {
-    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + c.id
+    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + getYouTubeURLID(c.url)
   }
   else if (c.type === 'youtube-channel') {
-    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + c.id
+    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + getYouTubeURLID(c.url)
   }
   
   configMap[key] = c

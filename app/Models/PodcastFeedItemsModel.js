@@ -237,7 +237,6 @@ class PodcastFeedItemsModel {
     }
     catch (e) {
       console.error('download fail: ' + e)
-      console.log(item)
       isDownloading = false
       this.startDownloadItems()
       return false

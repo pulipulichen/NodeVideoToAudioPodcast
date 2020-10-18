@@ -53,7 +53,8 @@ class Feed {
       maxItems = this.config.maxItems
     }
     
-    if (this.config.type === 'youtube-playlist') {
+    if (this.config.type === 'youtube-playlist'
+            && this.config.date === 'playlist_sort') {
       items.reverse()
     }
     

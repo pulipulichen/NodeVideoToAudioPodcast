@@ -162,7 +162,8 @@ class YoutubeFeedItemsModel {
           item[key] = info[key]
         }
         
-        if (this.config.type === 'youtube-playlist') {
+        if (this.config.type === 'youtube-playlist'
+                && this.config.date === 'playlist_sort') {
           // i
           
           //item.date = moment.unix(((new Date()).getTime() - (i * 1000 * 60 * 10)) / 1000)

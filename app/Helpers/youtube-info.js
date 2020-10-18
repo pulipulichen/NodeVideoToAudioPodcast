@@ -118,7 +118,22 @@ class YouTubeInfo {
   }
   
   parseVideoHTML (body, url) {
-    var $ = cheerio.load(body);
+    let $
+    try {
+      $ = cheerio.load(body);
+    }
+    catch (e) {
+      try {
+        $ = cheerio.load(`<div>${body}</div>`)
+      }
+      catch (e2) {
+        //throw new Error('URL loading error: ' + url)
+        console.error('URL loading error: ' + url)
+        return {
+          isOffline: true
+        }
+      }
+    }
     
     let info = {}
     

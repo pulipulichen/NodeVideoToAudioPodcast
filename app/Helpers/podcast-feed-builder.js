@@ -37,14 +37,23 @@ module.exports = async function (options) {
   }
   
   if (options.description) {
+    if (options.description.startsWith('http') 
+            && options.description.indexOf('\n') === -1) {
+      options.description = `<a href="${options.description}" target="_blank">${options.description}</a>`
+    }
+    
     options.description = options.description.trim().split('\\n').join('\n').trim()
   }
   else if (options.link) {
-    options.description = options.link
+    options.description = `<a href="${options.link}" target="_blank">${options.link}</a>`
   }
   
   if (options.feedURL) {
-    options.description = options.description + '\n' + options.feedURL
+    options.description = options.description 
+            + '<br />\n' 
+            + '<br />\n' 
+            //+ options.feedURL
+            + `<a href="${options.feedURL}" target="_blank">${options.feedURL}</a>`
   }
   
   output.push(`<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0" xmlns:media="http://www.rssboard.org/media-rss" version="2.0">
