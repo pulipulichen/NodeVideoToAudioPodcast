@@ -1,7 +1,7 @@
 let path = require('path')
 var YoutubeMp3Downloader = use("youtube-mp3-downloader");
 
-module.exports = function (type, id, videoID) {
+let youtubeDownload = function (type, id, videoID) {
   return new Promise((resolve, reject) => {
     //Configure YoutubeMp3Downloader with your settings
     let YD = new YoutubeMp3Downloader({
@@ -20,8 +20,15 @@ module.exports = function (type, id, videoID) {
       resolve(true)
     })
 
-    YD.on("error", function(error) {
-      reject(error)
+    YD.on("error", async function(error) {
+      //reject(error)
+      console.trace('youtube download error', type, id, videoID)
+      setTimeout(async () => {
+        let result = await youtubeDownload(type, id, videoID)
+        resolve(result)
+      }, 3000)
     })
   })
 }
+
+module.exports = youtubeDownload

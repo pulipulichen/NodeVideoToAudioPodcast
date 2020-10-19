@@ -118,6 +118,15 @@ class YouTubeInfo {
   }
   
   parseVideoHTML (body, url) {
+    
+    if (!body) {
+      console.error('body is empty')
+      return {
+        isOffline: true
+      }
+    }
+    
+    
     let $
     try {
       $ = cheerio.load(body);
