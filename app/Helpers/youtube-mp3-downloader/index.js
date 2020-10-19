@@ -47,7 +47,9 @@ let resertServer = function () {
   let content = JSON.stringify({
     date: (new Date()).getTime()
   })
-  fs.writeFile(path.resolve(__dirname, 'restart-trigger.json'), content)
+  fs.writeFile(path.resolve(__dirname, 'restart-trigger.json'), content, () => {
+    console.log('restart server...')
+  })
 }
 
 module.exports = youtubeDownload
