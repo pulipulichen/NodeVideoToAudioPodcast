@@ -14,6 +14,8 @@ const Env = use('Env')
 const YoutubeFeedItemsModel = use('App/Models/YoutubeFeedItemsModel')
 const PodcastFeedItemsModel = use('App/Models/PodcastFeedItemsModel')
 
+const moment = use('moment')
+
 class Feed {
   async index ({ params, response }) {
     if (params.id && params.id.endsWith('.xml')) {
@@ -27,11 +29,12 @@ class Feed {
     
     // 放著讓它跑
     this.youtubeFeed = new YoutubeFeedItemsModel(params)
+    this.podcastFeed = new PodcastFeedItemsModel(params)
     let feed = await this.youtubeFeed.getFeed()
     
     this.updateItems(feed.items)
     
-    this.podcastFeed = new PodcastFeedItemsModel(params)
+    
     feed.items = await this.podcastFeed.getPodcastItems()
     //console.log(feed.items)
     
@@ -48,22 +51,63 @@ class Feed {
   }
   
   async updateItems (items) {
+    if (this.config.type === 'youtube-playlist') {
+      
+      if (this.config.date === 'playlist_sort') {
+        //items.reverse()
+        
+        let now = new Date().getTime()
+        //item.date = new Date(new Date().getTime() - (i * 1000 * 60 * 10))
+        for (let i = 0; i < items.length; i++) {
+          let date = new Date(now - (i * 1000 * 60 * 10))
+          items[i].date = date
+          items[i].pubDate = date
+          items[i].isoDate = date
+        }
+      }
+      else {
+        items.sort((a, b) => {
+          let timeA = moment(a.pubDate).unix()
+          let timeB = moment(b.pubDate).unix()
+          return timeB - timeA
+        })
+      }
+      
+      //console.log(items)
+      
+      //return false
+    }
+    
+    let savedItems = await this.podcastFeed.getPodcastItems()
+    if (savedItems.length >= this.config.maxItems) {
+      //console.log(savedItems)
+      let firstSavedItem = savedItems[0]
+      let firstSavedItemTime = moment(firstSavedItem.isoDate).unix()
+      items = items.filter(item => {
+        return (moment(item.isoDate).unix() > firstSavedItemTime)
+      })
+      //console.log(firstItem.title, moment(firstItem.isoDate).unix())
+      //console.log(items[0].title, moment(items[0].isoDate).unix())
+      //console.log(items)
+    }
+    //return false 
+    
     let maxItems = items.length
-    if (maxItems > this.config.maxItems) {
+    if (maxItems === 0) {
+      return false
+    }
+    else if (maxItems > this.config.maxItems) {
       maxItems = this.config.maxItems
     }
     
-    if (this.config.type === 'youtube-playlist'
-            && this.config.date === 'playlist_sort') {
-      items.reverse()
-    }
-    
+    //console.log('updateItems maxItems', maxItems)
     for (let i = 0; i < maxItems; i++) {
       let subItems = [items[i]]
       
       subItems = await this.youtubeFeed.filterItems(subItems)
       
       if (subItems.length === 0 && maxItems < items.length) {
+        //console.log('')
         maxItems++
         continue
       }

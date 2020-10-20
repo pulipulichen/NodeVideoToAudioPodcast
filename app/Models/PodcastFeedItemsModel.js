@@ -1,3 +1,5 @@
+/* global __dirname */
+
 'use strict'
 
 const ChannelConfig = use('App/Helpers/channel-config.js')
@@ -17,6 +19,7 @@ class FeedItem extends Model {}
 let sequelize
 
 const fs = require('fs')
+const path = require('path')
 const mkdirp = require('mkdirp')
 
 let isDownloading = false
@@ -127,6 +130,7 @@ class PodcastFeedItemsModel {
     }
     
     //let dataArray = []
+    
     for (let i = 0; i < maxItems; i++) {
       let item = youtubeItems[i]
       
@@ -204,8 +208,9 @@ class PodcastFeedItemsModel {
     //console.log(item)
     
     let itemPath = this.getItemPath(item)
-    //console.log(itemPath, fs.existsSync(itemPath), 'checkDurationMatch', this.isDurationMatch (itemPath, item))
-    if (fs.existsSync(itemPath) === false 
+    let absoluteItemPath = path.resolve(__dirname, '../.' + itemPath)
+    console.log(absoluteItemPath, fs.existsSync(absoluteItemPath), 'checkDurationMatch', this.isDurationMatch (absoluteItemPath, item))
+    if (fs.existsSync(absoluteItemPath) === false 
             || this.isDurationMatch (itemPath, item) === false) {
       await this.downloadItem(itemPath, item)
     }
@@ -216,24 +221,29 @@ class PodcastFeedItemsModel {
   }
   
   isDurationMatch (itemPath, item) {
+    if (fs.existsSync(itemPath) === false) {
+      return false
+    }
+    
     const buffer = fs.readFileSync(itemPath)
     let duration = getMP3Duration(buffer)
     duration = Math.ceil(duration / 1000)
     
     let info = JSON.parse(item.item_info)
     //console.log(info)
-    //console.log('isDurationMatch', info.duration, duration, (info.duration === duration))
-    return (info.duration === duration)
+    console.log('isDurationMatch', info.duration, duration, (Math.abs(info.duration - duration) < 60))
+    return (Math.abs(info.duration - duration) < 60)
   }
   
   async downloadItem (itemPath, item) {
-    console.log('start download: ' + itemPath)
+    console.log('start download: ' + itemPath + ' https://www.youtube.com/watch?v=' + item.item_id)
     //item.item_status = 1
     //await item.save()
     await this.mkdir(item)
 
     try {
       await YouTubeMP3Downloader(item.feed_type, item.feed_name, item.item_id)
+      console.log('end download: ' + itemPath)
     }
     catch (e) {
       console.error('download fail: ' + e)
