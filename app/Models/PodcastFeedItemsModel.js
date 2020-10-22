@@ -94,7 +94,11 @@ class PodcastFeedItemsModel {
       created_at: {
         type: DataTypes.NUMBER,
         allowNull: false
-      }
+      },
+      updated_at: {
+        type: DataTypes.NUMBER,
+        allowNull: false
+      },
     }, {
       sequelize: sequelize,
       modelName: 'feed_items',
@@ -134,6 +138,8 @@ class PodcastFeedItemsModel {
     for (let i = 0; i < maxItems; i++) {
       let item = youtubeItems[i]
       
+      let time = moment(item.date).unix()
+      
       await FeedItem.findOrCreate({
         where: {
           feed_type: this.type,
@@ -143,7 +149,8 @@ class PodcastFeedItemsModel {
         },
         defaults: {
           item_info: JSON.stringify(item),
-          created_at: moment(item.date).unix()
+          created_at: time,
+          updated_at: time
         }
       })
     }
@@ -199,7 +206,48 @@ class PodcastFeedItemsModel {
     
     if (item === null) {
       isDownloading = false
-      
+      setTimeout(() => {
+        this.startDownloadFailedItems()
+      }, 10 * 60 * 1000)
+      //this.startDeleteExpiredItems()
+      return true
+    }
+    
+    //console.log('== item =============')
+    //console.log(item)
+    
+    let itemPath = this.getItemPath(item)
+    let absoluteItemPath = path.resolve(__dirname, '../.' + itemPath)
+    console.log(absoluteItemPath, fs.existsSync(absoluteItemPath), 'checkDurationMatch', this.isDurationMatch (absoluteItemPath, item))
+    if (fs.existsSync(absoluteItemPath) === false 
+            || this.isDurationMatch (itemPath, item) === false) {
+      item.item_status = 1
+      let time = moment(item.date).unix()
+      item.updated_at = time
+      await item.save()
+      await this.downloadItem(itemPath, item)
+    }
+    item.item_status = 2
+    await item.save()
+    isDownloading = false
+    this.startDownloadItems()
+  }
+  
+  async startDownloadFailedItems () {
+    if (isDownloading === true) {
+      return false
+    }
+    
+    isDownloading = true
+    let item = await FeedItem.findOne({
+      where: {
+        'item_status': 1
+      },
+      order: [['updated_at', 'ASC']],
+    })
+    
+    if (item === null) {
+      isDownloading = false
       this.startDeleteExpiredItems()
       return true
     }
@@ -212,6 +260,10 @@ class PodcastFeedItemsModel {
     console.log(absoluteItemPath, fs.existsSync(absoluteItemPath), 'checkDurationMatch', this.isDurationMatch (absoluteItemPath, item))
     if (fs.existsSync(absoluteItemPath) === false 
             || this.isDurationMatch (itemPath, item) === false) {
+      //item.item_status = 1
+      let time = moment(item.date).unix()
+      item.updated_at = time
+      await item.save()
       await this.downloadItem(itemPath, item)
     }
     item.item_status = 2
@@ -249,6 +301,7 @@ class PodcastFeedItemsModel {
       console.error('download fail: ' + e)
       isDownloading = false
       this.startDownloadItems()
+      //throw new Exception(e)
       return false
     }
     //console.log('end download: ' + item.item_id)

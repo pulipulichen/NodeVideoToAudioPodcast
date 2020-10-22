@@ -16,7 +16,7 @@ let youtubeDownload = function (type, id, videoID) {
         "outputPath": path.resolve("./public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)
         "youtubeVideoQuality": "highestaudio",  // Desired video quality (default: highestaudio)
         "queueParallelism": 1,                  // Download parallelism (default: 1)
-        "progressTimeout": 2000,                // Interval in ms for the progress reports (default: 1000)
+        "progressTimeout": 200000000,                // Interval in ms for the progress reports (default: 1000)
         "allowWebm": false                      // Enable download from WebM sources (default: false)
     });
 
@@ -32,6 +32,12 @@ let youtubeDownload = function (type, id, videoID) {
       //reject(error)
       console.trace('youtube download error', type, id, videoID)
       
+      if (error == 'ffmpeg exited with code 1: pipe:0: Invalid data found when processing input') {
+        console.log('yes')
+      }
+      
+      console.error(error)
+      //reject(error)
       resertServer()
       /*
       setTimeout(async () => {
@@ -47,8 +53,9 @@ let resertServer = function () {
   let content = JSON.stringify({
     date: (new Date()).getTime()
   })
+  console.log('restart server...')
   fs.writeFile(path.resolve(__dirname, 'restart-trigger.json'), content, () => {
-    console.log('restart server...')
+    
   })
 }
 
