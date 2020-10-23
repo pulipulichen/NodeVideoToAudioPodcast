@@ -57,6 +57,13 @@ class OPML {
       })
     }
     
+    return configs
+  }
+  
+  async getLocalFolders () {
+    
+    let configs = []
+    
     const LocalFolderConfig = use('App/Helpers/local-folder-config')
     LocalFolderConfig.all().forEach(config => {
       let title = config.title
@@ -73,6 +80,7 @@ class OPML {
   
   async list () {
     let configs = await this.getConfigs()
+    let localFolders = await this.getLocalFolders()
     
     // --------------------------
     
@@ -91,6 +99,14 @@ class OPML {
     <ul>`)
     
     configs.forEach(({title, feedLink}) => {
+      output.push(`<li><a href="${feedLink}">${title}</a></li>`)
+    })
+    
+    output.push(`</ul>
+    <hr />
+<ul>`)
+    
+    localFolders.forEach(({title, feedLink}) => {
       output.push(`<li><a href="${feedLink}">${title}</a></li>`)
     })
     

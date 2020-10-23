@@ -98,7 +98,8 @@ class LocalFolder {
     }
     
     items = this.sortItems(items)
-    if (this.config.sort === 'filename') {
+    if (this.config.sort === 'filename'
+            || this.config.sort === 'filename-number') {
       let dirPath = this.getFilePath('/')
       const stats = fs.statSync(dirPath)
       let mtime = stats.mtime
@@ -304,7 +305,51 @@ class LocalFolder {
             return -1
           }
         }
+      }
+      else if (this.config.sort === 'filename-number') {
+        
+        let aFilepaths = a.filepath.toLowerCase().split('/')
+        let bFilepaths = b.filepath.toLowerCase().split('/')
+        
+        for (let i = 0; i < aFilepaths.length; i++) {
+          let aFilepath = aFilepaths[i]
+          if (aFilepath.lastIndexOf('.') > -1) {
+            aFilepath = aFilepath.slice(0, aFilepath.lastIndexOf('.'))
+          }
+          aFilepath = aFilepath.replace(/\D/g,'')
           
+          let bFilepath = bFilepaths[i]
+          if (bFilepath.lastIndexOf('.') > -1) {
+            bFilepath = bFilepath.slice(0, bFilepath.lastIndexOf('.'))
+          }
+          bFilepaths = bFilepaths.replace(/\D/g,'')
+          let order
+          
+          if (aFilepath === bFilepath) {
+            continue
+          }
+          
+          if (!bFilepath || bFilepath === '') {
+            order = true
+          }
+          else if (!aFilepath || aFilepath === '') {
+            order = false
+          }
+          else {
+            order = (Number(aFilepath) < Number(bFilepath))
+          }
+          if (this.config.order === 'asc') {
+            order = !(order)
+          }
+
+          //console.log([order, aFilepath, bFilepath])
+          if (order) {
+            return 1
+          }
+          else {
+            return -1
+          }
+        }
       }
       else {
         return (b.dateUnix - a.dateUnix)

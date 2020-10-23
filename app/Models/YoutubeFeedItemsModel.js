@@ -81,6 +81,35 @@ class YoutubeFeedItemsModel {
     })
   }
   
+  filterTitle (title) {
+    let {filters = [], maxItems = 10} = this.config
+    
+    if (!filters) {
+      filters = []
+    }
+    
+    if (Array.isArray(filters) === false 
+            && typeof(filters) === 'object') {
+      filters = [filters]
+    }
+    
+    let titleKeys = ['titlePrefix', 'titleSuffix', 'titleInclude', 'titleExclude']
+    for (let f = 0; f < filters.length; f++) {
+      let filter = filters[f]
+
+      let key, value
+      Object.keys(filter).forEach(k => {
+        key = k
+        value = filter[k]
+      })
+
+      if (titleKeys.indexOf(key) > -1) {
+        title = title.split(value).join(' ')
+      }
+    }
+    return title
+  }
+  
   async filterItems(items) {
     let {filters = [], maxItems = 10} = this.config
     
@@ -134,6 +163,11 @@ class YoutubeFeedItemsModel {
           passed = false
           break
         }
+        else if (key === 'titleExclude' 
+                && item.title.indexOf(value) > -1) {
+          passed = false
+          break
+        }
         else if (key === 'durationMinSec'
                 || key === 'durationMaxSec') {
           
@@ -156,6 +190,7 @@ class YoutubeFeedItemsModel {
         if (!duration) {
           duration = await this.getDuration(item)
         }
+        item.title = this.filterTitle(item.title)
         item.duration = duration
         item.date = item.isoDate
         for (let key in info) {
