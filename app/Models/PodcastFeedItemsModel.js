@@ -206,9 +206,11 @@ class PodcastFeedItemsModel {
     
     if (item === null) {
       isDownloading = false
+      //let waitDownloadFailedItemsIntervalMin = 10
+      let waitDownloadFailedItemsIntervalMin = 0
       setTimeout(() => {
         this.startDownloadFailedItems()
-      }, 10 * 60 * 1000)
+      }, waitDownloadFailedItemsIntervalMin * 60 * 1000)
       //this.startDeleteExpiredItems()
       return true
     }

@@ -1,6 +1,7 @@
 /* global __dirname */
 
 let path = require('path')
+//var UBMp3Downloader = use("./UBMp3Downloader.js") // 這裡是大問題，可能要從這裡來修改
 var UBMp3Downloader = use("youtube-mp3-downloader") // 這裡是大問題，可能要從這裡來修改
 let fs = require('fs')
 
@@ -30,7 +31,20 @@ let ubDownload = function (type, id, videoID) {
 
     YD.on("error", async function(error) {
       //reject(error)
-      console.trace('ub download error', type, id, videoID)
+      let sourceURL
+      if (type === 'ub-channel') {
+        sourceURL = `https://www.youtube.com/channel/` + id
+      }
+      else {
+        sourceURL = `https://www.youtube.com/playlist?list=` + id
+      }
+      
+      console.trace('ub download error', type, id, videoID, `
+Source URL: ${sourceURL}
+Video URL: https://youtu.be/${videoID}
+If errors occured frequently, try to update "ytdl-core" module: npm install ytdl-core
+`)
+      //console.error(`Try update "ytdl-core" module: npm install ytdl-core`)
       
       if (error == 'ffmpeg exited with code 1: pipe:0: Invalid data found when processing input') {
         console.log('yes')
@@ -38,7 +52,7 @@ let ubDownload = function (type, id, videoID) {
       
       console.error(error)
       //reject(error)
-      resertServer()
+      //resertServer()
       /*
       setTimeout(async () => {
         let result = await ubDownload(type, id, videoID)

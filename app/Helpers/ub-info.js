@@ -120,7 +120,7 @@ class UBInfo {
   parseVideoHTML (body, url) {
     
     if (!body) {
-      console.error('body is empty')
+      console.error('body is empty: ' + url)
       return {
         isOffline: true
       }

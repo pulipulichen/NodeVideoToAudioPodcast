@@ -42,7 +42,7 @@
     "rss-parser": "^3.9.0",
     "sequelize": "^6.3.5",
     "sqlite3": "^4.2.0",
-    "youtube-mp3-downloader": "^0.7.3"
+    "ytdl-core": "^4.0.0"
   },
   "devDependencies": {},
   "autoload": {

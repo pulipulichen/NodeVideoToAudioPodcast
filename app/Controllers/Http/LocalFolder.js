@@ -322,7 +322,7 @@ class LocalFolder {
           if (bFilepath.lastIndexOf('.') > -1) {
             bFilepath = bFilepath.slice(0, bFilepath.lastIndexOf('.'))
           }
-          bFilepaths = bFilepaths.replace(/\D/g,'')
+          bFilepath = bFilepath.replace(/\D/g,'')
           let order
           
           if (aFilepath === bFilepath) {

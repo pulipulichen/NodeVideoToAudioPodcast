@@ -1,5 +1,6 @@
 let Parser = require('rss-parser')
 const parser = new Parser()
+let parserLock = false
 
 const UBURLtoFeedURL = function (url) {
   
@@ -29,13 +30,26 @@ const UBURLtoFeedURL = function (url) {
   return feedURL
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const UBFeedParser = async function (url) {
   let feedURL = UBURLtoFeedURL(url)
   if (!feedURL) {
     return undefined
   }
   
-  return await parser.parseURL(feedURL)
+  while (parserLock === true) {
+    console.log('parser is loading. URL is waiting: ' + url)
+    await sleep(1000)
+  }
+  
+  parserLock = true
+  let result = await parser.parseURL(feedURL)
+  parserLock = false
+  
+  return result
 }
 
 module.exports = UBFeedParser

@@ -30,9 +30,7 @@ class Feed {
     this.ubFeed = new UBFeedItemsModel(params)
     this.podcastFeed = new PodcastFeedItemsModel(params)
     let feed = await this.ubFeed.getFeed()
-    
     this.updateItems(feed.items)
-    
     
     feed.items = await this.podcastFeed.getPodcastItems()
     //console.log(feed.items)
