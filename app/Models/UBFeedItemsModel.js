@@ -1,10 +1,10 @@
 'use strict'
 const ChannelConfig = use('App/Helpers/channel-config.js')
-const YouTubeFeedParser = use('App/Helpers/youtube-feed-parser.js')
+const UBFeedParser = use('App/Helpers/ub-feed-parser.js')
 const PodcastFeedBuilder = use('App/Helpers/podcast-feed-builder.js')
-const YouTubeVideoIDParser = use('App/Helpers/youtube-video-id-parser.js')
+const UBVideoIDParser = use('App/Helpers/ub-video-id-parser.js')
 
-const youtubeInfo = use('App/Helpers/youtube-info.js')
+const ubInfo = use('App/Helpers/ub-info.js')
 
 const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 const Env = use('Env')
@@ -14,7 +14,7 @@ const getMP3Duration = require('get-mp3-duration')
 const { getVideoDurationInSeconds } = require('get-video-duration')
 const moment = use('moment')
 
-class YoutubeFeedItemsModel {
+class UBFeedItemsModel {
   
   constructor (param) {
     this.config = ChannelConfig.get(param)
@@ -32,9 +32,9 @@ class YoutubeFeedItemsModel {
     }
     
     let feed = await NodeCacheSqlite.get(['CACHE_RETRIEVE_FEED_MINUTES', config.url], async () => {
-      return await YouTubeFeedParser(config.url)
+      return await UBFeedParser(config.url)
     }, Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))  * 60 * 1000)
-    //let feed = await YouTubeFeedParser(config.url)
+    //let feed = await UBFeedParser(config.url)
     //console.log(feed)
     
     //const items = await this.filterItems(feed.items, config.filters, config.maxItems)
@@ -62,7 +62,7 @@ class YoutubeFeedItemsModel {
   
   async getDuration (item) {
     return await NodeCacheSqlite.get(['duration', item.link], async () => {
-      item.videoID = YouTubeVideoIDParser(item.link)
+      item.videoID = UBVideoIDParser(item.link)
       let itemPath = this.getItemPath(item.videoID)
       //console.log('duration', itemPath, fs.existsSync(itemPath))
       if (fs.existsSync(itemPath) === true) {
@@ -76,7 +76,7 @@ class YoutubeFeedItemsModel {
         }
       }
       else {
-        return await youtubeInfo.loadDuration(item.link)
+        return await ubInfo.loadDuration(item.link)
       }  
     })
   }
@@ -104,7 +104,7 @@ class YoutubeFeedItemsModel {
       })
 
       if (titleKeys.indexOf(key) > -1) {
-        title = title.split(value).join(' ')
+        title = title.split(value).join(' ').trim()
       }
     }
     return title
@@ -130,12 +130,12 @@ class YoutubeFeedItemsModel {
     for (let i = 0; i < maxItems; i++) {
       let item = items[i]
       
-      let info = await youtubeInfo.load(item.link)
+      let info = await ubInfo.load(item.link)
       if (info.isOffline === true) {
         continue
       }
         
-      //let videoID = YouTubeVideoIDParser(item.link)
+      //let videoID = UBVideoIDParser(item.link)
       
       let duration
       let passed = true
@@ -197,7 +197,7 @@ class YoutubeFeedItemsModel {
           item[key] = info[key]
         }
         
-//        if (this.config.type === 'youtube-playlist'
+//        if (this.config.type === 'ub-playlist'
 //                && this.config.date === 'playlist_sort') {
 //          // i
 //          
@@ -214,7 +214,7 @@ class YoutubeFeedItemsModel {
         }
         
         if (!item.videoID) {
-          item.videoID = YouTubeVideoIDParser(item.link)
+          item.videoID = UBVideoIDParser(item.link)
         }
         //item.thumbnail = `http://i3.ytimg.com/vi/${item.videoID}/maxresdefault.jpg`
         item.thumbnail = `http://i3.ytimg.com/vi/${item.videoID}/sddefault.jpg`
@@ -237,4 +237,4 @@ class YoutubeFeedItemsModel {
   }
 }
 
-module.exports = YoutubeFeedItemsModel
+module.exports = UBFeedItemsModel

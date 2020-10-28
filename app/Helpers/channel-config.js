@@ -6,7 +6,7 @@ if (!config) {
 
 const Env = use('Env')
 
-let getYouTubeURLID = function (url) {
+let getUBURLID = function (url) {
   
   if (url.indexOf('www.youtube.com/playlist') > -1) {
     return new URL(url).searchParams.get('list')
@@ -31,10 +31,10 @@ for (let i = 0; i < config.length; i++) {
   
   if (!c.type) {
     if (c.url.indexOf('www.youtube.com/playlist?list=') > -1) {
-      c.type = 'youtube-playlist'
+      c.type = 'ub-playlist'
     }
     else if (c.url.indexOf('www.youtube.com/channel/') > -1) {
-      c.type = 'youtube-channel'
+      c.type = 'ub-channel'
     }
   }
   
@@ -42,11 +42,11 @@ for (let i = 0; i < config.length; i++) {
     if (c.name) {
       c.id = c.name
     }
-    else if (c.type === 'youtube-playlist') {
-      c.id = getYouTubeURLID(c.url)
+    else if (c.type === 'ub-playlist') {
+      c.id = getUBURLID(c.url)
     }
-    else if (c.type === 'youtube-channel') {
-      c.id = getYouTubeURLID(c.url)
+    else if (c.type === 'ub-channel') {
+      c.id = getUBURLID(c.url)
     }
   }
   
@@ -75,11 +75,11 @@ for (let i = 0; i < config.length; i++) {
     c.thumbnailBorderColor = c.thumbnailBorderColor.toUpperCase()
   }
   
-  if (c.type === 'youtube-playlist') {
-    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + getYouTubeURLID(c.url)
+  if (c.type === 'ub-playlist') {
+    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + getUBURLID(c.url)
   }
-  else if (c.type === 'youtube-channel') {
-    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + getYouTubeURLID(c.url)
+  else if (c.type === 'ub-channel') {
+    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + getUBURLID(c.url)
   }
   
   configMap[key] = c
@@ -94,10 +94,10 @@ class ChannelConfig {
     }
 
     let url
-    if (type === 'youtube-playlist') {
+    if (type === 'ub-playlist') {
       url = 'https://www.youtube.com/playlist?list=' + id
     }
-    else if (type === 'youtube-channel') {
+    else if (type === 'ub-channel') {
       url = 'https://www.youtube.com/channel/' + id
     }
     else {

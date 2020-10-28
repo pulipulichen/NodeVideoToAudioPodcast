@@ -3,12 +3,12 @@
 'use strict'
 
 const ChannelConfig = use('App/Helpers/channel-config.js')
-const YouTubeFeedParser = use('App/Helpers/youtube-feed-parser.js')
+const UBFeedParser = use('App/Helpers/ub-feed-parser.js')
 const PodcastFeedBuilder = use('App/Helpers/podcast-feed-builder.js')
-const YouTubeVideoIDParser = use('App/Helpers/youtube-video-id-parser.js')
-const YouTubeMP3Downloader = use('App/Helpers/youtube-mp3-downloader/index.js')
+const UBVideoIDParser = use('App/Helpers/ub-video-id-parser.js')
+const UBMP3Downloader = use('App/Helpers/ub-mp3-downloader/index.js')
 
-const youtubeInfo = use('App/Helpers/youtube-info.js')
+const ubInfo = use('App/Helpers/ub-info.js')
 
 const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 const Env = use('Env')
@@ -110,12 +110,12 @@ class PodcastFeedItemsModel {
   }
   
   async processItems (feed) {
-    let youtubeItems = feed.items
+    let ubItems = feed.items
     let podcastItems = []
     
     await this.initFeedItems()
     
-    await this.saveYouTubeItems(youtubeItems)
+    await this.saveUBItems(ubItems)
     this.startDownloadItems()
     podcastItems = await this.getPodcastItems()
     //this.startDeleteExpiredItems()
@@ -123,12 +123,12 @@ class PodcastFeedItemsModel {
     feed.items = podcastItems
   }
   
-  async saveYouTubeItems (youtubeItems) {
-    if (Array.isArray(youtubeItems) === false) {
+  async saveUBItems (ubItems) {
+    if (Array.isArray(ubItems) === false) {
       return true
     }
     
-    let maxItems = youtubeItems.length
+    let maxItems = ubItems.length
     if (maxItems > this.config.maxItems) {
       maxItems = this.config.maxItems
     }
@@ -136,7 +136,7 @@ class PodcastFeedItemsModel {
     //let dataArray = []
     
     for (let i = 0; i < maxItems; i++) {
-      let item = youtubeItems[i]
+      let item = ubItems[i]
       
       let time = moment(item.date).unix()
       
@@ -294,7 +294,7 @@ class PodcastFeedItemsModel {
     await this.mkdir(item)
 
     try {
-      await YouTubeMP3Downloader(item.feed_type, item.feed_name, item.item_id)
+      await UBMP3Downloader(item.feed_type, item.feed_name, item.item_id)
       console.log('end download: ' + itemPath)
     }
     catch (e) {
@@ -433,7 +433,7 @@ class PodcastFeedItemsModel {
       options.thumbnail = config.thumbnail
     }
     else {
-      let info = await youtubeInfo.load(options.link)
+      let info = await ubInfo.load(options.link)
       options.thumbnail = info.thumbnail
     }
     

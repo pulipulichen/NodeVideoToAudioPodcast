@@ -1,17 +1,17 @@
 /* global __dirname */
 
 let path = require('path')
-var YoutubeMp3Downloader = use("youtube-mp3-downloader");
+var UBMp3Downloader = use("youtube-mp3-downloader") // 這裡是大問題，可能要從這裡來修改
 let fs = require('fs')
 
-let youtubeDownload = function (type, id, videoID) {
+let ubDownload = function (type, id, videoID) {
   let autoRestartTimer = setTimeout(() => {
     resertServer()
   }, 60 * 60 * 1000)
   
   return new Promise((resolve, reject) => {
     //Configure YoutubeMp3Downloader with your settings
-    let YD = new YoutubeMp3Downloader({
+    let YD = new UBMp3Downloader({
         "ffmpegPath": path.resolve(__dirname, "./ffmpeg.exe"),        // FFmpeg binary location
         "outputPath": path.resolve("./public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)
         "youtubeVideoQuality": "highestaudio",  // Desired video quality (default: highestaudio)
@@ -30,7 +30,7 @@ let youtubeDownload = function (type, id, videoID) {
 
     YD.on("error", async function(error) {
       //reject(error)
-      console.trace('youtube download error', type, id, videoID)
+      console.trace('ub download error', type, id, videoID)
       
       if (error == 'ffmpeg exited with code 1: pipe:0: Invalid data found when processing input') {
         console.log('yes')
@@ -41,7 +41,7 @@ let youtubeDownload = function (type, id, videoID) {
       resertServer()
       /*
       setTimeout(async () => {
-        let result = await youtubeDownload(type, id, videoID)
+        let result = await ubDownload(type, id, videoID)
         resolve(result)
       }, 3000)
        */
@@ -59,4 +59,4 @@ let resertServer = function () {
   })
 }
 
-module.exports = youtubeDownload
+module.exports = ubDownload

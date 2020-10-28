@@ -1,7 +1,7 @@
 'use strict'
 
 const ChannelConfig = use('App/Helpers/channel-config.js')
-const youtubeInfo = use('App/Helpers/youtube-info.js')
+const ubInfo = use('App/Helpers/ub-info.js')
 const Env = use('Env')
 
 //const ChannelConfig = use('App/Helpers/channel-config.js')
@@ -124,8 +124,8 @@ class OPML {
     
     let title = config.title
     if (!title) {
-      //console.log('youtube info load: ' + config.url)
-      let info = await youtubeInfo.load(config.url)
+      //console.log('ub info load: ' + config.url)
+      let info = await ubInfo.load(config.url)
       title = info.title
     }
     

@@ -1,17 +1,16 @@
 'use strict'
 
-// http://pc.pulipuli.info:43333/youtube-playlist/PLKnvkZ00-pHoryIGQYEKFLnFbAi-B_dxd
 const ChannelConfig = use('App/Helpers/channel-config.js')
-const YouTubeFeedParser = use('App/Helpers/youtube-feed-parser.js')
+const UBFeedParser = use('App/Helpers/ub-feed-parser.js')
 const PodcastFeedBuilder = use('App/Helpers/podcast-feed-builder.js')
-const YouTubeVideoIDParser = use('App/Helpers/youtube-video-id-parser.js')
+const UBVideoIDParser = use('App/Helpers/ub-video-id-parser.js')
 
-const youtubeInfo = use('App/Helpers/youtube-info.js')
+const ubInfo = use('App/Helpers/ub-info.js')
 
 const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 const Env = use('Env')
 
-const YoutubeFeedItemsModel = use('App/Models/YoutubeFeedItemsModel')
+const UBFeedItemsModel = use('App/Models/UBFeedItemsModel')
 const PodcastFeedItemsModel = use('App/Models/PodcastFeedItemsModel')
 
 const moment = use('moment')
@@ -28,9 +27,9 @@ class Feed {
     this.config = ChannelConfig.get(params)
     
     // 放著讓它跑
-    this.youtubeFeed = new YoutubeFeedItemsModel(params)
+    this.ubFeed = new UBFeedItemsModel(params)
     this.podcastFeed = new PodcastFeedItemsModel(params)
-    let feed = await this.youtubeFeed.getFeed()
+    let feed = await this.ubFeed.getFeed()
     
     this.updateItems(feed.items)
     
@@ -51,7 +50,7 @@ class Feed {
   }
   
   async updateItems (items) {
-    if (this.config.type === 'youtube-playlist') {
+    if (this.config.type === 'ub-playlist') {
       
       if (this.config.date === 'playlist_sort') {
         //items.reverse()
@@ -104,7 +103,7 @@ class Feed {
     for (let i = 0; i < maxItems; i++) {
       let subItems = [items[i]]
       
-      subItems = await this.youtubeFeed.filterItems(subItems)
+      subItems = await this.ubFeed.filterItems(subItems)
       
       if (subItems.length === 0 && maxItems < items.length) {
         //console.log('')
@@ -113,9 +112,9 @@ class Feed {
       }
       
       //console.log('items filtered: ' + items.length)
-      await this.podcastFeed.saveYouTubeItems(subItems)
+      await this.podcastFeed.saveUBItems(subItems)
       
-      if (this.config.type === 'youtube-playlist') {
+      if (this.config.type === 'ub-playlist') {
         await this.sleep(300)
       }
     }

@@ -8,7 +8,7 @@ let cache = {}
 
 const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 
-class YouTubeInfo {
+class UBInfo {
   
   load (url) {
     if (url.indexOf('www.youtube.com/channel/') > -1) {
@@ -31,7 +31,7 @@ class YouTubeInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.get(['YouTubeInfo', url], async () => {
+    let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
       return await this.loadHTML(url)
     })
     let info = this.parseChannelHTML(html, url)
@@ -44,13 +44,13 @@ class YouTubeInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.get(['YouTubeInfo', url], async () => {
+    let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
       return await this.loadHTML(url)
     })
     let info = this.parseVideoHTML(html, url)
     
     if (info.isOffline) {
-      await NodeCacheSqlite.clear(['YouTubeInfo', url])
+      await NodeCacheSqlite.clear(['UBInfo', url])
     }
     
     cache[url] = info
@@ -67,7 +67,7 @@ class YouTubeInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.get(['YouTubeInfo', url], async () => {
+    let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
       return await this.loadHTML(url)
     })
     let info = this.parsePlaylistHTML(html, url)
@@ -220,4 +220,4 @@ class YouTubeInfo {
   }
 }
 
-module.exports = new YouTubeInfo()
+module.exports = new UBInfo()

@@ -1,7 +1,7 @@
 let Parser = require('rss-parser')
 const parser = new Parser()
 
-const YouTubeURLtoFeedURL = function (url) {
+const UBURLtoFeedURL = function (url) {
   
   // https://www.youtube.com/playlist?list=PLKnvkZ00-pHoryIGQYEKFLnFbAi-B_dxd
   // https://www.youtube.com/feeds/videos.xml?playlist_id=YOURPLAYLISTIDHERE
@@ -29,8 +29,8 @@ const YouTubeURLtoFeedURL = function (url) {
   return feedURL
 }
 
-const YouTubeFeedParser = async function (url) {
-  let feedURL = YouTubeURLtoFeedURL(url)
+const UBFeedParser = async function (url) {
+  let feedURL = UBURLtoFeedURL(url)
   if (!feedURL) {
     return undefined
   }
@@ -38,5 +38,5 @@ const YouTubeFeedParser = async function (url) {
   return await parser.parseURL(feedURL)
 }
 
-module.exports = YouTubeFeedParser
+module.exports = UBFeedParser
 
