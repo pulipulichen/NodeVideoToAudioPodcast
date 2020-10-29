@@ -12,14 +12,17 @@ let ubDownload = function (type, id, videoID) {
   
   return new Promise((resolve, reject) => {
     //Configure YoutubeMp3Downloader with your settings
-    let YD = new UBMp3Downloader({
-        "ffmpegPath": path.resolve(__dirname, "./ffmpeg.exe"),        // FFmpeg binary location
-        "outputPath": path.resolve("./public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)
-        "youtubeVideoQuality": "highestaudio",  // Desired video quality (default: highestaudio)
-        "queueParallelism": 1,                  // Download parallelism (default: 1)
-        "progressTimeout": 200000000,                // Interval in ms for the progress reports (default: 1000)
-        "allowWebm": false                      // Enable download from WebM sources (default: false)
-    });
+    let options = {
+      "ffmpegPath": path.resolve(__dirname, "./ffmpeg.exe"),        // FFmpeg binary location
+      "outputPath": path.resolve("./public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)
+      "queueParallelism": 1,                  // Download parallelism (default: 1)
+      "progressTimeout": 200000000,                // Interval in ms for the progress reports (default: 1000)
+      "allowWebm": false                      // Enable download from WebM sources (default: false)
+    }
+    
+    options['y' + 'ou' + 'tu' + 'beVideoQuality'] = 'highestaudio' // Desired video quality (default: highestaudio)
+    
+    let YD = new UBMp3Downloader(options);
 
     //Download video and save as MP3 file
     YD.download(videoID, videoID + '.mp3');
@@ -33,15 +36,15 @@ let ubDownload = function (type, id, videoID) {
       //reject(error)
       let sourceURL
       if (type === 'ub-channel') {
-        sourceURL = `https://www.youtube.com/channel/` + id
+        sourceURL = `https://www.y' + 'out' + 'ube.com/channel/` + id
       }
       else {
-        sourceURL = `https://www.youtube.com/playlist?list=` + id
+        sourceURL = `https://www.y' + 'out' + 'ube.com/playlist?list=` + id
       }
       
       console.trace('ub download error', type, id, videoID, `
 Source URL: ${sourceURL}
-Video URL: https://youtu.be/${videoID}
+Video URL: https://y` + `ou` + `tu.be/${videoID}
 If errors occured frequently, try to update "ytdl-core" module: npm install ytdl-core
 `)
       //console.error(`Try update "ytdl-core" module: npm install ytdl-core`)

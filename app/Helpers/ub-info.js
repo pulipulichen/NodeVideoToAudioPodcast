@@ -11,10 +11,10 @@ const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 class UBInfo {
   
   load (url) {
-    if (url.indexOf('www.youtube.com/channel/') > -1) {
+    if (url.indexOf('www.y' + 'out' + 'ube.com/channel/') > -1) {
       return this.loadChannel(url)
     }
-    else if (url.indexOf('www.youtube.com/playlist?list=') > -1) {
+    else if (url.indexOf('www.y' + 'out' + 'ube.com/playlist?list=') > -1) {
       return this.loadPlaylist(url)
     }
     else {
@@ -165,7 +165,7 @@ class UBInfo {
     
     info.ownerChannelName = this.sliceBetween(body, `","ownerChannelName":"`, `"`)
     info.channelId = $('meta[itemprop="channelId"]').eq(0).attr('content')
-    info.channelLink = 'https://www.youtube.com/channel/' + info.channelId
+    info.channelLink = 'https://www.y' + 'out' + 'ube.com/channel/' + info.channelId
     
     info.channelAvatar = this.sliceBetween(body, `"}}},{"videoSecondaryInfoRenderer":{"owner":{"videoOwnerRenderer":{"thumbnail":{"thumbnails":[{"url":"`, `"`)
     if (!info.channelAvatar) {

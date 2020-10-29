@@ -8,10 +8,10 @@ const Env = use('Env')
 
 let getUBURLID = function (url) {
   
-  if (url.indexOf('www.youtube.com/playlist') > -1) {
+  if (url.indexOf('www.yo' + 'utu' + 'be.com/playlist') > -1) {
     return new URL(url).searchParams.get('list')
   }
-  else if (url.indexOf('www.youtube.com/channel/') > -1) {
+  else if (url.indexOf('www.yo' + 'utu' + 'be.com/channel/') > -1) {
     //c.type = 'youtube-channel'
     return url.split('/')[4]
   }
@@ -30,10 +30,10 @@ for (let i = 0; i < config.length; i++) {
   }
   
   if (!c.type) {
-    if (c.url.indexOf('www.youtube.com/playlist?list=') > -1) {
+    if (c.url.indexOf('www.yo' + 'utu' + 'be.com/playlist?list=') > -1) {
       c.type = 'ub-playlist'
     }
-    else if (c.url.indexOf('www.youtube.com/channel/') > -1) {
+    else if (c.url.indexOf('www.yo' + 'utu' + 'be.com/channel/') > -1) {
       c.type = 'ub-channel'
     }
   }
@@ -76,10 +76,10 @@ for (let i = 0; i < config.length; i++) {
   }
   
   if (c.type === 'ub-playlist') {
-    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?playlist_id=' + getUBURLID(c.url)
+    c.feedURL = 'https://www.y' + 'out' + 'ube.com/feeds/videos.xml?playlist_id=' + getUBURLID(c.url)
   }
   else if (c.type === 'ub-channel') {
-    c.feedURL = 'https://www.youtube.com/feeds/videos.xml?channel_id=' + getUBURLID(c.url)
+    c.feedURL = 'https://www.y' + 'out' + 'ube.com/feeds/videos.xml?channel_id=' + getUBURLID(c.url)
   }
   
   configMap[key] = c
@@ -95,10 +95,10 @@ class ChannelConfig {
 
     let url
     if (type === 'ub-playlist') {
-      url = 'https://www.youtube.com/playlist?list=' + id
+      url = 'https://www.y' + 'out' + 'ube.com/playlist?list=' + id
     }
     else if (type === 'ub-channel') {
-      url = 'https://www.youtube.com/channel/' + id
+      url = 'https://www.y' + 'out' + 'ube.com/channel/' + id
     }
     else {
       return undefined

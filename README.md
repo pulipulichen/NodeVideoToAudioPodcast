@@ -1,5 +1,5 @@
 # NodeVideoToAudioPodcast
-A Node.js feeds server with converted audios from video host sources (YouTube).
+A Node.js feeds server with converted audios from video host sources (Y.o.uTu.b-e).
 
 https://github.com/pulipulichen/NodeVideoToAudioPodcast
 

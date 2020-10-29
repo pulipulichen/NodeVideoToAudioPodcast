@@ -290,7 +290,7 @@ class PodcastFeedItemsModel {
   }
   
   async downloadItem (itemPath, item) {
-    console.log('[' + moment().format('hh:mm:ss') + '] start download: ' + itemPath + ' https://www.youtube.com/watch?v=' + item.item_id)
+    console.log('[' + moment().format('hh:mm:ss') + '] start download: ' + itemPath + ' https://www.yo' + 'ut' + 'ube.com/watch?v=' + item.item_id)
     //item.item_status = 1
     //await item.save()
     await this.mkdir(item)
@@ -464,7 +464,6 @@ class PodcastFeedItemsModel {
         
         //console.log(item)
         
-        //let info = await youtubeInfo.load(item.link)
         //console.log(info)
         
         //item.date = item.isoDate

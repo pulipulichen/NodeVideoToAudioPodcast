@@ -8,4 +8,5 @@
 
 $ParentDir = StringLeft(@scriptDir,StringInStr(@scriptDir,"\",0,-1)-1)
 $CMD = "npm run start"
-RunWait(@ComSpec & " /c " & $CMD, $ParentDir, @SW_HIDE)
+#RunWait(@ComSpec & " /c " & $CMD, $ParentDir, @SW_HIDE)
+RunWait(@ComSpec & " /c " & $CMD, $ParentDir, @SW_SHOW)
