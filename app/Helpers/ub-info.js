@@ -34,6 +34,14 @@ class UBInfo {
     let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
       return await this.loadHTML(url)
     })
+    
+    if (!html) {
+      await NodeCacheSqlite.clear(['UBInfo', url])
+      //console.error('body html is empty: ' + url)
+      //throw new Error('body html is empty: ' + url)
+      await this.sleep()
+      return await this.loadChannel(url)
+    }
     let info = this.parseChannelHTML(html, url)
     cache[url] = info
     return info
@@ -190,16 +198,31 @@ class UBInfo {
   }
   
   parseChannelHTML (body, url) {
-    var $ = cheerio.load(body);
-    
     let info = {}
     
-    info.title = $('meta[name="title"]').eq(0).attr('content')
-    
-    info.channelAvatar = this.sliceBetween(body, `"}},"avatar":{"thumbnails":[{"url":"`, `"`)
-    info.channelAvatar = info.channelAvatar.split('=s100-c-k').join('=s1024-c-k')
-    info.channelAvatar = info.channelAvatar.split('=s48-c-k').join('=s1024-c-k')
-    info.thumbnail = info.channelAvatar
+    try {
+      if (!body) {
+        throw new Error('body is empty: ' + url)
+      }
+      
+      var $ = cheerio.load(body);
+
+
+      info.title = $('meta[name="title"]').eq(0).attr('content')
+
+      info.channelAvatar = this.sliceBetween(body, `"}},"avatar":{"thumbnails":[{"url":"`, `"`)
+      //console.log('channelAvatar', body)
+      if (!info.channelAvatar) {
+        throw new Error('channelAvatar is not found', url)
+      }
+      info.channelAvatar = info.channelAvatar.split('=s100-c-k').join('=s1024-c-k')
+      info.channelAvatar = info.channelAvatar.split('=s48-c-k').join('=s1024-c-k')
+      info.thumbnail = info.channelAvatar
+    }
+    catch (e) {
+      console.error('parseChannelHTML error! ', url)
+      throw new Error(e)
+    }
     
     return info
   }
