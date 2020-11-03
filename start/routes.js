@@ -16,7 +16,8 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
-Route.get('/test/video-info', 'Test.videoInfo')
+Route.get('/test', 'Test.main')
+Route.get('/dl', 'Feed.dl')
 
 Route.get('/local-folder/:name', 'LocalFolder.index')
 

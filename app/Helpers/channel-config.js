@@ -86,6 +86,10 @@ for (let i = 0; i < config.length; i++) {
 }
 
 class ChannelConfig {
+  getFirst () {
+    return config[0]
+  }
+  
   get (params) {
     let {type, id, name} = params
   

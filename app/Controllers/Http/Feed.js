@@ -121,6 +121,12 @@ class Feed {
   sleep (ms = 500) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
+  
+  dl () {
+    let podcastFeed = new PodcastFeedItemsModel()
+    podcastFeed.startDownloadFailedItems()
+    return 'go download'
+  }
 }
 
 module.exports = Feed

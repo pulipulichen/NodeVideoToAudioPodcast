@@ -96,6 +96,7 @@ class OPML {
   </head>
   <body>
     <h1><a href="/">${opmlTitle}</a></h1>
+    <h2><a href="/dl" target="_blank">Download</a></h2>
     <ul>`)
     
     configs.forEach(({title, feedLink}) => {

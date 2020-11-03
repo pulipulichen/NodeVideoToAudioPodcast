@@ -33,7 +33,12 @@ let cacheEnable = null
 class PodcastFeedItemsModel {
   
   constructor (param) {
-    this.config = ChannelConfig.get(param)
+    if (!param) {
+      this.config = ChannelConfig.getFirst()
+    }
+    else {
+      this.config = ChannelConfig.get(param)
+    }
     
     this.type = this.config.type
     this.id = this.config.id
@@ -192,6 +197,10 @@ class PodcastFeedItemsModel {
   }
   
   async startDownloadItems () {
+    //if (typeof(FeedItem.findOne) !== 'function') {
+      await this.initFeedItems()
+    //}
+    
     if (isDownloading === true) {
       return false
     }
@@ -205,10 +214,11 @@ class PodcastFeedItemsModel {
     })
     
     if (item === null) {
-      isDownloading = false
+      
       //let waitDownloadFailedItemsIntervalMin = 10
       let waitDownloadFailedItemsIntervalMin = 0
       setTimeout(() => {
+        isDownloading = false
         this.startDownloadFailedItems()
       }, waitDownloadFailedItemsIntervalMin * 60 * 1000)
       //this.startDeleteExpiredItems()
@@ -218,9 +228,25 @@ class PodcastFeedItemsModel {
     //console.log('== item =============')
     //console.log(item)
     
+    let url = 'https://www.yo' + 'ut' + 'ube.com/watch?v=' + item.item_id
+    let info = await ubInfo.load(url)
+    //console.log(url, 'isOffline', info.isOffline)
+    if (info.isOffline === true) {
+//      item.item_status = 1
+//      let time = moment(item.date).unix()
+//      item.updated_at = time
+      await item.destroy()
+      
+      setTimeout(() => {
+        isDownloading = false 
+        this.startDownloadItems()
+      }, 3000)
+      return false
+    }    
+        
     let itemPath = this.getItemPath(item)
     let absoluteItemPath = path.resolve(__dirname, '../.' + itemPath)
-    console.log(absoluteItemPath, fs.existsSync(absoluteItemPath), 'checkDurationMatch', this.isDurationMatch (absoluteItemPath, item))
+    console.log('Normal: ', absoluteItemPath, fs.existsSync(absoluteItemPath), 'checkDurationMatch', this.isDurationMatch (absoluteItemPath, item))
     if (fs.existsSync(absoluteItemPath) === false 
             || this.isDurationMatch (itemPath, item) === false) {
       item.item_status = 1
@@ -236,6 +262,10 @@ class PodcastFeedItemsModel {
   }
   
   async startDownloadFailedItems () {
+    //if (typeof(FeedItem.findOne) !== 'function') {
+    await this.initFeedItems()
+    //}
+    
     if (isDownloading === true) {
       return false
     }
@@ -249,19 +279,39 @@ class PodcastFeedItemsModel {
     })
     
     if (item === null) {
-      isDownloading = false
-      this.startDeleteExpiredItems()
+      setTimeout(() => {
+        isDownloading = false
+      }, 3000)
+      //this.startDeleteExpiredItems()
+      console.log('All video are downloaded.')
       return true
     }
     
     //console.log('== item =============')
     //console.log(item)
     
+    
+    let url = 'https://www.yo' + 'ut' + 'ube.com/watch?v=' + item.item_id
+    let info = await ubInfo.load(url)
+    //console.log(url, 'isOffline', info.isOffline)
+    if (info.isOffline === true) {
+      //item.item_status = 1
+      //let time = moment(item.date).unix()
+      //item.updated_at = time
+      await item.destroy()
+      setTimeout(() => {
+        isDownloading = false 
+        this.startDownloadItems() 
+      }, 3000)
+      return false
+    }
+    
     let itemPath = this.getItemPath(item)
     let absoluteItemPath = path.resolve(__dirname, '../.' + itemPath)
-    console.log(absoluteItemPath, fs.existsSync(absoluteItemPath), 'checkDurationMatch', this.isDurationMatch (absoluteItemPath, item))
+    console.log('Failed:', absoluteItemPath, fs.existsSync(absoluteItemPath), 'checkDurationMatch', this.isDurationMatch (absoluteItemPath, item))
+
     if (fs.existsSync(absoluteItemPath) === false 
-            || this.isDurationMatch (itemPath, item) === false) {
+          || this.isDurationMatch (itemPath, item) === false) {
       //item.item_status = 1
       let time = moment(item.date).unix()
       item.updated_at = time
@@ -298,11 +348,15 @@ class PodcastFeedItemsModel {
     try {
       await UBMP3Downloader(item.feed_type, item.feed_name, item.item_id)
       console.log('end download: ' + itemPath)
-    }
+    }        
     catch (e) {
-      console.error('download fail: ' + e)
+      //console.error('download fail: ' + e)
       isDownloading = false
-      this.startDownloadItems()
+        
+      setTimeout(() => {
+        this.startDownloadItems()
+      }, 3000 * 100000)
+      throw e
       //throw new Exception(e)
       return false
     }

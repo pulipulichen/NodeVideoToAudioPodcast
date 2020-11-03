@@ -54,7 +54,7 @@ class UBInfo {
     
     let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
       return await this.loadHTML(url)
-    })
+    }, 1 * 60 * 60 * 1000)
     let info = this.parseVideoHTML(html, url)
     
     if (info.isOffline) {

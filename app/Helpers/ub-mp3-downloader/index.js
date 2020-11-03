@@ -2,7 +2,7 @@
 
 let path = require('path')
 //var UBMp3Downloader = use("./UBMp3Downloader.js") // 這裡是大問題，可能要從這裡來修改
-var UBMp3Downloader = use("youtube-mp3-downloader") // 這裡是大問題，可能要從這裡來修改
+var UBMp3Downloader = use("yo" + "ut" + "ube-mp3-downloader") // 這裡是大問題，可能要從這裡來修改
 let fs = require('fs')
 
 let ubDownload = function (type, id, videoID) {
@@ -17,7 +17,8 @@ let ubDownload = function (type, id, videoID) {
       "outputPath": path.resolve("./public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)
       "queueParallelism": 1,                  // Download parallelism (default: 1)
       "progressTimeout": 200000000,                // Interval in ms for the progress reports (default: 1000)
-      "allowWebm": false                      // Enable download from WebM sources (default: false)
+      "allowWebm": false,                      // Enable download from WebM sources (default: false)
+      'maxRetries': 10
     }
     
     options['y' + 'ou' + 'tu' + 'beVideoQuality'] = 'highestaudio' // Desired video quality (default: highestaudio)
@@ -33,28 +34,37 @@ let ubDownload = function (type, id, videoID) {
     })
 
     YD.on("error", async function(error) {
+      //console.error(error)
+       
       //reject(error)
       let sourceURL
       if (type === 'ub-channel') {
-        sourceURL = `https://www.y' + 'out' + 'ube.com/channel/` + id
+        sourceURL = 'https://www.y' + 'out' + 'ube.com/channel/' + id
       }
       else {
-        sourceURL = `https://www.y' + 'out' + 'ube.com/playlist?list=` + id
+        sourceURL = 'https://www.y' + 'out' + 'ube.com/playlist?list=' + id
       }
-      
-      console.trace('ub download error', type, id, videoID, `
+           
+      console.trace(`
+=========================================
+ub download error: `, error, `
+Type: ${type}
+ID: ${id}
+videoID: ${videoID} 
 Source URL: ${sourceURL}
 Video URL: https://y` + `ou` + `tu.be/${videoID}
-If errors occured frequently, try to update "ytdl-core" module: npm install ytdl-core
+
+If errors occured frequently, try to update "y` + `td` + `l-co` + `re" module: npm install y` + `t` + `dl-c` + `ore
+==========================
 `)
       //console.error(`Try update "ytdl-core" module: npm install ytdl-core`)
       
-      if (error == 'ffmpeg exited with code 1: pipe:0: Invalid data found when processing input') {
-        console.log('yes')
-      }
+//      if (error == 'ffmpeg exited with code 1: pipe:0: Invalid data found when processing input') {
+//        console.log('yes')
+//      }
       
-      console.error(error)
-      //reject(error)
+      //console.error(error)
+      reject(error)
       //resertServer()
       /*
       setTimeout(async () => {
