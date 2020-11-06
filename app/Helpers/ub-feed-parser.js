@@ -22,9 +22,22 @@ const UBURLtoFeedURL = function (url) {
   return feedURL
 }
 
-function sleep(ms) {
+function sleep(ms, maxMs) {
+  if (typeof(maxMs) === 'number') {
+    let range = [ms, maxMs].sort()
+    ms = getRandomInt(range[0], range[1])
+  }
+  
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+let currentFeedURL = ''
 
 const UBFeedParser = async function (url) {
   let feedURL = UBURLtoFeedURL(url)
@@ -33,12 +46,22 @@ const UBFeedParser = async function (url) {
   }
   
   while (parserLock === true) {
-    console.log('parser is loading. URL is waiting: ' + url)
-    await sleep(1000)
+    console.log('Parser is loading: ' + currentFeedURL +'\nURL is waiting: ' + url)
+    await sleep(1000, 3000)
   }
   
   parserLock = true
-  let result = await parser.parseURL(feedURL)
+  currentFeedURL = feedURL
+  let result
+  try {
+    result = await parser.parseURL(feedURL)
+  }
+  catch (e) {
+    console.error(e)
+    parserLock = false
+    
+    return false
+  }
   parserLock = false
   
   return result

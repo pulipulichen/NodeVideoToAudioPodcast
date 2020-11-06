@@ -37,6 +37,11 @@ class UBFeedItemsModel {
     //let feed = await UBFeedParser(config.url)
     //console.log(feed)
     
+    if (feed === false) {
+      await NodeCacheSqlite.clear(['CACHE_RETRIEVE_FEED_MINUTES', config.url])
+      return false
+    }
+    
     //const items = await this.filterItems(feed.items, config.filters, config.maxItems)
     //feed.items = items
     
