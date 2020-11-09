@@ -1,7 +1,7 @@
 'use strict'
 
 const ChannelConfig = use('App/Helpers/channel-config.js')
-const UBFeedParser = use('App/Helpers/ub-feed-parser.js')
+//const UBFeedParser = use('App/Helpers/ub-feed-parser.js')
 const PodcastFeedBuilder = use('App/Helpers/podcast-feed-builder.js')
 const UBVideoIDParser = use('App/Helpers/ub-video-id-parser.js')
 
@@ -79,11 +79,19 @@ class Feed {
         })
       }
       
+      // add date to title
+      // 2020-11-01T12:30:01.000Z
+      
       //console.log(items)
       
       //return false
     }
     
+    for (let i = 0; i < items.length; i++) {
+      let d = moment(items[i].pubDate).format('MM/DD')
+      items[i].title = '[' + d + '] ' + items[i].title
+    }
+
     let savedItems = await this.podcastFeed.getPodcastItems()
     if (savedItems.length >= this.config.maxItems) {
       //console.log(savedItems)

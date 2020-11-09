@@ -45,9 +45,12 @@ const UBFeedParser = async function (url) {
     return undefined
   }
   
-  while (parserLock === true) {
-    console.log('Parser is loading: ' + currentFeedURL +'\nURL is waiting: ' + url)
-    await sleep(1000, 3000)
+//  while (parserLock === true) {
+//    console.log('Parser is loading: ' + currentFeedURL +'\nURL is waiting: ' + url)
+//    await sleep(1000, 3000)
+//  }
+  if (parserLock === true) {
+    return undefined
   }
   
   parserLock = true

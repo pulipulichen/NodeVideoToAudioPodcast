@@ -37,7 +37,7 @@ class UBFeedItemsModel {
     //let feed = await UBFeedParser(config.url)
     //console.log(feed)
     
-    if (feed === false) {
+    if (feed === false || feed === undefined) {
       await NodeCacheSqlite.clear(['CACHE_RETRIEVE_FEED_MINUTES', config.url])
       return false
     }
