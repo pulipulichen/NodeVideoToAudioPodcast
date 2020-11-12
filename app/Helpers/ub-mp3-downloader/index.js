@@ -7,6 +7,7 @@ let fs = require('fs')
 
 let ubDownload = function (type, id, videoID) {
   let autoRestartTimer = setTimeout(() => {
+    console.error('auto restart')
     resertServer()
   }, 60 * 60 * 1000)
   
