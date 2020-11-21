@@ -351,8 +351,10 @@ class PodcastFeedItemsModel {
     }        
     catch (e) {
       //console.error('download fail: ' + e)
+      await item.destroy()
+      
       isDownloading = false
-        
+      
       setTimeout(() => {
         this.startDownloadItems()
       }, 3000 * 100000)

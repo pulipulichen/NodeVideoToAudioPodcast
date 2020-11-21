@@ -45,7 +45,7 @@ let ubDownload = function (type, id, videoID) {
       else {
         sourceURL = 'https://www.y' + 'out' + 'ube.com/playlist?list=' + id
       }
-           
+            
       console.trace(`
 =========================================
 ub download error: `, error, `
