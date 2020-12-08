@@ -5,14 +5,35 @@ let path = require('path')
 var UBMp3Downloader = use("yo" + "ut" + "ube-mp3-downloader") // 這裡是大問題，可能要從這裡來修改
 let fs = require('fs')
 
+var npm = require('npm');
+
 let ubDownload = function (type, id, videoID) {
   let autoRestartTimer = setTimeout(() => {
-    console.error('auto restart')
-    resertServer()
+    
+    console.log('auto restart: update yout' + 'ub' + 'e-mp' + '3-dow' + 'nlo' + 'ader')
+    npm.load(function(err) {
+      // handle errors
+      //console.log('keep on error, ')
+
+      // install module ffi
+      npm.commands.install(['yout' + 'ub' + 'e-mp' + '3-dow' + 'nlo' + 'ader'], function(er, data) {
+        // log errors or data
+        
+        console.error('auto restart')
+        resertServer()
+      });
+
+      npm.on('log', function(message) {
+        // log installation progress
+        console.log(message);
+      });
+    });
+    
   }, 60 * 60 * 1000)
   
   return new Promise((resolve, reject) => {
-    //Configure YoutubeMp3Downloader with your settings
+    
+    //Configure Yo utu beMp 3Down l oad er with your settings
     let options = {
       "ffmpegPath": path.resolve(__dirname, "./ffmpeg.exe"),        // FFmpeg binary location
       "outputPath": path.resolve("./public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)

@@ -36,14 +36,15 @@
     "mkdirp": "^1.0.4",
     "moment": "^2.29.1",
     "nodemon": "^2.0.4",
+    "npm": "^6.14.9",
     "puppeteer": "^5.3.1",
     "recursive-readdir": "^2.2.2",
     "request": "^2.88.2",
     "rss-parser": "^3.9.0",
     "sequelize": "^6.3.5",
     "sqlite3": "^4.2.0",
-    "youtube-mp3-downloader": "^0.7.4",
-    "ytdl-core": "^4.0.0"
+    "youtube-mp3-downloader": "^0.7.6",
+    "ytdl-core": "^4.1.4"
   },
   "devDependencies": {},
   "autoload": {
