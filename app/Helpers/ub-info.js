@@ -188,6 +188,11 @@ class UBInfo {
     }
     
     info.duration = moment.duration($('meta[itemprop="duration"]').eq(0).attr('content')).asSeconds()
+    
+    if (info.duration === 0) {
+      info.isOffline = true
+    }
+    
     info.author_url = $('span[itemprop="author"] > link[itemprop="url"]').eq(0).attr('href')
     info.genre = $('meta[itemprop="genre"]').eq(0).attr('content')
     

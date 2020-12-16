@@ -4,11 +4,45 @@ let path = require('path')
 //var UBMp3Downloader = use("./UBMp3Downloader.js") // 這裡是大問題，可能要從這裡來修改
 var UBMp3Downloader = use("yo" + "ut" + "ube-mp3-downloader") // 這裡是大問題，可能要從這裡來修改
 let fs = require('fs')
+let nodemailer = require('nodemailer')
 
 var npm = require('npm');
 
+let gotError = false
+
 let ubDownload = function (type, id, videoID) {
+  let sendMail = async () => {
+    // Generate test SMTP service account from ethereal.email
+    // Only needed if you don't have a real mail account for testing
+    let testAccount = await nodemailer.createTestAccount();
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      host: "smtp.ethereal.email",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: testAccount.user, // generated ethereal user
+        pass: testAccount.pass, // generated ethereal password
+      },
+    });
+
+    // send mail with defined transport object
+    let info = await transporter.sendMail({
+      from: '"NodeVideoToAudioPodcast Bot" <bot@node-video-to-audio-podcast.github.com>', // sender address
+      to: "pulipuli.chen@gmail.com", // list of receivers
+      subject: "NodeVideoToAudioPodcast Auto Restart Notification", // Subject line
+      text: "Please check the problem.", // plain text body
+      //html: "<b>Hello world?</b>", // html body
+    });
+  }
+  
   let autoRestartTimer = setTimeout(() => {
+    if (gotError === false) {
+      return false
+    }
+    
+    sendMail()
     
     console.log('auto restart: update yout' + 'ub' + 'e-mp' + '3-dow' + 'nlo' + 'ader')
     npm.load(function(err) {
@@ -47,11 +81,9 @@ let ubDownload = function (type, id, videoID) {
     
     let YD = new UBMp3Downloader(options);
 
-    //Download video and save as MP3 file
-    YD.download(videoID, videoID + '.mp3');
-
     YD.on("finished", function(err, data) {
       clearTimeout(autoRestartTimer)
+      gotError = false
       resolve(true)
     })
 
@@ -84,7 +116,7 @@ If errors occured frequently, try to update "y` + `td` + `l-co` + `re" module: n
 //      if (error == 'ffmpeg exited with code 1: pipe:0: Invalid data found when processing input') {
 //        console.log('yes')
 //      }
-      
+      gotError = true
       //console.error(error)
       reject(error)
       //resertServer()
@@ -95,6 +127,10 @@ If errors occured frequently, try to update "y` + `td` + `l-co` + `re" module: n
       }, 3000)
        */
     })
+    
+    //Download video and save as MP3 file
+    YD.download(videoID, videoID + '.mp3');
+
   })
 }
 
