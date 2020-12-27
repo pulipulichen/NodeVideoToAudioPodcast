@@ -2,6 +2,8 @@ let Parser = require('rss-parser')
 const parser = new Parser()
 let parserLock = false
 
+const PlaysterItemsParser = use('App/Helpers/playlist-items-parser.js')
+
 const UBURLtoFeedURL = function (url) {
   
   let feedURL
@@ -43,6 +45,10 @@ const UBFeedParser = async function (url) {
   let feedURL = UBURLtoFeedURL(url)
   if (!feedURL) {
     return undefined
+  }
+  
+  if (feedURL.indexOf('?playlist_id=') > -1) {
+    return await PlaysterItemsParser(url)
   }
   
 //  while (parserLock === true) {
