@@ -8,6 +8,9 @@ let cache = {}
 
 const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 
+const Env = use('Env')
+let cacheLimist = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
+
 class UBInfo {
   
   load (url) {
@@ -54,7 +57,7 @@ class UBInfo {
     
     let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
       return await this.loadHTML(url)
-    }, 1 * 60 * 60 * 1000)
+    }, cacheLimist * 60 * 1000)
     let info = this.parseVideoHTML(html, url)
     
     if (info.isOffline) {
@@ -77,7 +80,7 @@ class UBInfo {
     
     let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
       return await this.loadHTML(url)
-    })
+    }, cacheLimist * 60 * 1000)
     let info = this.parsePlaylistHTML(html, url)
     cache[url] = info
     return info
@@ -195,6 +198,14 @@ class UBInfo {
     
     info.author_url = $('span[itemprop="author"] > link[itemprop="url"]').eq(0).attr('href')
     info.genre = $('meta[itemprop="genre"]').eq(0).attr('content')
+    
+    // <meta itemprop="startDate" content="2021-01-02T04:00:12+00:00">
+    // 2020-12-27T11:51:47.000Z
+    
+    info.date = $('meta[itemprop="datePublished"]').eq(0).attr('content')
+    // 2020-12-31
+    info.date = info.date + 'T00:00:00.000Z'
+    info.pubDate = info.date
     
     // window["ytInitialPlayerResponse"] = 
     

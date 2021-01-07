@@ -3,15 +3,21 @@ const Env = use('Env')
 const cheerio = use('cheerio')
 const request = use('request')
 
+const UBInfo = use('App/Helpers/ub-info.js')
+
 let cacheLimist = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
-cacheLimist = 0
+//cacheLimist = 0
 
 let cache = {}
 let isLoading = false
 
+let sleep = function (time = 100) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
 let loadHTML = async function (url) {
     while (isLoading === true) {
-      await this.sleep()
+      await sleep()
       
       if (cache[url]) {
         return false
@@ -83,13 +89,14 @@ module.exports = async function (url) {
   
   let allJSON = sliceBetween(html, `var ytInitialData = `, `;</script>`)
   //console.log(html)
+  //console.log(allJSON)
   
   JSON.parse(allJSON).contents.twoColumnBrowseResultsRenderer.tabs[0]
           .tabRenderer.content.sectionListRenderer.contents[0]
           .itemSectionRenderer.contents[0]
           .playlistVideoListRenderer.contents
           .map(item => item.playlistVideoRenderer)
-          .filter(item => item.isPlayable)
+          .filter(item => (item && item.isPlayable))
           .map(item => {
             item.title = item.title.runs[0].text
             item.duration = Number(item.lengthSeconds)
@@ -98,13 +105,27 @@ module.exports = async function (url) {
             items.push({
               title: item.title,
               duration: item.duration,
-              link: item.link
+              link: item.link,
+              isPlayable: true
             })
     
             return item
           })
   
   //items.reverse()
+  
+  for (let i = 0; i < items.length; i++) {
+    let item = items[i]
+    
+    let url = item.link
+    
+    let info = await UBInfo.load(url)
+    for (let key in info) {
+      items[i][key] = info[key]
+    }
+  }
+  
+  //console.log(items)
   
   return {
     items
