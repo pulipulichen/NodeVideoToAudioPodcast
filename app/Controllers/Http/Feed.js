@@ -88,8 +88,8 @@ class Feed {
     }
     
     for (let i = 0; i < items.length; i++) {
-      let d = moment(items[i].pubDate).format('MM/DD')
-      items[i].title = '[' + d + '] ' + items[i].title
+      let d = moment(items[i].pubDate).format('M-D')
+      items[i].title = '' + d + '#' + items[i].title
     }
 
     let savedItems = await this.podcastFeed.getPodcastItems()
