@@ -206,6 +206,7 @@ class UBInfo {
     // 2020-12-31
     info.date = info.date + 'T00:00:00.000Z'
     info.pubDate = info.date
+    info.isoDate = info.date
     
     // window["ytInitialPlayerResponse"] = 
     

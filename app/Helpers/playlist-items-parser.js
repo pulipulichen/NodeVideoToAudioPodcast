@@ -5,7 +5,7 @@ const request = use('request')
 
 const UBInfo = use('App/Helpers/ub-info.js')
 
-let cacheLimist = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
+let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
 //cacheLimist = 0
 
 let cache = {}
@@ -37,7 +37,7 @@ let loadHTML = async function (url) {
 let loadCachedHTML = async function (url) {
   return await NodeCacheSqlite.get(['UBInfoPlaylist', url], async () => {
     return await loadHTML(url)
-  }, cacheLimist * 60 * 1000)
+  }, cacheLimit * 60 * 1000)
 } 
 
 let buildCheerio = function (url, html) {
@@ -81,8 +81,9 @@ let sliceBetween = function (text, header, footer) {
   }
 
 module.exports = async function (url) {
+  //console.log('1')
   let html = await loadCachedHTML(url)
-  
+  //console.log('2')
   // {"playlistVideoRenderer":
   
   let items = []
@@ -125,7 +126,7 @@ module.exports = async function (url) {
     }
   }
   
-  //console.log(items)
+  //console.log(items.map(item => item.title))
   
   return {
     items

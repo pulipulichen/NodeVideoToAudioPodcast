@@ -31,11 +31,13 @@ class UBFeedItemsModel {
       return false
     }
     
-    let feed = await NodeCacheSqlite.get(['CACHE_RETRIEVE_FEED_MINUTES', config.url], async () => {
+    //console.log('有嗎？', Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))  * 60 * 1000, ['getFeed', config.url])
+    let feed = await NodeCacheSqlite.get(['getFeed', config.url], async () => {
+      //console.log('沒有')
       return await UBFeedParser(config.url)
     }, Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))  * 60 * 1000)
     //let feed = await UBFeedParser(config.url)
-    //console.log(feed)
+    //console.log(feed.items.map(i => i.title))
     
     if (feed === false || feed === undefined) {
       await NodeCacheSqlite.clear(['CACHE_RETRIEVE_FEED_MINUTES', config.url])

@@ -63,7 +63,7 @@ _this.init = async function () {
  * @returns {_this.set.originalValue|_this.set.value}
  */
 _this.set = async function (key, value, expire = null) {
-  
+  //console.log(expire)
   await _this.init()
   
   if (typeof (key) !== 'string') {
@@ -98,10 +98,12 @@ _this.set = async function (key, value, expire = null) {
     where: {key},
     defaults: {
       value,
-      expire,
+      expire: _this.calcExpire(expire),
       type
     }
   })
+  
+  //console.log(cache)
   
   isLoading = false
 
@@ -177,7 +179,9 @@ _this.get = async function (key, value, expire) {
     }
     key = JSON.stringify(key)
   }
-
+  
+  //console.log(expire)
+  
   await _this.autoClean()
 
   
@@ -207,6 +211,7 @@ _this.get = async function (key, value, expire) {
     ])
   }
   */
+  //console.log(cache, expire)
   if ( (cache === null) 
           || (expire && (!cache.expire || cache.expire < (new Date()).getTime())) ) {
     if (value !== undefined) {

@@ -32,6 +32,7 @@ class Feed {
     let feed = await this.ubFeed.getFeed()
     if (feed !== false) {
       await NodeCacheSqlite.set(['Feed.index', params], feed)
+      //console.log(feed.items.map(i => i.title))
       this.updateItems(feed.items)
     }
     else {
@@ -83,6 +84,7 @@ class Feed {
       // 2020-11-01T12:30:01.000Z
       
       //console.log(items)
+      //console.log(items.map(i => i.title))
       
       //return false
     }
@@ -91,14 +93,33 @@ class Feed {
       let d = moment(items[i].pubDate).format('M-D')
       items[i].title = '' + d + '#' + items[i].title
     }
+    
+    //console.log(items.map(i => i.title))
 
     let savedItems = await this.podcastFeed.getPodcastItems()
     if (savedItems.length >= this.config.maxItems) {
       //console.log(savedItems)
+      //console.log(savedItems.map(i => i.title))
+      
       let firstSavedItem = savedItems[0]
-      let firstSavedItemTime = moment(firstSavedItem.isoDate).unix()
+      
+      let firstSavedItemTime
+      if (firstSavedItem.isoDate) {
+        firstSavedItemTime = moment(firstSavedItem.isoDate).unix()
+      }
+      else {
+        firstSavedItemTime = moment(firstSavedItem.pubDate).unix()
+      }
+      //console.log(firstSavedItemTime)
+      
       items = items.filter(item => {
-        return (moment(item.isoDate).unix() > firstSavedItemTime)
+        //console.log(item.title, item.isoDate, moment(item.isoDate).unix())
+        if (item.isoDate) {
+          return (moment(item.isoDate).unix() > firstSavedItemTime)
+        }
+        else {
+          return (moment(item.pubDate).unix() > firstSavedItemTime)
+        }
       })
       //console.log(firstItem.title, moment(firstItem.isoDate).unix())
       //console.log(items[0].title, moment(items[0].isoDate).unix())
