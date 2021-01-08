@@ -37,6 +37,8 @@ class UBMp3Downloader extends EventEmitter {
 
             self.performDownload(task, function(err, result) {
                 callback(err, result);
+            }).catch(function (err) {
+              throw err
             });
 
         }, self.queueParallelism);
@@ -163,9 +165,12 @@ class UBMp3Downloader extends EventEmitter {
             .toFormat('mp3')
             .outputOptions(...outputOptions)
             .on('error', function(err) {
-                callback(err.message, null);
+                callback(err, null);
             })
             .on('end', function() {
+              
+                isOnProgress = false
+              
                 resultObj.file =  fileName;
                 resultObj.youtubeUrl = videoUrl;
                 resultObj.videoTitle = videoTitle;
