@@ -2,7 +2,8 @@
 
 let path = require('path')
 //var UBMp3Downloader = use("./UBMp3Downloader.js") // 這裡是大問題，可能要從這裡來修改
-var UBMp3Downloader = use("yo" + "ut" + "ube-mp3-downloader") // 這裡是大問題，可能要從這裡來修改
+//var UBMp3Downloader = use("yo" + "ut" + "ube-mp3-downloader") // 這裡是大問題，可能要從這裡來修改
+var UBMp3Downloader = use("App/Helpers/ub-mp3-downloader/lib/UBMp3Downloader.js") // 這裡是大問題，可能要從這裡來修改
 let fs = require('fs')
 let nodemailer = require('nodemailer')
 
@@ -52,7 +53,8 @@ let ubDownload = function (type, id, videoID) {
       //console.log('keep on error, ')
 
       // install module ffi
-      npm.commands.install(['yout' + 'ub' + 'e-mp' + '3-dow' + 'nlo' + 'ader'], function(er, data) {
+      //npm.commands.install(['yout' + 'ub' + 'e-mp' + '3-dow' + 'nlo' + 'ader'], function(er, data) {
+      npm.commands.install(['y' + 'td' + 'l-core'], function(er, data) {
         // log errors or data
         
         console.error('auto restart')
