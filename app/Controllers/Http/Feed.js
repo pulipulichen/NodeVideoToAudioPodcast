@@ -30,7 +30,11 @@ class Feed {
     this.ubFeed = new UBFeedItemsModel(params)
     this.podcastFeed = new PodcastFeedItemsModel(params)
     let feed = await this.ubFeed.getFeed()
-    if (feed !== false) {
+    if (feed === null) {
+      throw Error('feed is null')
+    }
+    
+    if (feed !== false && feed !== null) {
       await NodeCacheSqlite.set(['Feed.index', params], feed)
       //console.log(feed.items.map(i => i.title))
       this.updateItems(feed.items)
