@@ -18,7 +18,7 @@ const { getVideoDurationInSeconds } = require('get-video-duration')
 
 let cacheExpire = null
 
-let cacheLimist = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
+let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
 
 
 class LocalFolder {
@@ -34,7 +34,7 @@ class LocalFolder {
     //console.log(config)
     let items = await NodeCacheSqlite.get(['LocalFolder', this.config.name, 'items'], async () => {
       return await this.getItems()
-    }, cacheLimist * 60 * 1000)
+    }, cacheLimit * 60 * 1000)
     
     //return items.map(i => i.title)
     

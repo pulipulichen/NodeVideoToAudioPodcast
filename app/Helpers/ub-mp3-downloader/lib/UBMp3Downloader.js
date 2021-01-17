@@ -78,11 +78,16 @@ class UBMp3Downloader extends EventEmitter {
         let resultObj = {
             videoId: task.videoId
         };
+        
+        //console.log(self.requestOptions)
 
          try {
-            info = await ytdl.getInfo(videoUrl, { quality: this.ubVideoQuality })
+            info = await ytdl.getInfo(videoUrl, { 
+              quality: this.ubVideoQuality,
+              requestOptions: self.requestOptions
+            })
          } catch (err){
-            callback(err);
+            return callback(err);
          }
     
         var videoTitle = this.cleanFileName(info.videoDetails.title);

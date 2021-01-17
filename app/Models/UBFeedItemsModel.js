@@ -14,6 +14,13 @@ const getMP3Duration = require('get-mp3-duration')
 const { getVideoDurationInSeconds } = require('get-video-duration')
 const moment = use('moment')
 
+let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
+//cacheLimit = 0
+
+function sleep (time = 500) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
 class UBFeedItemsModel {
   
   constructor (param) {
@@ -34,14 +41,25 @@ class UBFeedItemsModel {
     //console.log('有嗎？', Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))  * 60 * 1000, ['getFeed', config.url])
     let feed = await NodeCacheSqlite.get(['getFeed', config.url], async () => {
       //console.log('沒有')
-      return await UBFeedParser(config.url)
-    }, Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))  * 60 * 1000)
+      return await UBFeedParser(config.url, config.maxItems)
+    }, cacheLimit  * 60 * 1000)
     //let feed = await UBFeedParser(config.url)
     //console.log(feed.items.map(i => i.title))
     
-    if (feed === false || feed === undefined || feed === null) {
+    let noDateItems = feed.items.filter(item => {
+      return (!item.pubDate || item.pubDate.startsWith('undefined'))
+    })
+    
+//    if (noDateItems.length > 0) {
+//      console.error(noDateItems)
+//      throw Error('feed has items with no date')
+//    }
+    
+    if (feed === false || feed === undefined || feed === null || noDateItems.length > 0) {
       await NodeCacheSqlite.clear(['getFeed', config.url])
       return false
+      //await sleep()
+      //return this.getFeed()
     }
     
     //const items = await this.filterItems(feed.items, config.filters, config.maxItems)

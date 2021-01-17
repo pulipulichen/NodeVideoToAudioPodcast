@@ -9,6 +9,8 @@ let nodemailer = require('nodemailer')
 
 var npm = require('npm');
 
+const TorHTMLLoader = use('App/Helpers/tor-html-loader/tor-html-loader.js')
+
 let gotError = false
 
 let ubDownload = function (type, id, videoID) {
@@ -69,7 +71,9 @@ let ubDownload = function (type, id, videoID) {
     
   }, 60 * 60 * 1000)
   
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+    
+    let agent = await TorHTMLLoader.getAgent()
     
     //Configure Yo utu beMp 3Down l oad er with your settings
     let options = {
@@ -78,7 +82,13 @@ let ubDownload = function (type, id, videoID) {
       "queueParallelism": 1,                  // Download parallelism (default: 1)
       "progressTimeout": 200000000,                // Interval in ms for the progress reports (default: 1000)
       "allowWebm": false,                      // Enable download from WebM sources (default: false)
-      'maxRetries': 10
+      'maxRetries': 10,
+      'requestOptions': {
+        agent: agent,
+        headers: {
+          'User-Agent': 'Request-Promise'
+        }
+      }
     }
     
     options['y' + 'ou' + 'tu' + 'beVideoQuality'] = 'highestaudio' // Desired video quality (default: highestaudio)
@@ -101,6 +111,19 @@ let ubDownload = function (type, id, videoID) {
       }
       else {
         sourceURL = 'https://www.y' + 'out' + 'ube.com/playlist?list=' + id
+      }
+      
+      //console.log('ERROR: ', typeof(error))
+      //console.log(error.toString())
+      
+      if (error.toString() === 'Error: Status code: 429') {
+        gotError = true
+        //console.error(error)
+        return reject({
+          message: 'Access deny',
+          sourceURL,
+          videoURL: 'https://www.you' + 'tu' + 'be.com/watch?v=' + videoID
+        })
       }
             
       console.trace(`

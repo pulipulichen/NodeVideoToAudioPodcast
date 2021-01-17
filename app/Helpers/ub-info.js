@@ -9,7 +9,10 @@ let cache = {}
 const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 
 const Env = use('Env')
-let cacheLimist = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
+let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
+//cacheLimit = 0
+
+const TorHTMLLoader = use('App/Helpers/tor-html-loader/tor-html-loader.js')
 
 class UBInfo {
   
@@ -57,7 +60,7 @@ class UBInfo {
     
     let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
       return await this.loadHTML(url)
-    }, cacheLimist * 60 * 1000)
+    }, cacheLimit * 60 * 1000)
     let info = this.parseVideoHTML(html, url)
     
     if (info.isOffline) {
@@ -80,7 +83,7 @@ class UBInfo {
     
     let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
       return await this.loadHTML(url)
-    }, cacheLimist * 60 * 1000)
+    }, cacheLimit * 60 * 1000)
     let info = this.parsePlaylistHTML(html, url)
     cache[url] = info
     return info
@@ -97,11 +100,21 @@ class UBInfo {
     
     isLoading = true
     
-    return new Promise((resolve) => {
-      request(url, (error, response, body) => {
-        resolve(body)
+    return new Promise(async (resolve, reject) => {
+      try {
+        let body = await TorHTMLLoader.loadHTML(url)
+        //console.log(url, body)
         isLoading = false
-      });
+        resolve(body)
+      }
+      catch (e) {
+        reject(e)
+      } 
+      
+//      request(url, (error, response, body) => {
+//        resolve(body)
+//        isLoading = false
+//      });
     })
   }
   
@@ -130,8 +143,18 @@ class UBInfo {
   
   parseVideoHTML (body, url) {
     
+    if (!url) {
+      throw Error('no url')
+    }
+    
     if (!body) {
       console.error('body is empty: ' + url)
+      return {
+        isOffline: true
+      }
+    }
+    else if (body.indexOf('captcha-page-content') > -1) {
+      console.error('Captcha deny: ' + url)
       return {
         isOffline: true
       }
@@ -204,7 +227,20 @@ class UBInfo {
     
     info.date = $('meta[itemprop="datePublished"]').eq(0).attr('content')
     // 2020-12-31
-    info.date = info.date + 'T00:00:00.000Z'
+    if (info.date) {
+      info.date = info.date + 'T00:00:00.000Z'
+    }
+    else {
+      //throw Error('info.date not found: ' + url + '\n\n' + body)
+      
+      console.error('info.date not found: ' + url)
+      return {
+        isOffline: true
+      }
+    }
+    
+    //console.log(info.date)
+    
     info.pubDate = info.date
     info.isoDate = info.date
     

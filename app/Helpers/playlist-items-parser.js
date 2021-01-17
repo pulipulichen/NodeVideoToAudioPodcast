@@ -5,8 +5,10 @@ const request = use('request')
 
 const UBInfo = use('App/Helpers/ub-info.js')
 
+const ChannelConfig = use('App/Helpers/channel-config.js')
+
 let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
-//cacheLimist = 0
+//cacheLimit = 0
 
 let cache = {}
 let isLoading = false
@@ -80,7 +82,7 @@ let sliceBetween = function (text, header, footer) {
     return text.slice(startPos, endPos)
   }
 
-module.exports = async function (url) {
+module.exports = async function (url, maxItem = 5) {
   //console.log('1')
   let html = await loadCachedHTML(url)
   //console.log('2')
@@ -102,6 +104,10 @@ module.exports = async function (url) {
             item.title = item.title.runs[0].text
             item.duration = Number(item.lengthSeconds)
             item.link = `https://www.youtube.com/watch?v=` + item.videoId
+    
+            if (items.length > maxItem) {
+              return false
+            }
     
             items.push({
               title: item.title,

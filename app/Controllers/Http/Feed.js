@@ -70,7 +70,7 @@ class Feed {
         let now = new Date().getTime()
         //item.date = new Date(new Date().getTime() - (i * 1000 * 60 * 10))
         for (let i = 0; i < items.length; i++) {
-          let date = new Date(now - (i * 1000 * 60 * 10))
+          let date = new Date(now - (i * 1000 * 60 * 10)).toString()
           items[i].date = date
           items[i].pubDate = date
           items[i].isoDate = date
@@ -78,9 +78,27 @@ class Feed {
       }
       else {
         items.sort((a, b) => {
-          let timeA = moment(a.pubDate).unix()
-          let timeB = moment(b.pubDate).unix()
-          return timeB - timeA
+          if (a.pubDate === b.pubDate) {
+            return 0
+          }
+          
+          if (!a.pubDate || a.pubDate.startsWith('undefined')) {
+            return 1
+          }
+          else if (!b.pubDate || b.pubDate.startsWith('undefined')) {
+            return -1
+          }
+          //console.log('A: ' + a.pubDate + ' - B: ' + b.pubDate)
+          try {
+            let timeA = moment(a.pubDate).unix()
+            let timeB = moment(b.pubDate).unix()  
+            return timeB - timeA
+          }
+          catch (e) {
+            console.error(e)
+            console.error('A: ' + a.pubDate + ' - B: ' + b.pubDate)
+          } 
+          return 0
         })
       }
       
@@ -94,6 +112,16 @@ class Feed {
     }
     
     for (let i = 0; i < items.length; i++) {
+      if (!items[i].pubDate 
+              || typeof(items[i].pubDate.startsWith) !== 'function' 
+              || items[i].pubDate.startsWith('undefined')) {
+        // 嘗試清空快取
+        await NodeCacheSqlite.clear(['UBInfo', items[i].link])
+        
+        console.error(items[i])
+        throw Error('item has no pubDate')
+      }
+      
       let d = moment(items[i].pubDate).format('M.D')
       items[i].title = '' + d + ']' + items[i].title
     }

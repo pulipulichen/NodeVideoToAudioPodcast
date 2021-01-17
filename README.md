@@ -36,3 +36,10 @@ Run the following command to run startup migrations.
 ```js
 adonis migration:run
 ```
+
+====
+
+# Tor
+
+https://www.torproject.org/download/tor/
+Windows Expert Bundle

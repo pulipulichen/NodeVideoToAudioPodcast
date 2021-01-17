@@ -39,16 +39,16 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-let currentFeedURL = ''
+//let currentFeedURL = ''
 
-const UBFeedParser = async function (url) {
+const UBFeedParser = async function (url, maxItem = 20) {
   let feedURL = UBURLtoFeedURL(url)
   if (!feedURL) {
     return undefined
   }
   
   if (feedURL.indexOf('?playlist_id=') > -1) {
-    return await PlaysterItemsParser(url)
+    return await PlaysterItemsParser(url, maxItem)
   }
   
 //  while (parserLock === true) {
