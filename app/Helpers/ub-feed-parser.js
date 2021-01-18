@@ -72,6 +72,8 @@ const UBFeedParser = async function (url, maxItem = 20) {
     return false
   }
   parserLock = false
+   
+  //console.log(result)
   
   return result
 }

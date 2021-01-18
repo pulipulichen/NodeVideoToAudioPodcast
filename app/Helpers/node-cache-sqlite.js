@@ -1,4 +1,7 @@
 const {Sequelize, Model, DataTypes, Op} = require('sequelize')
+
+const EXPIRE_RANGE_MINUTE = 60
+
 class Cache extends Model {
 }
 
@@ -43,7 +46,8 @@ _this.init = async function () {
     key: DataTypes.STRING,
     value: DataTypes.STRING,
     type: DataTypes.STRING,
-    expire: DataTypes.NUMBER
+    createdTime: DataTypes.NUMBER,
+    expireTime: DataTypes.NUMBER
   }, {
     sequelize: this.sequelize,
     modelName: 'cache',
@@ -53,6 +57,18 @@ _this.init = async function () {
   await _this.sequelize.sync()
 
   _this.inited = true
+}
+
+function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+_this.adjustExpire = function (expire) {
+  if (typeof(expire) === 'number') {
+    expire = expire + randomIntFromInterval(0, EXPIRE_RANGE_MINUTE * 60 * 1000)
+  }
+  
+  return expire
 }
 
 /**
@@ -86,7 +102,6 @@ _this.set = async function (key, value, expire = null) {
     value = JSON.stringify(value)
   }
 
-
   while (isLoading === true) {
     //console.log('cache wait while set')
     await sleep()
@@ -94,11 +109,14 @@ _this.set = async function (key, value, expire = null) {
   //console.log('cache load by set')
   isLoading = true
 
+  expire = _this.adjustExpire(expire)
+
   const [cache, created] = await Cache.findOrCreate({
     where: {key},
     defaults: {
       value,
-      expire: _this.calcExpire(expire),
+      createdTime: (new Date()).getTime(),
+      expireTime: _this.calcExpire(expire),
       type
     }
   })
@@ -109,7 +127,8 @@ _this.set = async function (key, value, expire = null) {
 
   if (created === false) {
     cache.value = value
-    cache.expire = _this.calcExpire(expire)
+    //cache.createdTime = _this.calcExpire(expire)
+    cache.createdTime = (new Date()).getTime()
     cache.type = type
     await cache.save()
   }
@@ -139,10 +158,10 @@ _this.autoClean = async function () {
   await Cache.destroy({
     where: {
       [Op.and]: [
-        {expire: {
+        {expireTime: {
             [Op.not]: null
           }},
-        {expire: {
+        {expireTime: {
             [Op.lt]: time
           }}
       ]
@@ -169,9 +188,24 @@ _this.calcExpire = function (expire) {
   return time
 }
 
+_this.getExists = async function (key, value, expire) {
+  let result = await _this.get(key, value, expire)
+  
+  if (!result) {
+    //console.log('[CACHE] getExists 準備刪除')
+    await this.clear(key)
+    //return await _this.get(key, value, expire)
+  }
+  return result
+}
+
 _this.get = async function (key, value, expire) {
   await _this.init()
 
+
+//  if (expire === 0) {
+//    expire = undefined
+//  }
 
   if (typeof (key) !== 'string') {
     if (typeof (key) === 'function') {
@@ -211,10 +245,20 @@ _this.get = async function (key, value, expire) {
     ])
   }
   */
-  //console.log(cache, expire)
+ 
+  expire = _this.adjustExpire(expire)
+ 
+//  if (cache !== null) {
+//    console.log(key)
+//    console.log(cache.createdTime, expire, ((new Date()).getTime()) - cache.createdTime
+//      , (cache === null),  (expire === null || expire === undefined)
+//      , (!cache.createdTime || ((new Date()).getTime()) - cache.createdTime > expire))
+//  }
   if ( (cache === null) 
-          || (expire && (!cache.expire || cache.expire < (new Date()).getTime())) ) {
+          || ( (expire !== null && expire !== undefined) && (!cache.createdTime || ((new Date()).getTime()) - cache.createdTime > expire) ) ) {
+//    console.log('要確認了嗎？', value)
     if (value !== undefined) {
+//      console.log('要讀取了嗎？', value)
       return await _this.set(key, value, expire)
     }
     return undefined
@@ -253,6 +297,7 @@ _this.clear = async function (key) {
   })
   isLoading = false
   
+  console.log('[CACHE] clear cache: ' + key)
   return true
 }
 

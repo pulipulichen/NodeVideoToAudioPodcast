@@ -7,17 +7,21 @@ const UBInfo = use('App/Helpers/ub-info.js')
 
 const ChannelConfig = use('App/Helpers/channel-config.js')
 
-let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
+let cacheLimit = Number(Env.get('CACHE_RETRIEVE_PLAYLIST_MINUTES'))
 //cacheLimit = 0
 
 let cache = {}
 let isLoading = false
+
+const TorHTMLLoader = use('App/Helpers/tor-html-loader/tor-html-loader.js')
 
 let sleep = function (time = 100) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
 let loadHTML = async function (url) {
+  return await TorHTMLLoader.loadHTML(url, cacheLimit * 60 * 1000)
+  /*
     while (isLoading === true) {
       await sleep()
       
@@ -34,12 +38,13 @@ let loadHTML = async function (url) {
         isLoading = false
       });
     })
+   */
   }
 
 let loadCachedHTML = async function (url) {
-  return await NodeCacheSqlite.get(['UBInfoPlaylist', url], async () => {
+  //return await NodeCacheSqlite.get(['UBInfoPlaylist', url], async () => {
     return await loadHTML(url)
-  }, cacheLimit * 60 * 1000)
+  //}, cacheLimit * 60 * 1000)
 } 
 
 let buildCheerio = function (url, html) {

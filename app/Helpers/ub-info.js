@@ -37,7 +37,7 @@ class UBInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
+    let html = await NodeCacheSqlite.getExists(['UBInfo', url], async () => {
       return await this.loadHTML(url)
     })
     
@@ -58,9 +58,9 @@ class UBInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
+    let html = await NodeCacheSqlite.getExists(['UBInfo', url], async () => {
       return await this.loadHTML(url)
-    }, cacheLimit * 60 * 1000)
+    })
     let info = this.parseVideoHTML(html, url)
     
     if (info.isOffline) {
@@ -81,8 +81,8 @@ class UBInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.get(['UBInfo', url], async () => {
-      return await this.loadHTML(url)
+    let html = await NodeCacheSqlite.getExists(['UBInfo', url], async () => {
+      return await this.loadHTML(url, cacheLimit * 60 * 1000)
     }, cacheLimit * 60 * 1000)
     let info = this.parsePlaylistHTML(html, url)
     cache[url] = info

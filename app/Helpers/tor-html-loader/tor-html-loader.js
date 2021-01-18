@@ -12,6 +12,15 @@ const SocksProxyAgent = require('socks-proxy-agent')
 const Env = use('Env')
 let autoRestartServerHours = Number(Env.get('SERVER_AUTO_RESTART_HOURS'))
 
+
+const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
+
+//let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES_TOR'))
+//cacheLimit = 0
+
+let torSpawn
+const kill  = require('tree-kill');
+
 let startTor = async function () {
   // Jan 17 23:02:25.000 [notice] Bootstrapped 100% (done): Done
   if (torWaitIniting === true) {
@@ -41,9 +50,9 @@ let startTor = async function () {
       }
   })
    */
-  const ls = spawn(torPath);
+  torSpawn = spawn(torPath);
   
-  ls.stdout.on('data', (data) => {
+  torSpawn.stdout.on('data', (data) => {
     data = data.toString().trim()
     
     //console.log(`stdout:`);
@@ -56,11 +65,11 @@ let startTor = async function () {
     }
   });
 
-  ls.stderr.on('data', (data) => {
+  torSpawn.stderr.on('data', (data) => {
     console.error(`stderr: ${data}`);
   });
 
-  ls.on('close', (code) => {
+  torSpawn.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
   });
 }
@@ -79,11 +88,19 @@ let restartServer = function () {
   })
 }
 
-let agent
-
 let loading = false
 
 module.exports = {
+  killTor: function () {
+    return restartServer()
+    
+    if (torSpawn.pid) {
+      kill(torSpawn.pid)
+      torInited = false
+      torWaitIniting = false
+      console.log('[TOR] process killed')
+    }
+  },
   getAgent: async function () {
     if (torInited === false) {
       if (torWaitIniting === false) {
@@ -99,43 +116,108 @@ module.exports = {
     const agent = new SocksProxyAgent('socks5h://127.0.0.1:9050');
     return agent
   },
-  loadHTML: function (url) {
-    if (!url) {
-      throw Error('no url')
-    }
-
-    return new Promise(async (resolve, reject) => {
-      if (torInited === false) {
-        if (torWaitIniting === false) {
-          startTor()
-        }
-
-        while (torInited === false) {
-          //console.log('wait', url)
-          await sleep()
-        }
-      }
-
-      console.log('[TOR] load html start: ' + url)
-      
-      while (loading === true) {
-        await sleep()
-      }
-      
-      loading = true
-      tr.request(url, function (err, res, body) {
-        loading = false
-        if (!err && res.statusCode === 200) {
-          if (!body) {
-            return reject(Error ('body is undefined'))
+  request: function (url) {
+    return new Promise((resolve, reject) => {
+      tr.request(url, (err, res, body) => {
+        //loading = false
+        //console.log(err)
+        //console.log('讀取之後')
+        //console.log(res.statusCode)
+        if (!res || res.statusCode === 429) {
+          console.trace('[TOR] Access deny: ' + url)
+          if (res) {
+            console.error(res.statusCode)
           }
-          
-          resolve(body)
+          //reject('Access deny')
+          this.killTor()
+          //return null
+          return reject(null)
+        }
+
+        //console.log(body)
+        if (!err && res.statusCode === 200) { 
+          if (!body) {
+            console.error('[TOR] body is undefined')
+            return reject(null)
+            //return reject(Error ('body is undefined'))
+            //throw Error ('[TOR] body is undefined')
+          }
+          //console.log('讀取完成', body.length)
+          //resolve(body)
+          return resolve(body)
         } else {
-          reject(err)
+          //console.log(err)
+          //console.error('錯誤')
+          //reject(err)
+          return reject(null)
+          //throw err
         }
         //console.log('[TOR] load html end: ' + url)
       })
     })
+  },
+  loadHTML: function (url, cacheExpire) {
+    if (!url) {
+      throw Error('no url')
+    }
+
+    try {
+      return new Promise(async (resolve, reject) => {
+        
+        let cacheKey = ['tor-html-loader', url]
+
+        let result = await NodeCacheSqlite.getExists(cacheKey, async () => {
+          //console.log('有進入快取中嗎？')
+          while (loading === true) {
+            await sleep()
+          }
+          
+          if (torInited === false) {
+            if (torWaitIniting === false) {
+              startTor()
+            }
+
+            while (torInited === false) {
+              //console.log('wait', url)
+              await sleep()
+            }
+          }
+
+          console.log('[TOR] load html start: ' + url) 
+          
+          loading = true
+          try {
+            let result = await this.request(url)
+            loading = false
+            return result
+          }
+          catch (e) {
+            console.error('[TOR] requst failed: ' + e)
+            loading = false
+            return false
+          }
+        }, cacheExpire) 
+
+        if (!result) {
+          //console.error('沒有結果，請預備後續處理')
+          reject(result)
+        }
+        else {
+          //console.log('順利送出', result.length)
+          resolve(result)
+        }
+        //if (!result) {
+          //await NodeCacheSqlite.clear(cacheKey)
+        //  result = await this.loadHTML(url)
+        //}
+
+        //if ()
+
+
+      })
+    }
+    catch (e) {
+      console.error(e)
+    }
   }
 }

@@ -340,14 +340,15 @@ class PodcastFeedItemsModel {
   }
   
   async downloadItem (itemPath, item) {
-    console.log('[' + moment().format('hh:mm:ss') + '] start download: ' + itemPath + ' https://www.yo' + 'ut' + 'ube.com/watch?v=' + item.item_id)
+    let info = JSON.parse(item.item_info)   
+    console.log('[' + moment().format('hh:mm:ss') + '] START download (duration: ' + info.duration + ')' +': ' + itemPath + ' https://www.yo' + 'ut' + 'ube.com/watch?v=' + item.item_id)
     //item.item_status = 1
     //await item.save()
     await this.mkdir(item)
 
     try {
       await UBMP3Downloader(item.feed_type, item.feed_name, item.item_id)
-      console.log('end download: ' + itemPath)
+      console.log('[' + moment().format('hh:mm:ss') + '] END download: ' + itemPath)
     }        
     catch (e) {
       //console.error('download fail: ' + e)
@@ -358,6 +359,7 @@ class PodcastFeedItemsModel {
       setTimeout(() => {
         this.startDownloadItems()
       }, 3000 * 100000)
+      //console.error(e)
       throw e
       //throw new Exception(e)
       return false
@@ -529,8 +531,6 @@ class PodcastFeedItemsModel {
         options.items.push(item)
       }
     }
-    
-    
     
     return options
   }

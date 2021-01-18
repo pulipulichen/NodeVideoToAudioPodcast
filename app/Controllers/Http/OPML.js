@@ -175,7 +175,12 @@ class OPML {
     })
     
     if (filterAppend.length > 0) {
-      title = title + '(' + filterAppend.join(', ') + ')'
+      if (title) {
+        title = title + '(' + filterAppend.join(', ') + ')'
+      }
+      else {
+        title = filterAppend.join(', ')
+      }
     }
     return title
   }

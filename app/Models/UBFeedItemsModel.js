@@ -14,7 +14,7 @@ const getMP3Duration = require('get-mp3-duration')
 const { getVideoDurationInSeconds } = require('get-video-duration')
 const moment = use('moment')
 
-let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
+let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES_FEED'))
 //cacheLimit = 0
 
 function sleep (time = 500) {
@@ -24,7 +24,7 @@ function sleep (time = 500) {
 class UBFeedItemsModel {
   
   constructor (param) {
-    this.config = ChannelConfig.get(param)
+    this.config = ChannelConfig.get(param) 
     
     this.type = this.config.type
     this.id = this.config.id
@@ -37,12 +37,16 @@ class UBFeedItemsModel {
     if (!config) {
       return false
     }
-    
-    //console.log('有嗎？', Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))  * 60 * 1000, ['getFeed', config.url])
+     
+//    console.log('有嗎？', cacheLimit * 60 * 1000, ['getFeed', config.url])
     let feed = await NodeCacheSqlite.get(['getFeed', config.url], async () => {
       //console.log('沒有')
       return await UBFeedParser(config.url, config.maxItems)
     }, cacheLimit  * 60 * 1000)
+    
+//    console.log(feed.items.map(i => i.title))
+//    throw Error('請確認feed')
+    
     //let feed = await UBFeedParser(config.url)
     //console.log(feed.items.map(i => i.title))
     
@@ -171,25 +175,31 @@ class UBFeedItemsModel {
         Object.keys(filter).forEach(k => {
           key = k
           value = filter[k]
+          
+          if (typeof(value) === 'string') {
+            value = value.toLowerCase()
+          }
         })
         
+        let title = item.title.toLowerCase()
+        
         if (key === 'titlePrefix' 
-                && !item.title.startsWith(value)) {
+                && !title.startsWith(value)) {
           passed = false
           break
         }
         else if (key === 'titleSuffix' 
-                && !item.title.endsWith(value)) {
+                && !title.endsWith(value)) {
           passed = false
           break
         }
         else if (key === 'titleInclude' 
-                && item.title.indexOf(value) === -1) {
+                && title.indexOf(value) === -1) {
           passed = false
           break
         }
         else if (key === 'titleExclude' 
-                && item.title.indexOf(value) > -1) {
+                && title.indexOf(value) > -1) {
           passed = false
           break
         }

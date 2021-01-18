@@ -24,6 +24,10 @@ class Feed {
       params.name = params.name.slice(0, -4)
     }
     
+    if (params.name === 'favicon.ico') {
+      return false
+    }
+    
     this.config = ChannelConfig.get(params)
     
     // 放著讓它跑
@@ -70,7 +74,8 @@ class Feed {
         let now = new Date().getTime()
         //item.date = new Date(new Date().getTime() - (i * 1000 * 60 * 10))
         for (let i = 0; i < items.length; i++) {
-          let date = new Date(now - (i * 1000 * 60 * 10)).toString()
+          let date = new Date(now - (i * 1000 * 60 * 10)).toISOString()
+          //date = moment(date).toString()
           items[i].date = date
           items[i].pubDate = date
           items[i].isoDate = date

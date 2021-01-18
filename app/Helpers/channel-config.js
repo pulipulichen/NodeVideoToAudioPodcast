@@ -105,6 +105,8 @@ class ChannelConfig {
       url = 'https://www.y' + 'out' + 'ube.com/channel/' + id
     }
     else {
+      console.error(params)
+      console.trace('Configuration is not found.')
       return undefined
     }
 

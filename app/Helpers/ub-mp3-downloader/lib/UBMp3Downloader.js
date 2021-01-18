@@ -89,11 +89,12 @@ class UBMp3Downloader extends EventEmitter {
          } catch (err){
             return callback(err);
          }
-    
+      
         var videoTitle = this.cleanFileName(info.videoDetails.title);
         var artist = 'Unknown';
         var title = 'Unknown';
-        var thumbnail = info.videoDetails.thumbnail.thumbnails[0].url || null;
+        //var thumbnail = info.videoDetails.thumbnail.thumbnails[0].url || null;
+        var thumbnail = info.videoDetails.thumbnails[0].url || null;
     
         if (videoTitle.indexOf('-') > -1) {
             var temp = videoTitle.split('-');

@@ -118,7 +118,10 @@ let ubDownload = function (type, id, videoID) {
       
       if (error.toString() === 'Error: Status code: 429') {
         gotError = true
-        //console.error(error)
+        
+        TorHTMLLoader.killTor()
+        
+        console.trace(error)
         return reject({
           message: 'Access deny',
           sourceURL,
