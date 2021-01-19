@@ -53,7 +53,8 @@ for (let i = 0; i < config.length; i++) {
   if (!c.filters) {
     c.filters = []
   }
-  else if (Array.isArray(c.filters)) {
+  else if (Array.isArray(c.filters) === false 
+          && typeof(c.filters) === 'object') {
     c.filters = [c.filters]
   }
   

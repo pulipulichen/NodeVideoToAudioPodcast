@@ -199,7 +199,7 @@ module.exports = {
         }, cacheExpire) 
 
         if (!result) {
-          //console.error('沒有結果，請預備後續處理')
+          console.error('沒有結果，請預備後續處理')
           reject(result)
         }
         else {
@@ -212,8 +212,6 @@ module.exports = {
         //}
 
         //if ()
-
-
       })
     }
     catch (e) {

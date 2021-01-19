@@ -146,6 +146,10 @@ class UBFeedItemsModel {
       filters = []
     }
     
+//    console.log(Array.isArray(filters), typeof(filters), filters.length)
+//    if (Array.isArray(filters).length === 1) {
+//      console.log(filters[0])
+//    }
     if (Array.isArray(filters) === false 
             && typeof(filters) === 'object') {
       filters = [filters]
@@ -181,8 +185,9 @@ class UBFeedItemsModel {
           }
         })
         
-        let title = item.title.toLowerCase()
         
+        let title = item.title.toLowerCase()
+//        console.log(title, key, value, title.indexOf(value))
         if (key === 'titlePrefix' 
                 && !title.startsWith(value)) {
           passed = false
@@ -267,6 +272,11 @@ class UBFeedItemsModel {
         outputItems.push(item)
       }
     }
+    
+//    console.log('========================')
+//    console.log(filters)
+//    console.log(outputItems.map(i => i.title))
+//    console.log('========================')
     
     return outputItems
   }

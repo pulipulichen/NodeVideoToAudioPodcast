@@ -89,7 +89,7 @@ class UBInfo {
     return info
   }
   
-  async loadHTML(url) {
+  async loadHTML(url, cacheExpire) {
     while (isLoading === true) {
       await this.sleep()
       
@@ -102,7 +102,7 @@ class UBInfo {
     
     return new Promise(async (resolve, reject) => {
       try {
-        let body = await TorHTMLLoader.loadHTML(url)
+        let body = await TorHTMLLoader.loadHTML(url, cacheExpire)
         //console.log(url, body)
         isLoading = false
         resolve(body)
