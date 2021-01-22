@@ -89,7 +89,13 @@ let sliceBetween = function (text, header, footer) {
 
 module.exports = async function (url, maxItem = 5) {
   //console.log('1')
-  let html = await loadCachedHTML(url)
+  let html
+  try {
+    html = await loadCachedHTML(url)
+  }
+  catch (e) {
+    return false
+  }
   //console.log('2')
   // {"playlistVideoRenderer":
   

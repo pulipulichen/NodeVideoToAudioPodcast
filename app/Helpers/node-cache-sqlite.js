@@ -94,6 +94,7 @@ _this.set = async function (key, value, expire = null) {
     value = await value()
     type = typeof (value)
   }
+  
   let originalValue = value
   if (enableCache === false) {
     return originalValue
@@ -121,7 +122,7 @@ _this.set = async function (key, value, expire = null) {
     }
   })
   
-  //console.log(cache)
+  //console.log(cache)  
   
   isLoading = false
 
@@ -181,6 +182,10 @@ _this.autoClean = async function () {
  * @returns {NodeCacheSqlite.calcExpire.time|Number}
  */
 _this.calcExpire = function (expire) {
+  if (!expire) {
+    return undefined
+  }
+  
   let time = (new Date()).getTime()
 
   time = time + expire
@@ -258,7 +263,7 @@ _this.get = async function (key, value, expire) {
           || ( (expire !== null && expire !== undefined) && (!cache.createdTime || ((new Date()).getTime()) - cache.createdTime > expire) ) ) {
 //    console.log('要確認了嗎？', value)
     if (value !== undefined) {
-//      console.log('要讀取了嗎？', value)
+      //console.log('要寫入了嗎？', key, expire)
       return await _this.set(key, value, expire)
     }
     return undefined

@@ -129,7 +129,10 @@ module.exports = {
             console.error(res.statusCode)
           }
           //reject('Access deny')
-          this.killTor()
+          setTimeout(() => {
+            this.killTor()
+          }, 10 * 60 * 1000)
+          
           //return null
           return reject(null)
         }
@@ -162,6 +165,10 @@ module.exports = {
     }
 
     try {
+      if (url.indexOf('/channel/') > -1) {
+        console.trace('[TOR] load channel info (' + cacheExpire + '): ', url)
+      }
+       
       return new Promise(async (resolve, reject) => {
         
         let cacheKey = ['tor-html-loader', url]
@@ -183,12 +190,13 @@ module.exports = {
             }
           }
 
-          console.log('[TOR] load html start: ' + url) 
+          console.log('[TOR] load html start (' + cacheExpire + '): ' + url) 
           
           loading = true
           try {
             let result = await this.request(url)
             loading = false
+            console.log('[TOR] 有讀到結果：' + result.length + ' ' + url)
             return result
           }
           catch (e) {
