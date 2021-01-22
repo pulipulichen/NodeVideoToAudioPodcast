@@ -50,9 +50,13 @@ class UBFeedItemsModel {
     //let feed = await UBFeedParser(config.url)
     //console.log(feed.items.map(i => i.title))
     
-    let noDateItems = feed.items.filter(item => {
-      return (!item.pubDate || item.pubDate.startsWith('undefined'))
-    })
+    let noDateItems = []
+    
+    if (feed) {
+      noDateItems = feed.items.filter(item => {
+        return (!item.pubDate || item.pubDate.startsWith('undefined'))
+      })
+    }
     
 //    if (noDateItems.length > 0) {
 //      console.error(noDateItems)
