@@ -1,6 +1,8 @@
 const { http, https } = require('follow-redirects')
 const linkifyUrls = require('linkify-urls');
 
+const moment = use('moment')
+
 const getRedirectedURL = function (url) {
   return new Promise((resolve, reject) => {
     let protocal = http
@@ -91,6 +93,10 @@ module.exports = async function (options) {
     for (let i = 0; i < options.items.length; i++) {
       let item = options.items[i]
       
+      if (item.playlistDate) {
+        item.date = item.playlistDate
+      }
+      
       if (!item.thumbnail) {
         // https://unsplash.it/800/800?random
         item.thumbnail = await getRedirectedURL('https://unsplash.it/800/800?random')
@@ -158,9 +164,13 @@ ${channelDescription}`
         descriptionHTML.push(thumnails)
       }
       
+      let title = item.title
+      let d = moment(item.date).format('M.D')
+      title = '' + d + ']' + title
+      
       output.push(`<item>
-      <title><![CDATA[${item.title}]]></title>
-      <itunes:title><![CDATA[${item.title}]]></itunes:title>
+      <title><![CDATA[${title}]]></title>
+      <itunes:title><![CDATA[${title}]]></itunes:title>
       <itunes:author><![CDATA[${item.author}]]></itunes:author>
       <itunes:summary>
         <![CDATA[${description.join('\n')}]]>

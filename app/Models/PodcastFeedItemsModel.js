@@ -143,7 +143,10 @@ class PodcastFeedItemsModel {
     for (let i = 0; i < maxItems; i++) {
       let item = ubItems[i]
       
-      let time = moment(item.date).unix()
+      if (item.playlistDate) {
+        item.date = item.playlistDate
+      }
+      let time = moment(item.date).unix() * 1000
       
       await FeedItem.findOrCreate({
         where: {
@@ -177,12 +180,17 @@ class PodcastFeedItemsModel {
       //limit: this.config.maxItems
     })
     
+    
     let podcastItems = []
     
+    //console.log(feedItems.length)
     for (let i = 0; i < feedItems.length; i++) {
       let item = feedItems[i]
       if (i < this.config.maxItems) {
-        podcastItems.push(JSON.parse(item.item_info))
+        let info = JSON.parse(item.item_info)
+        //console.log(info.date + ' ' + info.title) 
+        //console.log(info)
+        podcastItems.push(info)
         continue
       }
       

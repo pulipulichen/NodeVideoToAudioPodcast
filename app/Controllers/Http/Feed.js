@@ -37,6 +37,7 @@ class Feed {
     if (feed === null) {
       throw Error('feed is null')
     }
+    //console.log(feed.items.map(i => i.title))
     
     if (feed !== false && feed !== null) {
       await NodeCacheSqlite.set(['Feed.index', params], feed)
@@ -50,8 +51,11 @@ class Feed {
       }
     }
     
+//    if (feed && feed.items) {
+//      console.log(feed.items.map(i => i.videoID + ' ' + i.title)) 
+//    }
     feed.items = await this.podcastFeed.getPodcastItems()
-    //console.log(feed.items)
+    //console.log(feed.items.map(i => i.videoID + ' ' + i.title))
     
     let podcastOptions = await this.podcastFeed.buildFeedOptions(feed)
     //return podcastOptions
@@ -79,6 +83,7 @@ class Feed {
           items[i].date = date
           items[i].pubDate = date
           items[i].isoDate = date
+          items[i].playlistDate = date
         }
       }
       else {
@@ -127,8 +132,8 @@ class Feed {
         throw Error('item has no pubDate')
       }
       
-      let d = moment(items[i].pubDate).format('M.D')
-      items[i].title = '' + d + ']' + items[i].title
+//      let d = moment(items[i].pubDate).format('M.D')
+//      items[i].title = '' + d + ']' + items[i].title
     }
     
     //console.log(items.map(i => i.title))

@@ -1,6 +1,7 @@
 const {Sequelize, Model, DataTypes, Op} = require('sequelize')
 
 const EXPIRE_RANGE_MINUTE = 60
+const LZUTF8 = require('lzutf8')
 
 class Cache extends Model {
 }
@@ -64,6 +65,9 @@ function randomIntFromInterval(min, max) { // min and max included
 }
 
 _this.adjustExpire = function (expire) {
+  if (expire === 0) {
+    return 0
+  }
   if (typeof(expire) === 'number') {
     expire = expire + randomIntFromInterval(0, EXPIRE_RANGE_MINUTE * 60 * 1000)
   }
@@ -108,14 +112,19 @@ _this.set = async function (key, value, expire = null) {
     await sleep()
   }
   //console.log('cache load by set')
-  isLoading = true
+  //isLoading = true
 
   expire = _this.adjustExpire(expire)
+
+  // 壓縮
+  let compressedValue = LZUTF8.compress(value, {
+    outputEncoding: 'Base64'
+  })
 
   const [cache, created] = await Cache.findOrCreate({
     where: {key},
     defaults: {
-      value,
+      value: compressedValue,
       createdTime: (new Date()).getTime(),
       expireTime: _this.calcExpire(expire),
       type
@@ -154,7 +163,7 @@ _this.autoClean = async function () {
     await sleep()
   }
   //console.log('cache load by autoClean')
-  isLoading = true
+  //isLoading = true
   
   await Cache.destroy({
     where: {
@@ -229,7 +238,8 @@ _this.get = async function (key, value, expire) {
     await sleep()
   }
   //console.log('cache load by get')
-  isLoading = true
+  //isLoading = true
+  
   let cache = null
   if (enableCache === true) {
     cache = await Cache.findOne({
@@ -253,7 +263,7 @@ _this.get = async function (key, value, expire) {
  
   expire = _this.adjustExpire(expire)
  
-//  if (cache !== null) {
+//  if (cache !== null) { 
 //    console.log(key)
 //    console.log(cache.createdTime, expire, ((new Date()).getTime()) - cache.createdTime
 //      , (cache === null),  (expire === null || expire === undefined)
@@ -269,9 +279,20 @@ _this.get = async function (key, value, expire) {
     return undefined
   }
 
-  let cachedValue = cache.value
+  let cachedCompressedValue = cache.value
+  
+  let cachedValue = LZUTF8.decompress(cachedCompressedValue, {
+    inputEncoding: 'Base64'
+  })
+  
   if (cache.type !== 'string') {
-    cachedValue = JSON.parse(cachedValue)
+    try {
+      cachedValue = JSON.parse(cachedValue)
+    }
+    catch (e) {
+      console.log(cachedValue)
+      throw e
+    }
   }
 
   return cachedValue
@@ -293,7 +314,7 @@ _this.clear = async function (key) {
     await sleep()
   }
   //console.log('cache load by get')
-  isLoading = true
+  //isLoading = true
   
   await Cache.destroy({
     where: {

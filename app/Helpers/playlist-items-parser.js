@@ -10,8 +10,8 @@ const ChannelConfig = use('App/Helpers/channel-config.js')
 let cacheLimit = Number(Env.get('CACHE_RETRIEVE_PLAYLIST_MINUTES'))
 //cacheLimit = 0
 
-let cache = {}
-let isLoading = false
+//let cache = {}
+//let isLoading = false
 
 const TorHTMLLoader = use('App/Helpers/tor-html-loader/tor-html-loader.js')
 
@@ -122,6 +122,7 @@ module.exports = async function (url, maxItem = 5) {
     
             items.push({
               title: item.title,
+              videoID: item.videoId,
               duration: item.duration,
               link: item.link,
               isPlayable: true

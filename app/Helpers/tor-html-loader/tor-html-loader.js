@@ -12,6 +12,8 @@ const SocksProxyAgent = require('socks-proxy-agent')
 const Env = use('Env')
 let autoRestartServerHours = Number(Env.get('SERVER_AUTO_RESTART_HOURS'))
 
+let restartDelay = Number(Env.get('TOR_RESTART_DELAY_MINUTES'))
+//cacheLimit = 0
 
 const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 
@@ -131,7 +133,7 @@ module.exports = {
           //reject('Access deny')
           setTimeout(() => {
             this.killTor()
-          }, 10 * 60 * 1000)
+          }, restartDelay * 60 * 1000)
           
           //return null
           return reject(null)
@@ -166,7 +168,7 @@ module.exports = {
 
     try {
       if (url.indexOf('/channel/') > -1) {
-        console.trace('[TOR] load channel info (' + cacheExpire + '): ', url)
+        console.log('[TOR] load channel info (' + cacheExpire + '): ', url)
       }
        
       return new Promise(async (resolve, reject) => {
@@ -174,10 +176,6 @@ module.exports = {
         let cacheKey = ['tor-html-loader', url]
 
         let result = await NodeCacheSqlite.getExists(cacheKey, async () => {
-          //console.log('有進入快取中嗎？')
-          while (loading === true) {
-            await sleep()
-          }
           
           if (torInited === false) {
             if (torWaitIniting === false) {
@@ -189,7 +187,12 @@ module.exports = {
               await sleep()
             }
           }
-
+          
+          //console.log('有進入快取中嗎？')
+          while (loading === true) {
+            await sleep()
+          }
+          
           console.log('[TOR] load html start (' + cacheExpire + '): ' + url) 
           
           loading = true
@@ -208,10 +211,15 @@ module.exports = {
 
         if (!result) {
           console.error('沒有結果，請預備後續處理')
+          setTimeout(() => {
+            this.killTor()
+          }, restartDelay * 60 * 1000)
+          loading = false
           reject(result)
         }
         else {
           //console.log('順利送出', result.length)
+          loading = false
           resolve(result)
         }
         //if (!result) {

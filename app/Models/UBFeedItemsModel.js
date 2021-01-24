@@ -39,6 +39,7 @@ class UBFeedItemsModel {
     }
      
 //    console.log('有嗎？', cacheLimit * 60 * 1000, ['getFeed', config.url])
+    //console.log('getFeed', cacheLimit)
     let feed = await NodeCacheSqlite.get(['getFeed', config.url], async () => {
       //console.log('沒有')
       return await UBFeedParser(config.url, config.maxItems)
