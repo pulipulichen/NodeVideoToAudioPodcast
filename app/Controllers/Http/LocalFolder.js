@@ -32,7 +32,7 @@ class LocalFolder {
     this.config = LocalFolderConfig.get(name)
     
     //console.log(config)
-    let items = await NodeCacheSqlite.get(['LocalFolder', this.config.name, 'items'], async () => {
+    let items = await NodeCacheSqlite.get('local-folder-items', [this.config.name], async () => {
       return await this.getItems()
     }, cacheLimit * 60 * 1000)
     
@@ -83,7 +83,7 @@ class LocalFolder {
         continue
       }
       
-      let item = await NodeCacheSqlite.get(['LocalFolder', this.config.name, file], async () => {
+      let item = await NodeCacheSqlite.get('local-folder-files', [this.config.name, file], async () => {
         return {
           filepath: file,
           title: this.getTitle(file),

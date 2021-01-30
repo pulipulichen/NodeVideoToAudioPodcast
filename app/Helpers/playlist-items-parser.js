@@ -105,7 +105,15 @@ module.exports = async function (url, maxItem = 5) {
   //console.log(html)
   //console.log(allJSON)
   
-  JSON.parse(allJSON).contents.twoColumnBrowseResultsRenderer.tabs[0]
+  let output
+  
+  try {
+    output = JSON.parse(allJSON)
+  }
+  catch (e) {
+    return false
+  }
+  output.contents.twoColumnBrowseResultsRenderer.tabs[0]
           .tabRenderer.content.sectionListRenderer.contents[0]
           .itemSectionRenderer.contents[0]
           .playlistVideoListRenderer.contents

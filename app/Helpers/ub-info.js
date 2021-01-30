@@ -37,12 +37,12 @@ class UBInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.getExists(['UBInfo', url], async () => {
+    let html = await NodeCacheSqlite.getExists('ubinfo', url, async () => {
       return await this.loadHTML(url)
     })
     
     if (!html) {
-      await NodeCacheSqlite.clear(['UBInfo', url])
+      await NodeCacheSqlite.clear('ubinfo', url)
       //console.error('body html is empty: ' + url)
       //throw new Error('body html is empty: ' + url)
       await this.sleep()
@@ -58,13 +58,13 @@ class UBInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.getExists(['UBInfo', url], async () => {
+    let html = await NodeCacheSqlite.getExists('ubinfo', url, async () => {
       return await this.loadHTML(url)
     })
     let info = this.parseVideoHTML(html, url)
     
     if (info.isOffline) {
-      await NodeCacheSqlite.clear(['UBInfo', url])
+      await NodeCacheSqlite.clear('ubinfo', url)
     }
     
     cache[url] = info
@@ -81,8 +81,15 @@ class UBInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.getExists(['UBInfo', url], async () => {
-      return await this.loadHTML(url, cacheLimit * 60 * 1000)
+    let html = await NodeCacheSqlite.getExists('ubinfo', url, async () => {
+      let output = await this.loadHTML(url, cacheLimit * 60 * 1000)
+      if (output.indexOf(`{"videoOwner":{"videoOwnerRenderer":{"thumbnail":{"thumbnails":[{"url":"`) === -1) {
+        throw Error('Playlist html is error: ' + url)
+        return undefined
+      }
+      else {
+        return output
+      }
     }, cacheLimit * 60 * 1000)
     let info = this.parsePlaylistHTML(html, url)
     cache[url] = info
@@ -288,11 +295,17 @@ class UBInfo {
     let info = {}
     
     info.title = $('meta[name="title"]').eq(0).attr('content')
-    
+    info.title = encodeURIComponent(info.title)
+    //console.log(body.length,body.indexOf(`{"videoOwner":{"videoOwnerRenderer":{"thumbnail":{"thumbnails":[{"url":"`))
     info.ownerAvatar = this.sliceBetween(body, `{"videoOwner":{"videoOwnerRenderer":{"thumbnail":{"thumbnails":[{"url":"`, `"`)
-    info.ownerAvatar = info.ownerAvatar.split('=s100-c-k').join('=s1024-c-k')
-    info.ownerAvatar = info.ownerAvatar.split('=s48-c-k').join('=s1024-c-k')
-    info.thumbnail = info.ownerAvatar
+    if (info.ownerAvatar) {
+      info.ownerAvatar = info.ownerAvatar.split('=s100-c-k').join('=s1024-c-k')
+      info.ownerAvatar = info.ownerAvatar.split('=s48-c-k').join('=s1024-c-k')
+      info.thumbnail = info.ownerAvatar
+    }
+    else {
+      return false
+    }
     
     return info
   }

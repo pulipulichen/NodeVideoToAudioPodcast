@@ -40,12 +40,12 @@ class Feed {
     //console.log(feed.items.map(i => i.title))
     
     if (feed !== false && feed !== null) {
-      await NodeCacheSqlite.set(['Feed.index', params], feed)
+      await NodeCacheSqlite.set('feed-index', params, feed)
       //console.log(feed.items.map(i => i.title))
       this.updateItems(feed.items)
     }
     else {
-      let tempFeed = await NodeCacheSqlite.get(['Feed.index', params])
+      let tempFeed = await NodeCacheSqlite.get('feed-index', params)
       if (!tempFeed) {
         return false
       }
@@ -126,7 +126,7 @@ class Feed {
               || typeof(items[i].pubDate.startsWith) !== 'function' 
               || items[i].pubDate.startsWith('undefined')) {
         // 嘗試清空快取
-        await NodeCacheSqlite.clear(['UBInfo', items[i].link])
+        await NodeCacheSqlite.clear('ubinfo', items[i].link)
         
         console.error(items[i])
         throw Error('item has no pubDate')

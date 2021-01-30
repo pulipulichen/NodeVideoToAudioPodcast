@@ -40,7 +40,7 @@ class UBFeedItemsModel {
      
 //    console.log('有嗎？', cacheLimit * 60 * 1000, ['getFeed', config.url])
     //console.log('getFeed', cacheLimit)
-    let feed = await NodeCacheSqlite.get(['getFeed', config.url], async () => {
+    let feed = await NodeCacheSqlite.get('get-feed', config.url, async () => {
       //console.log('沒有')
       return await UBFeedParser(config.url, config.maxItems)
     }, cacheLimit  * 60 * 1000)
@@ -65,7 +65,7 @@ class UBFeedItemsModel {
 //    }
     
     if (feed === false || feed === undefined || feed === null || noDateItems.length > 0) {
-      await NodeCacheSqlite.clear(['getFeed', config.url])
+      await NodeCacheSqlite.clear('get-feed', config.url)
       return false
       //await sleep()
       //return this.getFeed()
@@ -95,7 +95,7 @@ class UBFeedItemsModel {
   }
   
   async getDuration (item) {
-    return await NodeCacheSqlite.get(['duration', item.link], async () => {
+    return await NodeCacheSqlite.get('duration', item.link, async () => {
       item.videoID = UBVideoIDParser(item.link)
       let itemPath = this.getItemPath(item.videoID)
       //console.log('duration', itemPath, fs.existsSync(itemPath))

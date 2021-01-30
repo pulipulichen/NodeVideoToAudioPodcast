@@ -173,9 +173,7 @@ module.exports = {
        
       return new Promise(async (resolve, reject) => {
         
-        let cacheKey = ['tor-html-loader', url]
-
-        let result = await NodeCacheSqlite.getExists(cacheKey, async () => {
+        let result = await NodeCacheSqlite.getExists('tor-html-loader', url, async () => {
           
           if (torInited === false) {
             if (torWaitIniting === false) {

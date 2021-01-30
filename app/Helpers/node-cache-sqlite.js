@@ -2,9 +2,10 @@ const {Sequelize, Model, DataTypes, Op} = require('sequelize')
 
 const EXPIRE_RANGE_MINUTE = 60
 const LZUTF8 = require('lzutf8')
+const ENABLE_COMPRESS = false
 
-class Cache extends Model {
-}
+//class Cache extends Model {
+//}
 
 let _this = {}
 let enableCache = true
@@ -26,38 +27,81 @@ _this.init = async function () {
   if (_this.inited === true) {
     return true
   }
+//
+//  _this.sequelize = new Sequelize({
+//    host: 'localhost',
+//    dialect: 'sqlite',
+//
+//    pool: {
+//      max: 5,
+//      min: 0,
+//      acquire: 30000,
+//      idle: 10000
+//    },
+//    storage: './database/node-cache.sqlite',
+//    operatorsAliases: 0,
+//    logging: false,
+//    transactionType: 'IMMEDIATE'
+//  })
+//
+//  Cache.init({
+//    key: DataTypes.STRING,
+//    value: DataTypes.STRING,
+//    type: DataTypes.STRING,
+//    createdTime: DataTypes.NUMBER,
+//    expireTime: DataTypes.NUMBER
+//  }, {
+//    sequelize: this.sequelize,
+//    modelName: 'cache',
+//    timestamps: false,
+//  });
+//
+//  await _this.sequelize.sync()
 
-  _this.sequelize = new Sequelize({
-    host: 'localhost',
-    dialect: 'sqlite',
-
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    },
-    storage: './database/node-cache.sqlite',
-    operatorsAliases: 0,
-    logging: false,
-    transactionType: 'IMMEDIATE'
-  })
-
-  Cache.init({
-    key: DataTypes.STRING,
-    value: DataTypes.STRING,
-    type: DataTypes.STRING,
-    createdTime: DataTypes.NUMBER,
-    expireTime: DataTypes.NUMBER
-  }, {
-    sequelize: this.sequelize,
-    modelName: 'cache',
-    timestamps: false,
-  });
-
-  await _this.sequelize.sync()
+  _this.databases = {}
 
   _this.inited = true
+}
+
+_this.getDatabase = async function (databaseName) {
+  
+  if (!this.databases[databaseName]) {
+    let sequelize = new Sequelize({
+      host: 'localhost',
+      dialect: 'sqlite',
+
+      pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+      },
+      storage: './database/node-cache_' + databaseName + '.sqlite',
+      operatorsAliases: 0,
+      logging: false,
+      transactionType: 'IMMEDIATE'
+    })
+
+    let cacheClass = (class CacheClass extends Model {})
+
+    cacheClass.init({
+      key: DataTypes.STRING,
+      value: DataTypes.STRING,
+      type: DataTypes.STRING,
+      createdTime: DataTypes.NUMBER,
+      expireTime: DataTypes.NUMBER
+    }, {
+      sequelize: sequelize,
+      modelName: 'cache',
+      timestamps: false,
+    });
+
+    await sequelize.sync()
+
+    this.databases[databaseName] = cacheClass 
+  }
+  
+  return this.databases[databaseName]
 }
 
 function randomIntFromInterval(min, max) { // min and max included 
@@ -82,7 +126,7 @@ _this.adjustExpire = function (expire) {
  * @param {type} expire 單位是毫秒
  * @returns {_this.set.originalValue|_this.set.value}
  */
-_this.set = async function (key, value, expire = null) {
+_this.set = async function (databaseName, key, value, expire = null) {
   //console.log(expire)
   await _this.init()
   
@@ -96,7 +140,7 @@ _this.set = async function (key, value, expire = null) {
   let type = typeof (value)
   if (type === 'function') {
     value = await value()
-    type = typeof (value)
+    type = typeof(value)
   }
   
   let originalValue = value
@@ -107,24 +151,30 @@ _this.set = async function (key, value, expire = null) {
     value = JSON.stringify(value)
   }
 
-  while (isLoading === true) {
-    //console.log('cache wait while set')
-    await sleep()
-  }
+//  while (isLoading === true) {
+//    //console.log('cache wait while set')
+//    await sleep()
+//  }
   //console.log('cache load by set')
   //isLoading = true
 
   expire = _this.adjustExpire(expire)
 
   // 壓縮
-  let compressedValue = LZUTF8.compress(value, {
-    outputEncoding: 'Base64'
-  })
-
-  const [cache, created] = await Cache.findOrCreate({
+  let processedValue = value
+  
+  if (ENABLE_COMPRESS === true) {
+    processedValue = LZUTF8.compress(processedValue, {
+      outputEncoding: 'Base64'
+    })
+  }
+  
+  let database = await this.getDatabase(databaseName)
+  
+  const [cache, created] = await database.findOrCreate({
     where: {key},
     defaults: {
-      value: compressedValue,
+      value: processedValue,
       createdTime: (new Date()).getTime(),
       expireTime: _this.calcExpire(expire),
       type
@@ -133,7 +183,7 @@ _this.set = async function (key, value, expire = null) {
   
   //console.log(cache)  
   
-  isLoading = false
+//  isLoading = false
 
   if (created === false) {
     cache.value = value
@@ -143,13 +193,13 @@ _this.set = async function (key, value, expire = null) {
     await cache.save()
   }
 
-  await _this.autoClean()
+  await _this.autoClean(databaseName)
 
   isLoading = false
   return originalValue
 }
 
-_this.autoClean = async function () {
+_this.autoClean = async function (databaseName) {
   let time = (new Date()).getTime()
 
   if (_this.lastCleanTime + _this.cleanInterval > time) {
@@ -165,7 +215,8 @@ _this.autoClean = async function () {
   //console.log('cache load by autoClean')
   //isLoading = true
   
-  await Cache.destroy({
+  let database = await this.getDatabase(databaseName)
+  await database.destroy({
     where: {
       [Op.and]: [
         {expireTime: {
@@ -202,18 +253,18 @@ _this.calcExpire = function (expire) {
   return time
 }
 
-_this.getExists = async function (key, value, expire) {
-  let result = await _this.get(key, value, expire)
+_this.getExists = async function (databaseName, key, value, expire) {
+  let result = await _this.get(databaseName, key, value, expire)
   
   if (!result) {
     //console.log('[CACHE] getExists 準備刪除')
-    await this.clear(key)
+    await this.clear(databaseName, key)
     //return await _this.get(key, value, expire)
   }
   return result
 }
 
-_this.get = async function (key, value, expire) {
+_this.get = async function (databaseName, key, value, expire) {
   await _this.init()
 
 
@@ -230,7 +281,7 @@ _this.get = async function (key, value, expire) {
   
   //console.log(expire)
   
-  await _this.autoClean()
+  await _this.autoClean(databaseName)
 
   
   while (isLoading === true) {
@@ -242,7 +293,8 @@ _this.get = async function (key, value, expire) {
   
   let cache = null
   if (enableCache === true) {
-    cache = await Cache.findOne({
+    let database = await this.getDatabase(databaseName)
+    cache = await database.findOne({
       where: {
         key
       }
@@ -274,23 +326,27 @@ _this.get = async function (key, value, expire) {
 //    console.log('要確認了嗎？', value)
     if (value !== undefined) {
       //console.log('要寫入了嗎？', key, expire)
-      return await _this.set(key, value, expire)
+      return await _this.set(databaseName, key, value, expire)
     }
     return undefined
   }
 
-  let cachedCompressedValue = cache.value
+  let cachedProcessedValue = cache.value
   
-  let cachedValue = LZUTF8.decompress(cachedCompressedValue, {
-    inputEncoding: 'Base64'
-  })
+  if (ENABLE_COMPRESS === true) {
+    cachedProcessedValue = LZUTF8.decompress(cachedProcessedValue, {
+      inputEncoding: 'Base64'
+    })
+  }
+  let cachedValue = cachedProcessedValue
   
   if (cache.type !== 'string') {
     try {
       cachedValue = JSON.parse(cachedValue)
     }
     catch (e) {
-      console.log(cachedValue)
+      await this.clear(key)
+      console.error(cachedValue)
       throw e
     }
   }
@@ -298,7 +354,7 @@ _this.get = async function (key, value, expire) {
   return cachedValue
 }
 
-_this.clear = async function (key) {
+_this.clear = async function (databaseName, key) {
   await _this.init()
 
 
@@ -309,21 +365,22 @@ _this.clear = async function (key) {
     key = JSON.stringify(key)
   }
 
-  while (isLoading === true) {
-    //console.log('cache wait while get')
-    await sleep()
-  }
+//  while (isLoading[databaseName] === true) {
+//    //console.log('cache wait while get')
+//    await sleep()
+//  }
   //console.log('cache load by get')
   //isLoading = true
   
-  await Cache.destroy({
+  let database = await this.getDatabase(databaseName)
+  await database.destroy({
     where: {
       key
     }
   })
-  isLoading = false
+  //isLoading[databaseName] = false
   
-  console.log('[CACHE] clear cache: ' + key)
+  console.log('[CACHE] clear cache: ' + databaseName + ': ' + key)
   return true
 }
 
