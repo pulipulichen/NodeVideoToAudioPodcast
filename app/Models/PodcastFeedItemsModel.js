@@ -186,8 +186,10 @@ class PodcastFeedItemsModel {
     //console.log(feedItems.length)
     for (let i = 0; i < feedItems.length; i++) {
       let item = feedItems[i]
+      let info = JSON.parse(item.item_info)
+      //console.log(info.date + ' ' + info.title) 
       if (i < this.config.maxItems) {
-        let info = JSON.parse(item.item_info)
+        
         //console.log(info.date + ' ' + info.title) 
         //console.log(info)
         podcastItems.push(info)

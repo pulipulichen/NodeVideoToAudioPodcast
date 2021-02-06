@@ -170,6 +170,7 @@ class UBFeedItemsModel {
       
       let info = await ubInfo.load(item.link)
       if (info.isOffline === true) {
+        console.log('isOffline', item.title)
         continue
       }
         
@@ -230,6 +231,10 @@ class UBFeedItemsModel {
           }
         }
       } // for (let f = 0; f < filters.length; f++) {
+      
+//      if (passed === false) {
+//        console.log('不符合規定', item)
+//      }
       
       if (passed === true) {
         if (!duration) {

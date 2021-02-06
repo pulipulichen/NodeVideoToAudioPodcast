@@ -2,7 +2,7 @@ let Parser = require('rss-parser')
 const parser = new Parser()
 let parserLock = false
 
-const PlaysterItemsParser = use('App/Helpers/playlist-items-parser.js')
+const PlaylistItemsParser = use('App/Helpers/playlist-items-parser.js')
 
 const UBURLtoFeedURL = function (url) {
   
@@ -24,20 +24,20 @@ const UBURLtoFeedURL = function (url) {
   return feedURL
 }
 
-function sleep(ms, maxMs) {
-  if (typeof(maxMs) === 'number') {
-    let range = [ms, maxMs].sort()
-    ms = getRandomInt(range[0], range[1])
-  }
-  
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+//function sleep(ms, maxMs) {
+//  if (typeof(maxMs) === 'number') {
+//    let range = [ms, maxMs].sort()
+//    ms = getRandomInt(range[0], range[1])
+//  }
+//  
+//  return new Promise(resolve => setTimeout(resolve, ms));
+//}
 
-function getRandomInt(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+//function getRandomInt(min, max) {
+//    min = Math.ceil(min);
+//    max = Math.floor(max);
+//    return Math.floor(Math.random() * (max - min + 1)) + min;
+//}
 
 //let currentFeedURL = ''
 
@@ -48,7 +48,7 @@ const UBFeedParser = async function (url, maxItem = 20) {
   }
   
   if (feedURL.indexOf('?playlist_id=') > -1) {
-    return await PlaysterItemsParser(url, maxItem)
+    return await PlaylistItemsParser(url, maxItem)
   }
   
 //  while (parserLock === true) {
@@ -60,7 +60,7 @@ const UBFeedParser = async function (url, maxItem = 20) {
   }
   
   parserLock = true
-  currentFeedURL = feedURL
+//  currentFeedURL = feedURL
   let result
   try {
     result = await parser.parseURL(feedURL)
@@ -73,6 +73,15 @@ const UBFeedParser = async function (url, maxItem = 20) {
   }
   parserLock = false
    
+  //console.log(result)
+  if (Array.isArray(result.items)) {
+    for (let i = 0, max = result.items.length; i < max; i++) {
+      if (!result.items[i].videoID && result.items[i].id) {
+        result.items[i].videoID = result.items[i].id.split(":")[2]
+      }
+    }
+  }
+  
   //console.log(result)
   
   return result

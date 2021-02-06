@@ -65,6 +65,7 @@ class UBInfo {
     
     if (info.isOffline) {
       await NodeCacheSqlite.clear('ubinfo', url)
+      await NodeCacheSqlite.clear('tor-html-loader', url)
     }
     
     cache[url] = info
@@ -191,6 +192,13 @@ class UBInfo {
             || body.indexOf('"thumbnailOverlays":[{"thumbnailOverlayTimeStatusRenderer":{"text":{"accessibility":{"accessibilityData":{"label":"LIVE"}},"simpleText":"LIVE"},"style":"LIVE","icon":{"iconType":"LIVE"}}},') > -1
             || body.indexOf('{"subreason":{"simpleText":"This video is private."}') > -1
             || body.indexOf(',"errorScreen":{"playerErrorMessageRenderer":{"subreason":{"simpleText":') > -1)
+    
+    if (info.isOffline) {
+      console.log('isOffline', body.indexOf('"playabilityStatus":{"status":"LIVE_STREAM_OFFLINE"') > -1
+            , body.indexOf('"thumbnailOverlays":[{"thumbnailOverlayTimeStatusRenderer":{"text":{"accessibility":{"accessibilityData":{"label":"LIVE"}},"simpleText":"LIVE"},"style":"LIVE","icon":{"iconType":"LIVE"}}},') > -1
+            , body.indexOf('{"subreason":{"simpleText":"This video is private."}') > -1
+            , body.indexOf(',"errorScreen":{"playerErrorMessageRenderer":{"subreason":{"simpleText":') > -1)
+    }
     
     //info.description = $('meta[itemprop="description"]').eq(0).attr('content')
     info.description = this.sliceBetween(body, `"},"description":{"simpleText":"`, `"},"lengthSeconds":"`)

@@ -34,10 +34,10 @@ class Feed {
     this.ubFeed = new UBFeedItemsModel(params)
     this.podcastFeed = new PodcastFeedItemsModel(params)
     let feed = await this.ubFeed.getFeed()
-    if (feed === null) {
+    if (feed === null || feed === false) {
       throw Error('feed is null')
     }
-    //console.log(feed.items.map(i => i.title))
+//    console.log(feed.items.map(i => i.title))
     
     if (feed !== false && feed !== null) {
       await NodeCacheSqlite.set('feed-index', params, feed)
@@ -45,17 +45,18 @@ class Feed {
       this.updateItems(feed.items)
     }
     else {
+      //console.log('tempFeed')
       let tempFeed = await NodeCacheSqlite.get('feed-index', params)
       if (!tempFeed) {
         return false
       }
     }
     
-//    if (feed && feed.items) {
-//      console.log(feed.items.map(i => i.videoID + ' ' + i.title)) 
-//    }
+    //if (feed && feed.items) {
+    //  console.log('feed items', feed.items.map(i => i.videoID + ' ' + i.title)) 
+    //}
     feed.items = await this.podcastFeed.getPodcastItems()
-    //console.log(feed.items.map(i => i.videoID + ' ' + i.title))
+    //console.log('cached items', feed.items.map(i => i.videoID + ' ' + i.title))
     
     let podcastOptions = await this.podcastFeed.buildFeedOptions(feed)
     //return podcastOptions
@@ -121,7 +122,9 @@ class Feed {
       //return false
     }
     
+    //console.log('updateItems')
     for (let i = 0; i < items.length; i++) {
+      //console.log(typeof(items[i].pubDate), items[i].pubDate, items[i].title, items[i].link)
       if (!items[i].pubDate 
               || typeof(items[i].pubDate.startsWith) !== 'function' 
               || items[i].pubDate.startsWith('undefined')) {
@@ -165,7 +168,7 @@ class Feed {
       })
       //console.log(firstItem.title, moment(firstItem.isoDate).unix())
       //console.log(items[0].title, moment(items[0].isoDate).unix())
-      //console.log(items)
+      //console.log(items.map(item => item.title))
     }
     //return false 
     
@@ -181,6 +184,7 @@ class Feed {
     for (let i = 0; i < maxItems; i++) {
       let subItems = [items[i]]
       
+      //console.log('subitems', subItems.map(item => item.title))
       subItems = await this.ubFeed.filterItems(subItems)
       
       if (subItems.length === 0 && maxItems < items.length) {
@@ -189,8 +193,9 @@ class Feed {
         continue
       }
       
-      //console.log('items filtered: ' + items.length)
+      //console.log('items filtered: ' + subItems.length)
       await this.podcastFeed.saveUBItems(subItems)
+      //console.log('items filtered saved: ' + subItems.length)
       
       if (this.config.type === 'ub-playlist') {
         await this.sleep(300)
