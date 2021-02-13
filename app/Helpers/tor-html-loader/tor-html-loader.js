@@ -4,7 +4,7 @@ var tr = require('tor-request');
 let torInited = false
 let torWaitIniting = false
 let fs = require('fs')
-
+let url = require('url')
 const { spawn } = require("child_process");
 const path = require('path')
 const SocksProxyAgent = require('socks-proxy-agent')
@@ -22,6 +22,8 @@ const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 
 let torSpawn
 const kill  = require('tree-kill');
+
+let TorAgent = require('toragent');
 
 let startTor = async function () {
   // Jan 17 23:02:25.000 [notice] Bootstrapped 100% (done): Done
@@ -114,12 +116,21 @@ module.exports = {
         await sleep()
       }
     }
-      
-    //const agent = new SocksProxyAgent('socks5h://127.0.0.1:9050');
+    
+    //let endpoint = 'socks5h://127.0.0.1:9050'
+    //let opts = url.parse(endpoint);
+    
+    const agent = new SocksProxyAgent('socks5h://127.0.0.1:9050');
     
     //agent.proxy.secure = false
-    const agent = new SocksProxyAgent({ 'http': 'socks5h://127.0.0.1:9050', 'https': 'socks5h://127.0.0.1:9050' });
+//    const agent = new SocksProxyAgent(
+//            { 
+//              'http': 'socks5h://127.0.0.1:9150', 
+//              'https': 'socks5h://127.0.0.1:9150' 
+//            });
     return agent
+    
+    //return await TorAgent.create(true)
   },
   request: function (url) {
     return new Promise((resolve, reject) => {

@@ -13,6 +13,12 @@ const TorHTMLLoader = use('App/Helpers/tor-html-loader/tor-html-loader.js')
 
 let gotError = false
 
+let socks5Agent = require('socks5-https-client/lib/Agent')
+
+const Env = use('Env')
+//const DEBUG_PREVENT_DOWNLOAD = (Env.get('DEBUG_PREVENT_DOWNLOAD') === 'true')
+const DEBUG_DOWNLOAD_AGENT = (Env.get('DEBUG_DOWNLOAD_AGENT') === 'true')
+
 let ubDownload = function (type, id, videoID) {
   let sendMail = async () => {
     // Generate test SMTP service account from ethereal.email
@@ -75,6 +81,11 @@ let ubDownload = function (type, id, videoID) {
   }, 60 * 60 * 1000)
   
   return new Promise(async (resolve, reject) => {
+    let agent
+    
+    if (DEBUG_DOWNLOAD_AGENT === true) {
+      agent = await TorHTMLLoader.getAgent()
+    }
     
     //let agent = await TorHTMLLoader.getAgent()
     //console.log(agent)
@@ -88,10 +99,22 @@ let ubDownload = function (type, id, videoID) {
       "allowWebm": false,                      // Enable download from WebM sources (default: false)
       'maxRetries': 10,
       'requestOptions': {
-        //agent: agent,
+        agent: agent, 
+//        strictSSL: false,
+//        agentClass: socks5Agent,
+//        agentOptions: {
+//          socksHost: '127.0.0.1', // Defaults to 'localhost'.
+//          socksPort: 9050, // Defaults to 1080.
+//          // Optional credentials
+//          //socksUsername: 'proxyuser',
+//          //socksPassword: 'p@ssw0rd',
+//          },
         //secure:false,
         headers: {
-          'User-Agent': 'Request-Promise'
+          //'User-Agent': 'Request-Promise'
+//          'User-Agent': 'node.js',
+//          secure: false,
+//          strictSSL: false,
         }
       }
     }
@@ -103,6 +126,11 @@ let ubDownload = function (type, id, videoID) {
     YD.on("finished", function(err, data) {
       clearTimeout(autoRestartTimer)
       gotError = false
+      
+//      if (DEBUG_PREVENT_DOWNLOAD === true) {
+//        throw Error('[DEBUG] download ok')
+//      }
+      
       resolve(true)
     })
 
