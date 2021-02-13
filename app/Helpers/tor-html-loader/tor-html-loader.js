@@ -115,7 +115,10 @@ module.exports = {
       }
     }
       
-    const agent = new SocksProxyAgent('socks5h://127.0.0.1:9050');
+    //const agent = new SocksProxyAgent('socks5h://127.0.0.1:9050');
+    
+    //agent.proxy.secure = false
+    const agent = new SocksProxyAgent({ 'http': 'socks5h://127.0.0.1:9050', 'https': 'socks5h://127.0.0.1:9050' });
     return agent
   },
   request: function (url) {

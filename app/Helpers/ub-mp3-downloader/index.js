@@ -42,14 +42,9 @@ let ubDownload = function (type, id, videoID) {
     
   }
   
-  let autoRestartTimer = setTimeout(() => {
-    if (gotError === false) {
-      return false
-    }
-    
-    sendMail()
-    
-    console.log('auto restart: update yout' + 'ub' + 'e-mp' + '3-dow' + 'nlo' + 'ader')
+  let updatePackage = () => {
+    //console.log('auto restart: update yout' + 'ub' + 'e-mp' + '3-dow' + 'nlo' + 'ader')
+    console.log('auto restart: update y' + 'td' + 'l-core')
     npm.load(function(err) {
       // handle errors
       //console.log('keep on error, ')
@@ -68,12 +63,21 @@ let ubDownload = function (type, id, videoID) {
         console.log(message);
       });
     });
+  }
+  
+  let autoRestartTimer = setTimeout(() => {
+    if (gotError === false) {
+      return false
+    }
     
+    //sendMail()
+    updatePackage()
   }, 60 * 60 * 1000)
   
   return new Promise(async (resolve, reject) => {
     
-    let agent = await TorHTMLLoader.getAgent()
+    //let agent = await TorHTMLLoader.getAgent()
+    //console.log(agent)
     
     //Configure Yo utu beMp 3Down l oad er with your settings
     let options = {
@@ -84,7 +88,8 @@ let ubDownload = function (type, id, videoID) {
       "allowWebm": false,                      // Enable download from WebM sources (default: false)
       'maxRetries': 10,
       'requestOptions': {
-        agent: agent,
+        //agent: agent,
+        //secure:false,
         headers: {
           'User-Agent': 'Request-Promise'
         }
@@ -149,6 +154,11 @@ If errors occured frequently, try to update "y` + `td` + `l-co` + `re" module: n
       gotError = true
       //console.error(error)
       reject(error)
+      
+      if (error.message && error.message.Error && error.message.Error.startsWith('write EPROTO')) {
+        updatePackage()
+      }
+      
       //resertServer()
       /*
       setTimeout(async () => {

@@ -15,6 +15,8 @@ const { getVideoDurationInSeconds } = require('get-video-duration')
 const moment = use('moment')
 
 let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES_FEED'))
+let cachePlaylistLimit = Number(Env.get('CACHE_RETRIEVE_PLAYLIST_MINUTES'))
+
 //cacheLimit = 0
 
 function sleep (time = 500) {
@@ -37,13 +39,18 @@ class UBFeedItemsModel {
     if (!config) {
       return false
     }
+    
+    let cacheLimitMinute = cacheLimit
+    if (config.url.startsWith('https://www.youtube.com/playlist?list=')) {
+      cacheLimitMinute = cachePlaylistLimit
+    }
      
 //    console.log('有嗎？', cacheLimit * 60 * 1000, ['getFeed', config.url])
     //console.log('getFeed', cacheLimit)
     let feed = await NodeCacheSqlite.get('get-feed', config.url, async () => {
       //console.log('沒有')
       return await UBFeedParser(config.url, config.maxItems)
-    }, cacheLimit  * 60 * 1000)
+    }, cacheLimitMinute  * 60 * 1000)
     
 //    console.log(feed.items.map(i => i.title))
 //    throw Error('請確認feed')

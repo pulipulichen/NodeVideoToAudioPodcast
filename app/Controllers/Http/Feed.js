@@ -52,11 +52,11 @@ class Feed {
       }
     }
     
-    //if (feed && feed.items) {
-    //  console.log('feed items', feed.items.map(i => i.videoID + ' ' + i.title)) 
-    //}
+//    if (feed && feed.items) {
+//      console.log('feed items', feed.items.map(i => i.videoID + ' ' + i.title)) 
+//    }
     feed.items = await this.podcastFeed.getPodcastItems()
-    //console.log('cached items', feed.items.map(i => i.videoID + ' ' + i.title))
+//    console.log('cached items', feed.items.map(i => i.videoID + ' ' + i.title))
     
     let podcastOptions = await this.podcastFeed.buildFeedOptions(feed)
     //return podcastOptions

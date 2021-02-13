@@ -15,11 +15,12 @@ let cacheLimit = Number(Env.get('CACHE_RETRIEVE_PLAYLIST_MINUTES'))
 
 const TorHTMLLoader = use('App/Helpers/tor-html-loader/tor-html-loader.js')
 
-let sleep = function (time = 100) {
-  return new Promise((resolve) => setTimeout(resolve, time));
-}
+//let sleep = function (time = 100) {
+//  return new Promise((resolve) => setTimeout(resolve, time));
+//}
 
 let loadHTML = async function (url) {
+  //console.log(cacheLimit * 60 * 1000)
   return await TorHTMLLoader.loadHTML(url, cacheLimit * 60 * 1000)
   /*
     while (isLoading === true) {
@@ -47,22 +48,22 @@ let loadCachedHTML = async function (url) {
   //}, cacheLimit * 60 * 1000)
 } 
 
-let buildCheerio = function (url, html) {
-  let $
-  try {
-    $ = cheerio.load(html);
-  } catch (e) {
-    try {
-      $ = cheerio.load(`<div>${html}</div>`)
-    } catch (e2) {
-      //throw new Error('URL loading error: ' + url)
-      console.error('URL loading error: ' + url)
-      return false
-    }
-  }
-  
-  return $
-}
+//let buildCheerio = function (url, html) {
+//  let $
+//  try {
+//    $ = cheerio.load(html);
+//  } catch (e) {
+//    try {
+//      $ = cheerio.load(`<div>${html}</div>`)
+//    } catch (e2) {
+//      //throw new Error('URL loading error: ' + url)
+//      console.error('URL loading error: ' + url)
+//      return false
+//    }
+//  }
+//  
+//  return $
+//}
 
 let sliceBetween = function (text, header, footer) {
     if (typeof(text) !== 'string') {
