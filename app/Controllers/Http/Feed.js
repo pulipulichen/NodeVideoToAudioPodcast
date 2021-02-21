@@ -35,7 +35,12 @@ class Feed {
     this.podcastFeed = new PodcastFeedItemsModel(params)
     let feed = await this.ubFeed.getFeed()
     if (feed === null || feed === false) {
-      throw Error('feed is null')
+      //throw Error('feed is null')
+      return new Promise((resolve) => {
+        setTimeout(async () => {
+          resolve(await this.index({params, response}))
+        }, 30 * 1000)
+      })
     }
 //    console.log(feed.items.map(i => i.title))
     
