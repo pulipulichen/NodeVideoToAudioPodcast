@@ -18,7 +18,8 @@ const { getVideoDurationInSeconds } = require('get-video-duration')
 
 let cacheExpire = null
 
-let cacheLimit = Number(Env.get('CACHE_RETRIEVE_FEED_MINUTES'))
+let cacheLimit = Number(Env.get('CACHE_RETRIEVE_LOCAL_FOLDER_MINUTES'))
+//cacheLimit = 0
 
 
 class LocalFolder {

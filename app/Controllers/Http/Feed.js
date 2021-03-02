@@ -1,3 +1,5 @@
+/* global __dirname */
+
 'use strict'
 
 const ChannelConfig = use('App/Helpers/channel-config.js')
@@ -14,6 +16,18 @@ const UBFeedItemsModel = use('App/Models/UBFeedItemsModel')
 const PodcastFeedItemsModel = use('App/Models/PodcastFeedItemsModel')
 
 const moment = use('moment')
+const fs = use('fs')
+const path = use('path')
+
+let resertServer = function () {
+  let content = JSON.stringify({
+    date: (new Date()).getTime()
+  })
+  console.log('restart server...')
+  fs.writeFile(path.resolve(__dirname, 'restart-trigger.json'), content, () => {
+    
+  })
+}
 
 class Feed {
   async index ({ params, response }) {
@@ -34,13 +48,21 @@ class Feed {
     this.ubFeed = new UBFeedItemsModel(params)
     this.podcastFeed = new PodcastFeedItemsModel(params)
     let feed = await this.ubFeed.getFeed()
-    if (feed === null || feed === false) {
+    while (feed === null || feed === false) {
+      console.error('[FEED] feed is null', params)
+      
+      await this.sleep(60 * 1000)
+      feed = await this.ubFeed.getFeed()
+      
+      //resertServer()
       //throw Error('feed is null')
+      /*
       return new Promise((resolve) => {
         setTimeout(async () => {
           resolve(await this.index({params, response}))
         }, 30 * 1000)
       })
+       */
     }
 //    console.log(feed.items.map(i => i.title))
     

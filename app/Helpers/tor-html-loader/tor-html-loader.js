@@ -23,7 +23,7 @@ const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 let torSpawn
 const kill  = require('tree-kill');
 
-let TorAgent = require('toragent');
+//let TorAgent = require('toragent');
 
 let startTor = async function () {
   // Jan 17 23:02:25.000 [notice] Bootstrapped 100% (done): Done
@@ -96,7 +96,7 @@ let loading = false
 
 module.exports = {
   killTor: function () {
-    return restartServer()
+    //return restartServer()
     
     if (torSpawn.pid) {
       kill(torSpawn.pid)
@@ -145,12 +145,14 @@ module.exports = {
             console.error(res.statusCode)
           }
           //reject('Access deny')
-          setTimeout(() => {
+          setTimeout(async () => {
             this.killTor()
+            
+            return resolve(await this.request(url))
           }, restartDelay * 60 * 1000)
           
           //return null
-          return reject(null)
+          //return reject(null)
         }
 
         //console.log(body)
@@ -221,17 +223,22 @@ module.exports = {
           }
         }, cacheExpire) 
 
+        loading = false
         if (!result) {
-          console.error('沒有結果，請預備後續處理')
-          setTimeout(() => {
+          
+//          console.error('沒有結果，請預備後續處理')
+//          setTimeout(() => {
+//            this.killTor()
+//          }, restartDelay * 60 * 1000)
+//          reject(result)
+        
+          setTimeout(async () => {
             this.killTor()
+            resolve(await this.loadHTML(url, cacheExpire))
           }, restartDelay * 60 * 1000)
-          loading = false
-          reject(result)
         }
         else {
           //console.log('順利送出', result.length)
-          loading = false
           resolve(result)
         }
         //if (!result) {
