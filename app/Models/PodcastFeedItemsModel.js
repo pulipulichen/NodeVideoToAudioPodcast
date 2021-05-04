@@ -17,6 +17,7 @@ const {Sequelize, Model, DataTypes, Op} = require('sequelize')
 class FeedItem extends Model {}
 
 let sequelize
+let alldownloadedCounter = 100
 
 const fs = require('fs')
 const path = require('path')
@@ -293,7 +294,14 @@ class PodcastFeedItemsModel {
         isDownloading = false
       }, 3000)
       //this.startDeleteExpiredItems()
-      console.log('All video are downloaded.')
+      console.log('All video are downloaded: ' + alldownloadedCounter)
+      
+      alldownloadedCounter--
+      if (alldownloadedCounter === 0) {
+        setTimeout(() => {
+          restartServer()
+        }, 60 * 1000)
+      }
       return true
     }
     
@@ -550,6 +558,16 @@ class PodcastFeedItemsModel {
     return Env.get('APP_URL') + '/podcasts/' + this.type + '/' + this.name + '/' + videoID + '.mp3'
   }
   
+}
+
+let restartServer = function () {
+  let content = JSON.stringify({
+    date: (new Date()).getTime()
+  })
+  console.log('restart server...')
+  fs.writeFile(path.resolve(__dirname, 'restart-trigger.json'), content, () => {
+    
+  })
 }
 
 module.exports = PodcastFeedItemsModel

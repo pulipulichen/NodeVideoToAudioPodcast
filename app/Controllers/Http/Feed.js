@@ -19,7 +19,9 @@ const moment = use('moment')
 const fs = use('fs')
 const path = use('path')
 
-let resertServer = function () {
+let restartCounter = 10
+
+let restartServer = function () {
   let content = JSON.stringify({
     date: (new Date()).getTime()
   })
@@ -52,9 +54,15 @@ class Feed {
       console.error('[FEED] feed is null', params)
       
       await this.sleep(60 * 1000)
-      feed = await this.ubFeed.getFeed()
+      if (restartCounter > 0) {
+        restartCounter--
+        feed = await this.ubFeed.getFeed()
+      }
+      else {
+        restartServer()
+      }
       
-      //resertServer()
+      //restartServer()
       //throw Error('feed is null')
       /*
       return new Promise((resolve) => {

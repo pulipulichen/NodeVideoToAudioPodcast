@@ -73,9 +73,11 @@ class UBFeedItemsModel {
     
     if (feed === false || feed === undefined || feed === null || noDateItems.length > 0) {
       await NodeCacheSqlite.clear('get-feed', config.url)
-      return false
-      //await sleep()
-      //return this.getFeed()
+      await NodeCacheSqlite.clear('tor-html-loader', config.url)
+      console.log('清除之後重新讀取', config.url)
+      //return false
+      await sleep()
+      return this.getFeed()
     }
     
     //const items = await this.filterItems(feed.items, config.filters, config.maxItems)
@@ -176,6 +178,11 @@ class UBFeedItemsModel {
       let item = items[i]
       
       let info = await ubInfo.load(item.link)
+      if (info.bodyIsEmpty === true) {
+        console.log('bodyIsEmpty', item.title)
+        await NodeCacheSqlite.clear('ubinfo', item.link)
+        continue
+      }
       if (info.isOffline === true) {
         console.log('isOffline', item.title)
         continue

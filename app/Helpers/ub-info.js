@@ -92,6 +92,12 @@ class UBInfo {
         return output
       }
     }, cacheLimit * 60 * 1000)
+    
+    if (html === null || typeof html !== 'string') {
+      await NodeCacheSqlite.clear('ubinfo', url)
+      return false
+    }
+    
     let info = this.parsePlaylistHTML(html, url)
     cache[url] = info
     return info
@@ -158,7 +164,8 @@ class UBInfo {
     if (!body) {
       console.error('body is empty: ' + url)
       return {
-        isOffline: true
+        isOffline: true,
+        bodyIsEmpty: true
       }
     }
     else if (body.indexOf('captcha-page-content') > -1) {
@@ -187,6 +194,7 @@ class UBInfo {
     }
     
     let info = {}
+    
     
     info.isOffline = (body.indexOf('"playabilityStatus":{"status":"LIVE_STREAM_OFFLINE"') > -1
             || body.indexOf('"thumbnailOverlays":[{"thumbnailOverlayTimeStatusRenderer":{"text":{"accessibility":{"accessibilityData":{"label":"LIVE"}},"simpleText":"LIVE"},"style":"LIVE","icon":{"iconType":"LIVE"}}},') > -1

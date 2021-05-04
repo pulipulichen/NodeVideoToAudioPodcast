@@ -13,6 +13,7 @@ const Env = use('Env')
 let autoRestartServerHours = Number(Env.get('SERVER_AUTO_RESTART_HOURS'))
 
 let restartDelay = Number(Env.get('TOR_RESTART_DELAY_MINUTES'))
+let restartCounter = 10
 //cacheLimit = 0
 
 const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
@@ -98,6 +99,11 @@ module.exports = {
   killTor: function () {
     //return restartServer()
     
+    restartCounter--
+    if (restartCounter === 0) {
+      restartServer()
+    }
+    
     if (torSpawn.pid) {
       kill(torSpawn.pid)
       torInited = false
@@ -147,7 +153,6 @@ module.exports = {
           //reject('Access deny')
           setTimeout(async () => {
             this.killTor()
-            
             return resolve(await this.request(url))
           }, restartDelay * 60 * 1000)
           
