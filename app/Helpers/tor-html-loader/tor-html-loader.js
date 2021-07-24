@@ -104,7 +104,7 @@ module.exports = {
       restartServer()
     }
     
-    if (torSpawn.pid) {
+    if (torSpawn && torSpawn.pid) {
       kill(torSpawn.pid)
       torInited = false
       torWaitIniting = false
