@@ -43,3 +43,5 @@ adonis migration:run
 
 https://www.torproject.org/download/tor/
 Windows Expert Bundle
+
+netstat -nlp | grep :9050

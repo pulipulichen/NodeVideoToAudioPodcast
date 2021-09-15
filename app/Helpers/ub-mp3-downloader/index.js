@@ -13,7 +13,8 @@ const TorHTMLLoader = use('App/Helpers/tor-html-loader/tor-html-loader.js')
 
 let gotError = false
 
-let socks5Agent = require('socks5-https-client/lib/Agent')
+let socks5Agent = require('socks5-https-client/lib/Agent');
+const { platform } = require('os');
 
 const Env = use('Env')
 //const DEBUG_PREVENT_DOWNLOAD = (Env.get('DEBUG_PREVENT_DOWNLOAD') === 'true')
@@ -92,7 +93,8 @@ let ubDownload = function (type, id, videoID) {
     
     //Configure Yo utu beMp 3Down l oad er with your settings
     let options = {
-      "ffmpegPath": path.resolve(__dirname, "./ffmpeg.exe"),        // FFmpeg binary location
+      //"ffmpegPath": path.resolve(__dirname, "./ffmpeg.exe"),        // FFmpeg binary location
+      "ffmpegPath": 'ffmpeg',        // FFmpeg binary location
       "outputPath": path.resolve("./public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)
       "queueParallelism": 1,                  // Download parallelism (default: 1)
       "progressTimeout": 200000000,                // Interval in ms for the progress reports (default: 1000)
@@ -117,6 +119,10 @@ let ubDownload = function (type, id, videoID) {
 //          strictSSL: false,
         }
       }
+    }
+
+    if (platform === 'linux') {
+      options.ffmpegPath = 'ffmpeg'
     }
     
     options['y' + 'ou' + 'tu' + 'beVideoQuality'] = 'highestaudio' // Desired video quality (default: highestaudio)

@@ -23,10 +23,24 @@ const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 
 let torSpawn
 const kill  = require('tree-kill');
+const { platform } = require('os');
 
+let pid
 //let TorAgent = require('toragent');
 
+let startTorLinux = async function () {
+  var child = spawn('your-command', {detached: true});
+
+  //process.kill(-child.pid);
+  pid = -child.pid
+}
+
 let startTor = async function () {
+  if (platform === 'linux') {
+    return await startTorLinux()
+  }
+
+
   // Jan 17 23:02:25.000 [notice] Bootstrapped 100% (done): Done
   if (torWaitIniting === true) {
     return false
@@ -37,7 +51,10 @@ let startTor = async function () {
     restartServer()
   }, autoRestartServerHours * 60 * 60 * 1000)
   
-  let torPath = path.join(__dirname, "/vendors/tor/Tor/tor.exe")
+  let torPath = "tor"
+  if (platform === "win32") {
+    torPath = path.join(__dirname, "/vendors/tor/Tor/tor.exe")
+  }
   //console.log()
   /*
   spawn(path.join(__dirname, "/vendors/tor/Tor/tor.exe"), (error, stdout, stderr) => {
@@ -76,6 +93,8 @@ let startTor = async function () {
 
   torSpawn.on('close', (code) => {
     console.log(`child process exited with code ${code}`);
+
+    torInited = true
   });
 }
 
@@ -104,12 +123,22 @@ module.exports = {
       restartServer()
     }
     
-    if (torSpawn && torSpawn.pid) {
-      kill(torSpawn.pid)
-      torInited = false
-      torWaitIniting = false
-      console.log('[TOR] process killed')
+    if (platform === 'win32') {
+      if (torSpawn && torSpawn.pid) {
+        kill(torSpawn.pid)
+      }
     }
+    else {
+      if (pid) {
+        console.log('try to kill tor: ' + pid + '...')
+        kill(pid)
+      }
+    }
+
+    torInited = false
+    torWaitIniting = false
+    console.log('[TOR] process killed')
+      
   },
   getAgent: async function () {
     if (torInited === false) {
