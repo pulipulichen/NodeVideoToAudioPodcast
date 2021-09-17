@@ -87,7 +87,7 @@ class UBFeedItemsModel {
   }
   
   getItemDir () {
-    return './public/podcasts/' + this.type + '/' + this.id + '/' 
+    return './mount-public/podcasts/' + this.type + '/' + this.id + '/' 
   }
   
   getItemPath (videoID) {

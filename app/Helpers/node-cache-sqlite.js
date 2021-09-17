@@ -76,7 +76,7 @@ _this.getDatabase = async function (databaseName) {
         acquire: 30000,
         idle: 10000
       },
-      storage: './database/node-cache_' + databaseName + '.sqlite',
+      storage: './mount-database/node-cache_' + databaseName + '.sqlite',
       operatorsAliases: 0,
       logging: false,
       transactionType: 'IMMEDIATE'

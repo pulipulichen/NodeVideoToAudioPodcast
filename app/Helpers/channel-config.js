@@ -1,4 +1,4 @@
-let config = use('./../../channels.js')
+let config = use('./../../mount-config/channels.js')
 
 if (!config) {
   config = Use('./channels.example.js')

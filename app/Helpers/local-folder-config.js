@@ -1,4 +1,4 @@
-let rawConfig = require('./../../local-folders.js')
+let rawConfig = require('./../../mount-config/local-folders.js')
 const path = use('path')
 const Env = use('Env')
 

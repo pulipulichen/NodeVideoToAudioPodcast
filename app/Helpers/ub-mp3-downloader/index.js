@@ -95,7 +95,7 @@ let ubDownload = function (type, id, videoID) {
     let options = {
       //"ffmpegPath": path.resolve(__dirname, "./ffmpeg.exe"),        // FFmpeg binary location
       "ffmpegPath": 'ffmpeg',        // FFmpeg binary location
-      "outputPath": path.resolve("./public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)
+      "outputPath": path.resolve("./mount-public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)
       "queueParallelism": 1,                  // Download parallelism (default: 1)
       "progressTimeout": 200000000,                // Interval in ms for the progress reports (default: 1000)
       "allowWebm": false,                      // Enable download from WebM sources (default: false)

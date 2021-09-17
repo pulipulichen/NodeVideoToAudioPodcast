@@ -62,7 +62,7 @@ class PodcastFeedItemsModel {
         acquire: 30000,
         idle: 10000
       },
-      storage: './database/feed-item.sqlite',
+      storage: './mount-database/feed-item.sqlite',
       operatorsAliases: 0,
       logging: false,
       transactionType: 'IMMEDIATE'
@@ -426,7 +426,7 @@ class PodcastFeedItemsModel {
       name = this.name
     }
     
-    return './public/podcasts/' + type + '/' + name + '/' 
+    return './mount-public/podcasts/' + type + '/' + name + '/' 
   }
   
   getConfigTitle (feed) {
