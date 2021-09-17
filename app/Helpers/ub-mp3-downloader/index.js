@@ -121,7 +121,7 @@ let ubDownload = function (type, id, videoID) {
       }
     }
 
-    if (platform === 'linux') {
+    if (platform() === 'linux') {
       options.ffmpegPath = 'ffmpeg'
     }
     

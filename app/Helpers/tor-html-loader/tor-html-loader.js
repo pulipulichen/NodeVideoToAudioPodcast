@@ -36,9 +36,9 @@ let startTorLinux = async function () {
 }
 
 let startTor = async function () {
-  if (platform === 'linux') {
-    return await startTorLinux()
-  }
+  //if (platform() === 'linux') {
+  //  return await startTorLinux()
+  //}
 
 
   // Jan 17 23:02:25.000 [notice] Bootstrapped 100% (done): Done
@@ -52,7 +52,7 @@ let startTor = async function () {
   }, autoRestartServerHours * 60 * 60 * 1000)
   
   let torPath = "tor"
-  if (platform === "win32") {
+  if (platform() === "win32") {
     torPath = path.join(__dirname, "/vendors/tor/Tor/tor.exe")
   }
   //console.log()
@@ -81,7 +81,8 @@ let startTor = async function () {
     console.log('[TOR INIT] ' + data)
     //console.log('[check] ' + data.endsWith('Bootstrapped 100% (done): Done'))
     
-    if (data.endsWith('Bootstrapped 100% (done): Done')) {
+    if (data.endsWith('Bootstrapped 100% (done): Done')
+        || data.indexOf('Bootstrapped 100%') > -1) {
       torInited = true
       //console.log('tor is ok')
     }
@@ -123,7 +124,7 @@ module.exports = {
       restartServer()
     }
     
-    if (platform === 'win32') {
+    if (platform() === 'win32') {
       if (torSpawn && torSpawn.pid) {
         kill(torSpawn.pid)
       }
