@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --ignore podcasts --ignore test --ignore webpack-app --ignore database --ignore public --ignore website-cors --ignore test --ignore node_modules --ignore .document --ignore .private-document --ignore help --ignore storage server.js",
+    "start-node": "node server.js",
     "test": "node ace test",
     "test-run": "node test-run.js"
   },
