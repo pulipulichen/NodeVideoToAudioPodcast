@@ -13,11 +13,14 @@ let restartServer = function () {
   })
 }
 
+let dbPath = path.resolve(__dirname, '/mount-database/node-cache_tor-html-loader.sqlite')
+console.log('[AUTO RESTART] watching: ' + dbPath)
 setInterval(() => {
   // fetch file details
-  let dbPath = path.resolve(__dirname, '/mount-database/node-cache_tor-html-loader.sqlite')
+  
   
   if (fs.existsSync(dbPath) === false) {
+    console.log('[AUTO RESTART] ' + fs.existsSync(dbPath) + ' is not found.')
     return false
   }
   
