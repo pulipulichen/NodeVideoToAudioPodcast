@@ -50,3 +50,12 @@ netstat -nlp | grep :9050
 # Linux
 
 apt-get install ffmpeg tor -y
+
+====
+
+# Container
+
+需要掛載的資料夾
+mount-config
+mount-database
+mount-public

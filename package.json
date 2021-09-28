@@ -29,6 +29,7 @@
     "@adonisjs/session": "^1.0.27",
     "@adonisjs/shield": "^1.0.8",
     "cheerio": "^0.22.0",
+    
     "escape-html": "^1.0.3",
     "fluent-ffmpeg": "^2.1.2",
     "follow-redirects": "^1.13.0",

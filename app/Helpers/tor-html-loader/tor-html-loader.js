@@ -124,17 +124,17 @@ module.exports = {
       restartServer()
     }
     
-    if (platform() === 'win32') {
+    //if (platform() === 'win32') {
       if (torSpawn && torSpawn.pid) {
         kill(torSpawn.pid)
       }
-    }
-    else {
-      if (pid) {
-        console.log('try to kill tor: ' + pid + '...')
-        kill(pid)
-      }
-    }
+    //}
+    //else {
+    //  if (pid) {
+    //    console.log('try to kill tor: ' + pid + '...')
+    //    kill(pid)
+    //  }
+    //}
 
     torInited = false
     torWaitIniting = false
