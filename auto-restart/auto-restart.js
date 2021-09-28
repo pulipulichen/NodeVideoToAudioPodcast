@@ -106,5 +106,5 @@ setInterval(async () => {
   if (status === false) {
     restartServer()
   }
-}, 10 * 1000)
+}, 30 * 1000)
   
