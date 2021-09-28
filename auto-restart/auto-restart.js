@@ -13,7 +13,7 @@ let restartServer = function () {
   })
 }
 
-let dbPath = path.resolve(__dirname, '/mount-database/node-cache_tor-html-loader.sqlite')
+let dbPath = path.resolve('./mount-database/node-cache_tor-html-loader.sqlite')
 console.log('[AUTO RESTART] watching: ' + dbPath)
 setInterval(() => {
   // fetch file details
