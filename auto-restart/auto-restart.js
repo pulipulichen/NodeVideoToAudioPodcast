@@ -63,8 +63,10 @@ setInterval(() => {
       //console.log(`File Status Last Modified: ${ctime}`);
       
       let currentTime = (new Date()).getTime()
-      //console.log((currentTime - ctime), ctime, currentTime)
+      
+      console.log('[AUTO-RESTART] ', (currentTime - ctime), 1000 * 60 * 60 * 0.5, ctime, currentTime)
       if ((currentTime - ctime) > 1000 * 60 * 60 * 0.5) {
+        console.log('[AUTO-RESTART] ', (currentTime - ctime), ctime, currentTime)
         restartServer()
       }
   })
