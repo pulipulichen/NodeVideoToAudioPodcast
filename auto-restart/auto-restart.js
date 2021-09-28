@@ -28,6 +28,34 @@ let startDownload = function () {
   request.end();
 }
 
+
+let detectStatus = function () {
+  return new Promise((resolve, reject) => {
+    var options = {
+        // http://pulipuli.myqnapcloud.com:30380/dl
+        host: '127.0.0.1',
+        port: 43333,
+        path: '/dl'
+    }
+    var request = http.request(options, function (res) {
+        var data = '';
+        res.on('data', function (chunk) {
+            data += chunk;
+        });
+        res.on('end', function () {
+            console.log(data);
+            resolve(true)
+        });
+    });
+    request.on('error', function (e) {
+        //console.log(e.message);
+        resolve(false)
+    });
+    request.end();
+  })
+    
+}
+
 let restartServer = function () {
   let content = JSON.stringify({
     date: (new Date()).getTime()
@@ -41,12 +69,14 @@ let restartServer = function () {
   })
 }
 
-let dbPath = path.resolve('../mount-database/node-cache_tor-html-loader.sqlite')
-console.log('[AUTO RESTART] watching: ' + dbPath)
-setInterval(() => {
+//let dbPath = path.resolve('../mount-database/node-cache_tor-html-loader.sqlite')
+//console.log('[AUTO RESTART] watching: ' + dbPath)
+
+console.log('[AUTO RESTART] watching')
+setInterval(async () => {
   // fetch file details
   
-  
+  /*
   if (fs.existsSync(dbPath) === false) {
     console.log('[AUTO RESTART] ' + fs.existsSync(dbPath) + ' is not found.')
     return false
@@ -70,5 +100,11 @@ setInterval(() => {
         restartServer()
       }
   })
-}, 10 * 60 * 1000)
+   */
+  
+  let status = await detectStatus()
+  if (status === false) {
+    restartServer()
+  }
+}, 10 * 1000)
   
