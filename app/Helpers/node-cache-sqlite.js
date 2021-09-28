@@ -374,9 +374,9 @@ _this.get = async function (databaseName, key, value, expire) {
     if (value !== undefined) {
       //console.log('要寫入了嗎？', key, expire)
       let result
-      tryToRestartServer(async () => {
+      //tryToRestartServer(async () => {
         result = await _this.set(databaseName, key, value, expire)
-      })
+      //})
       return result
     }
     return undefined
