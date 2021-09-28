@@ -93,6 +93,14 @@ class OPML {
     <title>${opmlTitle}</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      function openAllRSS() {
+        $(".rss-feed").each((i, ele) => {
+          window.open(ele.href, "_blank")
+        })
+      }
+    </script>
   </head>
   <body>
     <h1><a href="/">${opmlTitle}</a></h1>
@@ -103,11 +111,15 @@ class OPML {
         <input type="url" />
       </label>
     </form>
+    <button type="button" onclick="openAllRSS()">
+      Open ALL RSS
+    </button>
+    
     <hr />
     <ul>`)
     
     configs.forEach(({title, feedLink}) => {
-      output.push(`<li><a href="${feedLink}">${title}</a></li>`)
+      output.push(`<li><a href="${feedLink}" class="rss-feed">${title}</a></li>`)
     })
     
     output.push(`</ul>
