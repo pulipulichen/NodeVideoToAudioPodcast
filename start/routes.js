@@ -21,7 +21,7 @@ Route.get('/dl', 'Feed.dl')
 
 Route.get('/local-folder/:name', 'LocalFolder.index')
 
-Route.get('/', 'OPML.index')
+Route.get('/', 'OPML.list')
 Route.get('/list', 'OPML.list')
 
 Route.get('/:type/:id', 'Feed.index')
