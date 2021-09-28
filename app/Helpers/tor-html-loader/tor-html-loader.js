@@ -227,8 +227,10 @@ module.exports = {
         console.log('get cache')
         let result = await NodeCacheSqlite.getExists('tor-html-loader', url, async () => {
           
+          console.log('get cache 2')
           if (torInited === false) {
             if (torWaitIniting === false) {
+              console.log('get cache: startTor()')
               startTor()
             }
 
