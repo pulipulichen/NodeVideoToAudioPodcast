@@ -136,7 +136,7 @@ class OPML {
       Open ALL RSS
     </button>
     <div>
-      <input type="checkbox" onchange="startAutoOpen(this.checked)" /> Auto Check
+      <label><input type="checkbox" onchange="startAutoOpen(this.checked)" /> Auto Check</label>
     </div>
     <hr />
     <ul>`)
