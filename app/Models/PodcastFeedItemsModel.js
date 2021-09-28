@@ -10,6 +10,9 @@ const UBMP3Downloader = use('App/Helpers/ub-mp3-downloader/index.js')
 
 const ubInfo = use('App/Helpers/ub-info.js')
 
+const sleep = use('App/Helpers/sleep.js')
+const tryToRestartServer = use('App/Helpers/try-to-restart-server/try-to-restart-server.js')
+
 const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 const Env = use('Env')
 
@@ -111,7 +114,10 @@ class PodcastFeedItemsModel {
       timestamps: false,
     });
 
-    await sequelize.sync()
+    tryToRestartServer(async () => {
+      await sequelize.sync()
+    })
+    
     return true
   }
   
@@ -198,7 +204,11 @@ class PodcastFeedItemsModel {
       }
       
       item.item_status = 3
-      item.save()
+      
+      tryToRestartServer(async () => {
+        item.save()
+      })
+      
     }
     
     //console.log('==[podcastItems]========')
@@ -263,11 +273,16 @@ class PodcastFeedItemsModel {
       item.item_status = 1
       let time = moment(item.date).unix()
       item.updated_at = time
-      await item.save()
+      tryToRestartServer(async () => {
+        await item.save()
+      })
       await this.downloadItem(itemPath, item)
     }
     item.item_status = 2
-    await item.save()
+    
+    tryToRestartServer(async () => {
+      await item.save()
+    })
     isDownloading = false
     this.startDownloadItems()
   }
@@ -333,11 +348,15 @@ class PodcastFeedItemsModel {
       //item.item_status = 1
       let time = moment(item.date).unix()
       item.updated_at = time
-      await item.save()
+      tryToRestartServer(async () => {
+        await item.save()
+      })
       await this.downloadItem(itemPath, item)
     }
     item.item_status = 2
-    await item.save()
+    tryToRestartServer(async () => {
+      await item.save()
+    })
     isDownloading = false
     this.startDownloadItems()
   }
