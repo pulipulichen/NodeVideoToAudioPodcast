@@ -1,3 +1,5 @@
+/* global path, __dirname */
+
 const {Sequelize, Model, DataTypes, Op} = require('sequelize')
 
 const EXPIRE_RANGE_MINUTE = 60
@@ -6,9 +8,52 @@ const ENABLE_COMPRESS = false
 
 //class Cache extends Model {
 //}
+let fs = require('fs')
+
 
 let _this = {}
 let enableCache = true
+
+let tryToRestartServer = (() => {
+  let counter = 10
+
+  let restartServer = function () {
+    let content = JSON.stringify({
+      date: (new Date()).getTime()
+    })
+    console.log('restart server...')
+    fs.writeFile(path.resolve(__dirname, 'restart-trigger.json'), content, () => {
+
+    })
+  }
+
+  return async function (callback) {
+    while (true) {
+      try {
+        await callback()
+
+        if (counter < 10) {
+          counter = 10
+        }
+
+        break
+      }
+      catch (e) {
+        console.error(e)
+        counter--
+
+        if (counter < 0) {
+          return restartServer()
+        }
+
+        console.log('[RETRY ' + counter  + ']')
+
+        await sleep(3000)
+      }
+    }
+
+  }
+})()
 
 _this.inited = false
 
@@ -190,7 +235,9 @@ _this.set = async function (databaseName, key, value, expire = null) {
     //cache.createdTime = _this.calcExpire(expire)
     cache.createdTime = (new Date()).getTime()
     cache.type = type
-    await cache.save()
+    tryToRestartServer(async () => {
+      await cache.save()
+    })
   }
 
   await _this.autoClean(databaseName)
@@ -326,7 +373,11 @@ _this.get = async function (databaseName, key, value, expire) {
 //    console.log('要確認了嗎？', value)
     if (value !== undefined) {
       //console.log('要寫入了嗎？', key, expire)
-      return await _this.set(databaseName, key, value, expire)
+      let result
+      tryToRestartServer(async () => {
+        result = await _this.set(databaseName, key, value, expire)
+      })
+      return result
     }
     return undefined
   }
