@@ -101,6 +101,20 @@ class OPML {
           setTimeout(() => { win.close() }, 30000)
         })
       }
+    
+      let timer
+      function startAutoOpen(checked) {
+        if (!checked) {
+          clearInterval(timer)
+        }
+        else {
+          openAllRSS()
+    
+          timer = setInterval(() => {
+            openAllRSS()
+          }, 1 * 60 * 60 * 1000 )
+        }
+      }
     </script>
   </head>
   <body>
@@ -115,7 +129,9 @@ class OPML {
     <button type="button" onclick="openAllRSS()">
       Open ALL RSS
     </button>
-    
+    <div>
+      <input type="checkbox" onchange="startAutoOpen(this.checked)" /> Auto Check
+    </div>
     <hr />
     <ul>`)
     
