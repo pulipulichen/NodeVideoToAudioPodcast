@@ -225,13 +225,13 @@ module.exports = {
       
       return new Promise(async (resolve, reject) => {
         
-        console.log('get cache')
+        //console.log('get cache')
         let result = await NodeCacheSqlite.getExists('tor-html-loader', url, async () => {
           
-          console.log('get cache 2')
+          //console.log('get cache 2')
           if (torInited === false) {
             if (torWaitIniting === false) {
-              console.log('get cache: startTor()')
+              //console.log('get cache: startTor()')
               startTor()
             }
 
