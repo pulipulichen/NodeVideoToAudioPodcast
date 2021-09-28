@@ -117,7 +117,8 @@ let loading = false
 
 module.exports = {
   killTor: function () {
-    //return restartServer()
+    return restartServer()
+       
     
     restartCounter--
     if (restartCounter === 0) {
