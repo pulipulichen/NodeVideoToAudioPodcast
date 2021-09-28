@@ -3,13 +3,41 @@
 const fs = require('fs');
 const path = require('path')
 
+var http = require('http');
+
+let startDownload = function () {
+  var options = {
+      // http://pulipuli.myqnapcloud.com:30380/dl
+      host: '127.0.0.1',
+      port: 43333,
+      path: '/dl'
+  }
+  var request = http.request(options, function (res) {
+      var data = '';
+      res.on('data', function (chunk) {
+          data += chunk;
+      });
+      res.on('end', function () {
+          console.log(data);
+
+      });
+  });
+  request.on('error', function (e) {
+      console.log(e.message);
+  });
+  request.end();
+}
+
 let restartServer = function () {
   let content = JSON.stringify({
     date: (new Date()).getTime()
   })
   console.log('restart server...')
   fs.writeFile(path.resolve(__dirname, 'restart-trigger.json'), content, () => {
-    
+    setTimeout(() => {
+      // 嘗試下載
+      
+    }, 3000)
   })
 }
 
@@ -40,5 +68,5 @@ setInterval(() => {
         restartServer()
       }
   })
-}, 1 * 5 * 1000)
+}, 5 * 60 * 1000)
   
