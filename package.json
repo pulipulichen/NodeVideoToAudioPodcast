@@ -7,6 +7,7 @@
   "scripts": {
     "start": "nodemon --ignore podcasts --ignore test --ignore webpack-app --ignore mount-database --ignore mount-public --ignore website-cors --ignore test --ignore node_modules --ignore .document --ignore .private-document --ignore help --ignore storage server.js",
     "start-node": "node server.js",
+    "auto-restart": "node auto-restart/auto-restart.js",
     "test": "node ace test",
     "test-run": "node test-run.js"
   },
