@@ -109,5 +109,5 @@ setInterval(async () => {
   else {
     console.log('[AUTO-RESTART] alive')
   }
-}, 10 * 1000)
+}, 30 * 60 * 1000)
   
