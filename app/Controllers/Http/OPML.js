@@ -118,7 +118,7 @@ class OPML {
     
           timer = setInterval(() => {
             openAllRSS()
-          }, 1 * 1000 )
+          }, 1 * 60 * 60 * 1000 )
         }
       }
     </script>
