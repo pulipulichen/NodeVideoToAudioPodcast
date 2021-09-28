@@ -221,9 +221,10 @@ module.exports = {
       if (url.indexOf('/channel/') > -1) {
         console.log('[TOR] load channel info (' + cacheExpire + '): ', url)
       }
-       
+      
       return new Promise(async (resolve, reject) => {
         
+        console.log('get cache')
         let result = await NodeCacheSqlite.getExists('tor-html-loader', url, async () => {
           
           if (torInited === false) {
