@@ -64,11 +64,11 @@ setInterval(() => {
       
       let currentTime = (new Date()).getTime()
       
-      console.log('[AUTO-RESTART] ', (currentTime - ctime), 1000 * 60 * 60 * 0.5, ctime, currentTime)
+      //console.log('[AUTO-RESTART] ', (currentTime - ctime), 1000 * 60 * 60 * 0.5, ctime, currentTime)
       if ((currentTime - ctime) > 1000 * 60 * 60 * 0.5) {
         console.log('[AUTO-RESTART] ', (currentTime - ctime), ctime, currentTime)
         restartServer()
       }
   })
-}, 5 * 1000)
+}, 10 * 60 * 1000)
   
