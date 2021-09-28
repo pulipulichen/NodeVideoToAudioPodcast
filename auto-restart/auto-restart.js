@@ -29,13 +29,13 @@ setInterval(() => {
           throw err;
       }
 
-      let ctime = stats.ctime
+      let ctime = stats.ctime.getTime()
 
       // print file last modified date
       console.log(`File Status Last Modified: ${ctime}`);
       
       let currentTime = (new Date()).getTime()
-      
+      console.log((currentTime - ctime), ctime, currentTime)
       if ((currentTime - ctime) > 1000 * 10) {
         restartServer()
       }
