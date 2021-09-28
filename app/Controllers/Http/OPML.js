@@ -87,6 +87,10 @@ class OPML {
     let output = []
     let opmlTitle = Env.get('title')
     
+    if (!opmlTitle) {
+      opmlTitle = 'Video2Podcast'
+    }
+    
     output.push(`<!DOCTYPE html>
 <html>
   <head>
