@@ -106,5 +106,8 @@ setInterval(async () => {
   if (status === false) {
     restartServer()
   }
-}, 30 * 1000)
+  else {
+    console.log('[AUTO-RESTART] alive')
+  }
+}, 10 * 1000)
   
