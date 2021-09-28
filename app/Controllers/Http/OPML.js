@@ -97,7 +97,7 @@ class OPML {
     <script>
       function openAllRSS() {
         $(".rss-feed").each((i, ele) => {
-          window.open(ele.href, "_blank")
+          window.open(ele.href, ele.href + "rss")
         })
       }
     </script>
