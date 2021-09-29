@@ -111,3 +111,7 @@ setInterval(async () => {
   }
 }, 30 * 60 * 1000)
   
+  
+setInterval(async () => {
+  detectStatus()
+}, 10 * 60 * 1000)
