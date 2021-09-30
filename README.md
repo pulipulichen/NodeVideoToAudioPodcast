@@ -59,3 +59,6 @@ apt-get install ffmpeg tor -y
 mount-config
 mount-database
 mount-public
+
+# TODO
+- 現在缺乏刪除機制
