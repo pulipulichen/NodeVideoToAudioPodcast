@@ -451,11 +451,15 @@ class PodcastFeedItemsModel {
   }
   
   async startDeleteExpiredItems () {
+    
+    
     let expiredItems = await FeedItem.findAll({
       where: {
         'item_status': 3
       }
     })
+    
+    console.log('[EXP] startDeleteExpiredItems', expiredItems.length)
     
     for (let i = 0; i < expiredItems.length; i++) {
       let item = expiredItems[i]
