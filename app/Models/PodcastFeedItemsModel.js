@@ -463,7 +463,7 @@ class PodcastFeedItemsModel {
     
     for (let i = 0; i < expiredItems.length; i++) {
       let item = expiredItems[i]
-      let itemPath = this.getItemPath(item)
+      let itemPath = this.getItemPath(item, item.pubDate)
       
       if (fs.existsSync(itemPath)) {
         fs.unlinkSync(itemPath)
