@@ -341,7 +341,7 @@ class PodcastFeedItemsModel {
       setTimeout(() => {
         isDownloading = false
       }, 3000)
-      //this.startDeleteExpiredItems()
+      this.startDeleteExpiredItems()
       console.log('All video are downloaded: ' + alldownloadedCounter)
       
       alldownloadedCounter--
