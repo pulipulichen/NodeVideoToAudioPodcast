@@ -28,6 +28,8 @@ const { platform } = require('os');
 let pid
 //let TorAgent = require('toragent');
 
+const { exec } = require("child_process");
+
 let startTorLinux = async function () {
   var child = spawn('your-command', {detached: true});
 
@@ -107,9 +109,13 @@ let restartServer = function () {
   let content = JSON.stringify({
     date: (new Date()).getTime()
   })
-  console.log('restart server...')
-  fs.writeFile(path.resolve(__dirname, 'restart-trigger.json'), content, () => {
-    
+  
+  console.log('[TOR] restart server...')
+  exec('pkill tor', () => {
+    console.log('[TOR] Kill tor...')
+    fs.writeFile(path.resolve(__dirname, 'restart-trigger.json'), content, () => {
+
+    })
   })
 }
 
