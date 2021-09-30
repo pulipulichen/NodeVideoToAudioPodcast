@@ -26,7 +26,7 @@ for (let i = 0; i < config.length; i++) {
   }
   
   if (!c.maxItems) {
-    c.maxItems = 10
+    c.maxItems = 30
   }
   
   if (!c.type) {
