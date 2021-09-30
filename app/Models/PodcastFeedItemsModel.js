@@ -251,8 +251,30 @@ class PodcastFeedItemsModel {
     
     let url = 'https://www.yo' + 'ut' + 'ube.com/watch?v=' + item.item_id
     let info = await ubInfo.load(url)
-    console.log(url, 'isOffline', info.isOffline)
-    console.log(info)
+    //console.log(url, 'isOffline', info.isOffline)
+    
+    let dateString = info.date
+    if (typeof(dateString) === 'string') {
+      dateString = dateString.slice(0, 10)
+    }
+    else {
+      dateString = info.pubDate
+    }
+    
+    if (typeof(dateString) === 'string') {
+      dateString = dateString.slice(0, 10)
+    }
+    else {
+      dateString = info.isoDate
+    }
+    
+    if (typeof(dateString) === 'string') {
+      dateString = dateString.slice(0, 10)
+    }
+    
+    console.log(dateString)
+    
+    //console.log(info)
     if (info.isOffline === true) {
 //      item.item_status = 1
 //      let time = moment(item.date).unix()
