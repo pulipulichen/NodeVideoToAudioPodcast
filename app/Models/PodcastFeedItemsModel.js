@@ -459,12 +459,16 @@ class PodcastFeedItemsModel {
       }
     })
     
+    if (expiredItems.length === 0) {
+      return false
+    }
+    
     console.log('[EXP] startDeleteExpiredItems', expiredItems.length)
     
     for (let i = 0; i < expiredItems.length; i++) {
       let item = expiredItems[i]
       // 1632355200000
-      console.log(item.item_info)
+      //console.log(item.item_info)
       let dateString = JSON.parse(item.item_info).date
       let itemPath = this.getItemPath(item, dateString.slice(0, 10))
       console.log('[RM] ' + itemPath)
