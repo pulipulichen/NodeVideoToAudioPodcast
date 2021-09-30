@@ -272,7 +272,7 @@ class PodcastFeedItemsModel {
       dateString = dateString.slice(0, 10)
     }
     
-    console.log(dateString)
+    //console.log(dateString)
     
     //console.log(info)
     if (info.isOffline === true) {
@@ -290,16 +290,26 @@ class PodcastFeedItemsModel {
         
     let itemPath = this.getItemPath(item)
     let absoluteItemPath = path.resolve(__dirname, '../.' + itemPath)
-    console.log('Normal: ', absoluteItemPath, fs.existsSync(absoluteItemPath), 'checkDurationMatch', this.isDurationMatch (absoluteItemPath, item))
-    if (fs.existsSync(absoluteItemPath) === false 
-            || this.isDurationMatch (itemPath, item) === false) {
+    
+    let itemPathDate = this.getItemPath(item, dateString)
+    let absoluteItemPathDate = path.resolve(__dirname, '../.' + itemPathDate)
+    
+    if (fs.existsSync(absoluteItemPathDate) === false 
+            && fs.existsSync(absoluteItemPath) === true) {
+      fs.renameSync(absoluteItemPath, absoluteItemPathDate)
+    }
+    
+    console.log('Normal: ', absoluteItemPathDate, fs.existsSync(absoluteItemPathDate), 'checkDurationMatch', this.isDurationMatch (absoluteItemPathDate, item))
+    
+    if (fs.existsSync(absoluteItemPathDate) === false 
+            || this.isDurationMatch (itemPathDate, item) === false) {
       item.item_status = 1
       let time = moment(item.date).unix()
       item.updated_at = time
       tryToRestartServer(async () => {
         await item.save()
       })
-      await this.downloadItem(itemPath, item)
+      await this.downloadItem(itemPathDate, item)
     }
     item.item_status = 2
     
@@ -364,17 +374,26 @@ class PodcastFeedItemsModel {
     
     let itemPath = this.getItemPath(item)
     let absoluteItemPath = path.resolve(__dirname, '../.' + itemPath)
-    console.log('Failed:', absoluteItemPath, fs.existsSync(absoluteItemPath), 'checkDurationMatch', this.isDurationMatch (absoluteItemPath, item))
+    
+    let itemPathDate = this.getItemPath(item, dateString)
+    let absoluteItemPathDate = path.resolve(__dirname, '../.' + itemPathDate)
+    
+    if (fs.existsSync(absoluteItemPathDate) === false 
+            && fs.existsSync(absoluteItemPath) === true) {
+      fs.renameSync(absoluteItemPath, absoluteItemPathDate)
+    }
+    
+    console.log('Failed:', absoluteItemPathDate, fs.existsSync(absoluteItemPathDate), 'checkDurationMatch', this.isDurationMatch (absoluteItemPathDate, item))
 
-    if (fs.existsSync(absoluteItemPath) === false 
-          || this.isDurationMatch (itemPath, item) === false) {
+    if (fs.existsSync(absoluteItemPathDate) === false 
+          || this.isDurationMatch (itemPathDate, item) === false) {
       //item.item_status = 1
       let time = moment(item.date).unix()
       item.updated_at = time
       tryToRestartServer(async () => {
         await item.save()
       })
-      await this.downloadItem(itemPath, item)
+      await this.downloadItem(itemPathDate, item)
     }
     item.item_status = 2
     tryToRestartServer(async () => {
@@ -453,8 +472,13 @@ class PodcastFeedItemsModel {
     }
   }
   
-  getItemPath (item) {
-    return this.getItemDir(item) + item.item_id + '.mp3'
+  getItemPath (item, dateString) {
+    if (!dateString || dateString === '') {
+      return this.getItemDir(item) + item.item_id + '.mp3'
+    }
+    else {
+      return this.getItemDir(item) + dateString + '-' + item.item_id + '.mp3'
+    }
   }
   
   getItemDir (item) {
