@@ -103,7 +103,7 @@ class OPML {
         $(".rss-feed").each((i, ele) => {
           setTimeout(() => {
             let win = window.open(ele.href, "preview")
-            setTimeout(() => { win.close() }, 30000)
+            //setTimeout(() => { win.close() }, 30000)
           }, i * 1000 * 10)
         })
       }
