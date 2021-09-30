@@ -106,7 +106,7 @@ class UBFeedItemsModel {
   async getDuration (item) {
     return await NodeCacheSqlite.get('duration', item.link, async () => {
       item.videoID = UBVideoIDParser(item.link)
-      console.log(item)
+      //console.log(item)
       let itemPath = this.getItemPath(item.videoID, item.pubDate)
       //console.log('duration', itemPath, fs.existsSync(itemPath))
       if (fs.existsSync(itemPath) === true) {
