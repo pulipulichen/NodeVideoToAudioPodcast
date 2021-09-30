@@ -9,7 +9,7 @@ let startDownload = function () {
   var options = {
       // http://pulipuli.myqnapcloud.com:30380/dl
       host: '127.0.0.1',
-      port: 43333,
+      port: 80,
       path: '/dl'
   }
   var request = http.request(options, function (res) {
@@ -34,7 +34,7 @@ let detectStatus = function () {
     var options = {
         // http://pulipuli.myqnapcloud.com:30380/dl
         host: '127.0.0.1',
-        port: 43333,
+        port: 80,
         path: '/dl'
     }
     var request = http.request(options, function (res) {
