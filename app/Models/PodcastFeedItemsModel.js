@@ -375,6 +375,27 @@ class PodcastFeedItemsModel {
     let itemPath = this.getItemPath(item)
     let absoluteItemPath = path.resolve(__dirname, '../.' + itemPath)
     
+    
+    let dateString = info.date
+    if (typeof(dateString) === 'string') {
+      dateString = dateString.slice(0, 10)
+    }
+    else {
+      dateString = info.pubDate
+    }
+    
+    if (typeof(dateString) === 'string') {
+      dateString = dateString.slice(0, 10)
+    }
+    else {
+      dateString = info.isoDate
+    }
+    
+    if (typeof(dateString) === 'string') {
+      dateString = dateString.slice(0, 10)
+    }
+    
+    
     let itemPathDate = this.getItemPath(item, dateString)
     let absoluteItemPathDate = path.resolve(__dirname, '../.' + itemPathDate)
     
