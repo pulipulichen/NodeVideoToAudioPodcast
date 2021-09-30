@@ -609,8 +609,7 @@ class PodcastFeedItemsModel {
         //console.log(info)
         
         //item.date = item.isoDate
-        item.mediaURL = this.getItemURL(item.
-                videoID),
+        item.mediaURL = this.getItemURL(item.videoID, item.pubDate),
 
         options.items.push(item)
       }
@@ -619,9 +618,9 @@ class PodcastFeedItemsModel {
     return options
   }
   
-  getItemURL (videoID) {
+  getItemURL (videoID, date) {
     //return 'http://pc.pulipuli.info:43333/podcasts/audio.mp3'
-    return Env.get('APP_URL') + '/podcasts/' + this.type + '/' + this.name + '/' + videoID + '.mp3'
+    return Env.get('APP_URL') + '/podcasts/' + this.type + '/' + this.name + '/' + date.slice(0, 10) + '-' + videoID + '.mp3'
   }
   
 }
