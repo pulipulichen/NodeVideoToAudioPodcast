@@ -466,7 +466,7 @@ class PodcastFeedItemsModel {
       // 1632355200000
       console.log(item.item_info)
       let dateString = JSON.parse(item.item_info).date
-      let itemPath = this.getItemPath(item, dateString)
+      let itemPath = this.getItemPath(item, dateString.slice(0, 10))
       console.log('[RM] ' + itemPath)
       
       if (fs.existsSync(itemPath)) {
