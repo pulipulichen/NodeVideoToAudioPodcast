@@ -19,6 +19,8 @@ const moment = use('moment')
 const fs = use('fs')
 const path = use('path')
 
+const { exec } = require("child_process");
+
 let restartCounter = 10
 
 let restartServer = function () {
@@ -246,6 +248,21 @@ class Feed {
     let podcastFeed = new PodcastFeedItemsModel()
     podcastFeed.startDownloadFailedItems()
     return 'go download'
+  }
+  
+  pull () {
+    exec("/app/git-pull.sh", (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
+    return 'git pull'
   }
 }
 
