@@ -82,7 +82,7 @@ class UBInfo {
       return cache[url]
     }
     
-    let html = await NodeCacheSqlite.getExists('ubinfo-playlist', url, async () => {
+    let html = await NodeCacheSqlite.getExists('ubinfo', url, async () => {
       let output = await this.loadHTML(url, cacheLimit * 60 * 1000)
       if (output.indexOf(`{"videoOwner":{"videoOwnerRenderer":{"thumbnail":{"thumbnails":[{"url":"`) === -1) {
         throw Error('Playlist html is error: ' + url)
@@ -94,7 +94,7 @@ class UBInfo {
     }, cacheLimit * 60 * 1000)
     
     if (html === null || typeof html !== 'string') {
-      await NodeCacheSqlite.clear('ubinfo-playlist', url)
+      await NodeCacheSqlite.clear('ubinfo', url)
       return false
     }
     
