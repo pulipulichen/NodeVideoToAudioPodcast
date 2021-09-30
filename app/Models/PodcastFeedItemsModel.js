@@ -251,7 +251,8 @@ class PodcastFeedItemsModel {
     
     let url = 'https://www.yo' + 'ut' + 'ube.com/watch?v=' + item.item_id
     let info = await ubInfo.load(url)
-    //console.log(url, 'isOffline', info.isOffline)
+    console.log(url, 'isOffline', info.isOffline)
+    console.log(info)
     if (info.isOffline === true) {
 //      item.item_status = 1
 //      let time = moment(item.date).unix()
