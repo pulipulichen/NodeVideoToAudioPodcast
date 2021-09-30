@@ -93,6 +93,7 @@ module.exports = async function (url, maxItem = 5) {
   let html
   try {
     html = await loadCachedHTML(url)
+    console.log('[playlist-items-parser] loaded: ' + url)
   }
   catch (e) {
     return false

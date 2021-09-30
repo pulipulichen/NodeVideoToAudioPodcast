@@ -292,7 +292,7 @@ module.exports = {
         //}
 
         //if ()
-      })
+      })  // return new Promise(async (resolve, reject) => {
     }
     catch (e) {
       console.error(e)
