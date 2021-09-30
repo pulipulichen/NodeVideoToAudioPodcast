@@ -179,6 +179,7 @@ class Feed {
     //console.log(items.map(i => i.title))
 
     let savedItems = await this.podcastFeed.getPodcastItems()
+    console.log(this.config.maxItems)
     if (savedItems.length >= this.config.maxItems) {
       //console.log(savedItems)
       //console.log(savedItems.map(i => i.title))
