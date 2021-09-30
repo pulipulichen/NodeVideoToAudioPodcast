@@ -464,10 +464,7 @@ class PodcastFeedItemsModel {
     for (let i = 0; i < expiredItems.length; i++) {
       let item = expiredItems[i]
       // 1632355200000
-      let create_at = item.create_at
-      let date = (new Date(create_at))
-      console.log(item)
-      let dateString = this.getDateString(date)
+      let dateString = JSON.parse(item.info).date
       let itemPath = this.getItemPath(item, dateString)
       console.log('[RM] ' + itemPath)
       
