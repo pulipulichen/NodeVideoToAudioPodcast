@@ -463,7 +463,11 @@ class PodcastFeedItemsModel {
     
     for (let i = 0; i < expiredItems.length; i++) {
       let item = expiredItems[i]
-      let itemPath = this.getItemPath(item, item.pubDate)
+      // 1632355200000
+      let create_at = item.create_at
+      let date = (new Date(create_at))
+      let dateString = this.getDateString(date)
+      let itemPath = this.getItemPath(item, dateString)
       console.log('[RM] ' + itemPath)
       
       if (fs.existsSync(itemPath)) {
@@ -475,6 +479,20 @@ class PodcastFeedItemsModel {
     if (expiredItems.length > 0) {
       this.startDeleteExpiredItems()
     }
+  }
+  
+
+  pad(v){
+    return (v<10)?'0'+v:v
+  }
+
+  getDateString(d){
+    var year = d.getFullYear();
+    var month = this.pad(d.getMonth()+1);
+    var day = this.pad(d.getDate());
+    return year+'-'+month+'-'+day
+    //return year+"-"+month+"-"day+" "+hour+":"+min+":"+sec;
+    //YYYYMMDDhhmmss
   }
   
   getItemPath (item, dateString) {
