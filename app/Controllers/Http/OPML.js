@@ -102,7 +102,7 @@ class OPML {
       function openAllRSS() {
         $(".rss-feed").each((i, ele) => {
           setTimeout(() => {
-            let win = window.open(ele.href, 'preview')
+            let win = window.open(ele.href, "preview")
             setTimeout(() => { win.close() }, 30000)
           }, i * 1000 * 10)
         })
@@ -124,7 +124,7 @@ class OPML {
     </script>
   </head>
   <body>
-    <iframe id="preview" name="preview" style="position:fixed; right: 0; bottom: 0;" />
+    <iframe id="preview" name="preview" style="position:fixed; right: 0; bottom: 0;"></iframe>
     <h1><a href="/">${opmlTitle}</a></h1>
     <h2><a href="/dl" target="_blank">Download</a></h2>
     <form action="/rss" method="get">

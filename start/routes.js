@@ -18,6 +18,7 @@ const Route = use('Route')
 
 Route.get('/test', 'Test.main')
 Route.get('/dl', 'Feed.dl')
+Route.get('/pull', 'Feed.pull')
 
 Route.get('/local-folder/:name', 'LocalFolder.index')
 
