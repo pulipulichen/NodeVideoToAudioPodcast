@@ -90,7 +90,7 @@ class UBFeedItemsModel {
     return './mount-public/podcasts/' + this.type + '/' + this.id + '/' 
   }
   
-  getItemPath (videoID) {
+  getItemPath (videoID, date) {
     //let {videoID} = item
     if (typeof(videoID) === 'object') {
       if (videoID.videoID) {
@@ -100,13 +100,13 @@ class UBFeedItemsModel {
         videoID = videoID.item_id
       }
     }
-    return this.getItemDir() + videoID + '.mp3'
+    return this.getItemDir() + date.slice(0, 10) + '-' + videoID + '.mp3'
   }
   
   async getDuration (item) {
     return await NodeCacheSqlite.get('duration', item.link, async () => {
       item.videoID = UBVideoIDParser(item.link)
-      let itemPath = this.getItemPath(item.videoID)
+      let itemPath = this.getItemPath(item.videoID, item.date)
       //console.log('duration', itemPath, fs.existsSync(itemPath))
       if (fs.existsSync(itemPath) === true) {
         if (itemPath.endsWith('.mp3')) {
