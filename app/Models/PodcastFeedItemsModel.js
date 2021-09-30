@@ -466,6 +466,7 @@ class PodcastFeedItemsModel {
       // 1632355200000
       let create_at = item.create_at
       let date = (new Date(create_at))
+      console.log(item)
       let dateString = this.getDateString(date)
       let itemPath = this.getItemPath(item, dateString)
       console.log('[RM] ' + itemPath)
