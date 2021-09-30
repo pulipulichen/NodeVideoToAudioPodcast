@@ -148,7 +148,12 @@ class OPML {
     <ul>`)
     
     configs.forEach(({title, feedLink}) => {
-      output.push(`<li><a href="${feedLink}" class="rss-feed">${title}</a></li>`)
+      output.push(`<li>
+        <a href="${feedLink}" class="rss-feed">${title}</a>
+        (<a href="${feedLink}" target="preview">iframe</a>)
+      </li>`)
+      
+      
     })
     
     output.push(`</ul>
