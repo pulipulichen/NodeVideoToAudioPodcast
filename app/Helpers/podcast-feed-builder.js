@@ -64,6 +64,11 @@ module.exports = async function (options) {
   <channel>
     <title><![CDATA[${options.title}]]></title>
     <link>${options.url}</link>
+    <image>
+      <url>${options.thumbnail}</url>
+      <title>${options.title}</title>
+      <link>${options.url}</link>
+    </image>
     <language>${options.language}</language>
     <atom:link href="${options.feedLink}" rel="self" type="application/rss+xml"/>
     <copyright><![CDATA[${options.author}]]></copyright>
