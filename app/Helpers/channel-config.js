@@ -1,4 +1,5 @@
 let config = use('./../../mount-config/channels.js')
+let globalConfig = use('./../../mount-config/config.js')
 
 if (!config) {
   config = Use('./channels.example.js')
@@ -25,8 +26,8 @@ for (let i = 0; i < config.length; i++) {
     key = c.name
   }
   
-  if (!c.maxItems) {
-    c.maxItems = 30
+  if (!c.maxItems && globalConfig.maxItems) {
+    c.maxItems = globalConfig.maxItems
   }
   
   if (!c.type) {
@@ -57,6 +58,28 @@ for (let i = 0; i < config.length; i++) {
           && typeof(c.filters) === 'object') {
     c.filters = [c.filters]
   }
+  
+  if (globalConfig.durationMaxSec) {
+    // 檢查有沒有durationMaxSec
+    let hasDurationMaxSec = false
+    for (let i = 0; i < c.filters.length; i++) {
+      let filterJSON = c.filters[i]
+      let key = JSON.keys(filterJSON)[0]
+      let value = filterJSON[0][key]
+      
+      if (key === 'durationMaxSec') {
+        hasDurationMaxSec = true
+        break
+      }
+    }
+    
+    if (hasDurationMaxSec === true) {
+      c.filters.push({
+        durationMaxSec: globalConfig.durationMaxSec
+      })
+    }
+  }
+  
   
   if (c.name) {
     c.feedLink = Env.get('APP_URL') + '/' + c.name + '.xml'
