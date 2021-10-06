@@ -64,7 +64,7 @@ for (let i = 0; i < config.length; i++) {
     let hasDurationMaxSec = false
     for (let i = 0; i < c.filters.length; i++) {
       let filterJSON = c.filters[i]
-      let key = JSON.keys(filterJSON)[0]
+      let key = Object.keys(filterJSON)[0]
       //let value = filterJSON[0][key]
       
       if (key === 'durationMaxSec') {
