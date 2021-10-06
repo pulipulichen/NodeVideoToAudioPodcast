@@ -20,7 +20,7 @@ const Env = use('Env')
 //const DEBUG_PREVENT_DOWNLOAD = (Env.get('DEBUG_PREVENT_DOWNLOAD') === 'true')
 const DEBUG_DOWNLOAD_AGENT = (Env.get('DEBUG_DOWNLOAD_AGENT') === 'true')
 
-let ubDownload = function (type, id, videoID) {
+let ubDownload = function (type, id, videoID, dateString) {
   let sendMail = async () => {
     // Generate test SMTP service account from ethereal.email
     // Only needed if you don't have a real mail account for testing
@@ -91,11 +91,13 @@ let ubDownload = function (type, id, videoID) {
     //let agent = await TorHTMLLoader.getAgent()
     //console.log(agent)
     
+    let outputPath = path.resolve("./mount-public/podcasts/" + type + '/' + id + '/')
+    
     //Configure Yo utu beMp 3Down l oad er with your settings
     let options = {
       //"ffmpegPath": path.resolve(__dirname, "./ffmpeg.exe"),        // FFmpeg binary location
       "ffmpegPath": 'ffmpeg',        // FFmpeg binary location
-      "outputPath": path.resolve("./mount-public/podcasts/" + type + '/' + id + '/'),    // Output file location (default: the home directory)
+      "outputPath": outputPath,    // Output file location (default: the home directory)
       "queueParallelism": 1,                  // Download parallelism (default: 1)
       "progressTimeout": 200000000,                // Interval in ms for the progress reports (default: 1000)
       "allowWebm": false,                      // Enable download from WebM sources (default: false)
@@ -130,6 +132,9 @@ let ubDownload = function (type, id, videoID) {
     let YD = new UBMp3Downloader(options);
 
     YD.on("finished", function(err, data) {
+      // 修改檔案名稱
+      fs.renameSync(outputPath + '/' + videoID + '.mp3' , outputPath + '/' + dateString + '-' + videoID + '.mp3')
+      
       clearTimeout(autoRestartTimer)
       gotError = false
       

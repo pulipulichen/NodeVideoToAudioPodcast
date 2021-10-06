@@ -448,8 +448,23 @@ class PodcastFeedItemsModel {
     //await item.save()
     await this.mkdir(item)
 
+    let dateString = info.date
+    if (typeof(dateString) === 'string') {
+      dateString = dateString.slice(0, 10)
+    }
+    else {
+      dateString = info.pubDate
+    }
+    
+    if (typeof(dateString) === 'string') {
+      dateString = dateString.slice(0, 10)
+    }
+    else {
+      dateString = info.isoDate
+    }
+
     try {
-      await UBMP3Downloader(item.feed_type, item.feed_name, item.item_id)
+      await UBMP3Downloader(item.feed_type, item.feed_name, item.item_id, dateString)
       console.log('[' + moment().format('hh:mm:ss') + '] END download: ' + itemPath)
     }        
     catch (e) {
