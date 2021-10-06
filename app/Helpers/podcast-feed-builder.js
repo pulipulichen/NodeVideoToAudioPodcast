@@ -58,12 +58,12 @@ module.exports = async function (options) {
             + `<a href="${options.feedURL}" target="_blank">${options.feedURL}</a>`
   }
   
-  console.log(options)
+  //console.log(options)
   
   output.push(`<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0" xmlns:media="http://www.rssboard.org/media-rss" version="2.0">
   <channel>
     <title><![CDATA[${options.title}]]></title>
-    <link>${options.feedLink}</link>
+    <link>${options.url}</link>
     <language>${options.language}</language>
     <atom:link href="${options.feedLink}" rel="self" type="application/rss+xml"/>
     <copyright><![CDATA[${options.author}]]></copyright>
