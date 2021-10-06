@@ -32,6 +32,8 @@ const moment = use('moment')
 
 const getMP3Duration = require('get-mp3-duration')
 
+let globalConfig = use('./../../mount-config/config.js')
+
 let cacheEnable = null
 
 class PodcastFeedItemsModel {
@@ -636,7 +638,13 @@ class PodcastFeedItemsModel {
     if (config.thumbnailBorderColor) {
       // https://yt3.ggpht.com/a/AATXAJxjIiembTJcisZKRuvcc3Uu5RzGcYlnDz6FrkSz=s1024-c-k-c0x00ffffff-no-rj
       // https://yt3.ggpht.com/a/AATXAJxjIiembTJcisZKRuvcc3Uu5RzGcYlnDz6FrkSz=s1024-b100-c-k-c0xff0000-rj
-      options.thumbnail = options.thumbnail.split('=s1024-c-k-').join('=s1024-b100-c-k-')
+      
+      if (config.thumbnailBorderColor === globalConfig.thumbnailBorderColor) {
+        options.thumbnail = options.thumbnail.split('=s1024-c-k-').join('=s1024-b50-c-k-')
+      }
+      else {
+        options.thumbnail = options.thumbnail.split('=s1024-c-k-').join('=s1024-b100-c-k-')
+      }
       options.thumbnail = options.thumbnail.split('c0x00ffffff-no-rj').join(`c0x00${config.thumbnailBorderColor}-no-rj`)
     }
     
