@@ -221,7 +221,7 @@ class OPML {
       else if (key === 'durationMinSec') {
         filterAppend.push('> ' + value)
       }
-      else if (key === 'durationMaxSec') {
+      else if (key === 'durationMaxSec' && value !== 0) {
         filterAppend.push('< ' + value)
       }
     })

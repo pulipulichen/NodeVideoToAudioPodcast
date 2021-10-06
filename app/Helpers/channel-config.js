@@ -65,7 +65,7 @@ for (let i = 0; i < config.length; i++) {
     for (let i = 0; i < c.filters.length; i++) {
       let filterJSON = c.filters[i]
       let key = JSON.keys(filterJSON)[0]
-      let value = filterJSON[0][key]
+      //let value = filterJSON[0][key]
       
       if (key === 'durationMaxSec') {
         hasDurationMaxSec = true
@@ -90,6 +90,10 @@ for (let i = 0; i < config.length; i++) {
   
   if (!c.name && c.id) {
     c.name = c.id
+  }
+  
+  if (!c.thumbnailBorderColor && globalConfig.thumbnailBorderColor) {
+    c.thumbnailBorderColor = globalConfig.thumbnailBorderColor
   }
   
   if (c.thumbnailBorderColor) {
