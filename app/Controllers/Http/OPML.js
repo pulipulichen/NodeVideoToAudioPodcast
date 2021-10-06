@@ -15,6 +15,10 @@ class OPML {
     let output = []
     let opmlTitle = Env.get('title')
     
+    if (!opmlTitle) {
+      opmlTitle = 'video2podcast'
+    }
+    
     output.push(`<?xml version="1.0" encoding="UTF-8" standalone='no' ?>
     <?xml-stylesheet href="${Env.get('APP_URL')}/styles/opml.css" type="text/css"?>
 <opml version="2.0">
