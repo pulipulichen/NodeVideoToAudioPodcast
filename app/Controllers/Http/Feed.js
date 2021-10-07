@@ -128,7 +128,7 @@ class Feed {
   
   async updateItems (items) {
     if (this.config.type === 'ub-playlist') {
-      
+      console.log('updateItems 1')
       if (this.config.date === 'playlist_sort') {
         //items.reverse()
         
@@ -169,6 +169,8 @@ class Feed {
         })
       }
       
+      console.log('updateItems 2')
+      
       // add date to title
       // 2020-11-01T12:30:01.000Z
       
@@ -195,11 +197,13 @@ class Feed {
 //      items[i].title = '' + d + ']' + items[i].title
     }
     
+    console.log('updateItems 3')
+    
     //console.log(items.map(i => i.title))
 
     let savedItems = await this.podcastFeed.getPodcastItems()
     
-    console.log(savedItems)
+    console.log('savedItems', savedItems)
     
     //console.log(this.config.maxItems)
     if (savedItems.length >= this.config.maxItems) {
