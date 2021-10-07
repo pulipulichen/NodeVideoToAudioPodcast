@@ -115,9 +115,9 @@ class Feed {
     const outputFeed = await PodcastFeedBuilder(podcastOptions)
     //console.log(podcastOptions)
     //
-    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
-      console.log('outputFeed', outputFeed)
-    }
+    //if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
+    //  console.log('outputFeed', outputFeed)
+    //}
     //
     //return feed
     
