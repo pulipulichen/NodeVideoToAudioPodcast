@@ -81,12 +81,12 @@ class Feed {
 //    console.log(feed.items.map(i => i.title))
     
     if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
-      console.log(feed)
+      console.log('feed', feed)
     }
     
     if (feed !== false && feed !== null) {
       await NodeCacheSqlite.set('feed-index', params, feed)
-      //console.log(feed.items.map(i => i.title))
+      console.log('feed-index', feed.items.map(i => i.title))
       this.updateItems(feed.items)
     }
     else {
@@ -112,6 +112,11 @@ class Feed {
     
     const outputFeed = await PodcastFeedBuilder(podcastOptions)
     //console.log(podcastOptions)
+    //
+    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
+      console.log('outputFeed', outputFeed)
+    }
+    //
     //return feed
     
     response.header('Content-type', 'text/xml')
