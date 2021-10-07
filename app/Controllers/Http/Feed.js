@@ -249,8 +249,9 @@ class Feed {
     for (let i = 0; i < maxItems; i++) {
       let subItems = [items[i]]
       
-      //console.log('subitems', subItems.map(item => item.title))
+      console.log('subitems 1', subItems.map(item => item.title))
       subItems = await this.ubFeed.filterItems(subItems)
+      console.log('subitems 2', subItems.map(item => item.title))
       
       if (subItems.length === 0 && maxItems < items.length) {
         //console.log('')
