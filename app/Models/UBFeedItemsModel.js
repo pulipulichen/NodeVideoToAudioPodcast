@@ -151,6 +151,11 @@ class UBFeedItemsModel {
         title = title.split(value).join(' ').trim()
       }
     }
+    
+    while (title.indexOf('  ') > -1) {
+      title = title.split('  ').join(' ')
+    }
+    
     return title
   }
   
