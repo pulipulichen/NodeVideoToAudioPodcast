@@ -73,7 +73,7 @@ for (let i = 0; i < config.length; i++) {
       }
     }
     
-    if (hasDurationMaxSec === true) {
+    if (hasDurationMaxSec === false) {
       c.filters.push({
         durationMaxSec: globalConfig.durationMaxSec
       })
