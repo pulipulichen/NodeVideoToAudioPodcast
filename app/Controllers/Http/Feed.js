@@ -48,9 +48,9 @@ class Feed {
     
     this.config = ChannelConfig.get(params)
     
-    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
-      console.log(this.config)
-    }
+    //if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
+    //  console.log(this.config)
+    //}
     
     // 放著讓它跑
     this.ubFeed = new UBFeedItemsModel(params)
@@ -86,10 +86,10 @@ class Feed {
     
     if (feed !== false && feed !== null) {
       await NodeCacheSqlite.set('feed-index', params, feed)
-      console.log('feed-index', feed.items.map(i => i.title))
-      console.log('before updateItems ===================')
+      //console.log('feed-index', feed.items.map(i => i.title))
+      //console.log('before updateItems ===================')
       this.updateItems(feed.items)
-      console.log('after updateItems ===================')
+      //console.log('after updateItems ===================')
     }
     else {
       console.log('tempFeed')
@@ -105,9 +105,9 @@ class Feed {
     feed.items = await this.podcastFeed.getPodcastItems()
 //    console.log('cached items', feed.items.map(i => i.videoID + ' ' + i.title))
 
-    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
-      console.log('cached items', feed.items.map(i => i.videoID + ' ' + i.title))
-    }
+    //if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
+    //  console.log('cached items', feed.items.map(i => i.videoID + ' ' + i.title))
+    //}
     
     let podcastOptions = await this.podcastFeed.buildFeedOptions(feed)
     //return podcastOptions
@@ -128,7 +128,7 @@ class Feed {
   
   async updateItems (items) {
     if (this.config.type === 'ub-playlist') {
-      console.log('updateItems 1')
+      //console.log('updateItems 1')
       if (this.config.date === 'playlist_sort') {
         //items.reverse()
         
@@ -169,7 +169,7 @@ class Feed {
         })
       }
       
-      console.log('updateItems 2')
+      //console.log('updateItems 2')
       
       // add date to title
       // 2020-11-01T12:30:01.000Z
@@ -197,14 +197,14 @@ class Feed {
 //      items[i].title = '' + d + ']' + items[i].title
     }
     
-    console.log('updateItems 3')
+    //console.log('updateItems 3')
     
     //console.log(items.map(i => i.title))
 
     let savedItems = await this.podcastFeed.getPodcastItems()
     
-    console.log('savedItems', savedItems)
-    console.log('items', items)
+    //console.log('savedItems', savedItems)
+    //console.log('items', items)
     
     //console.log(this.config.maxItems)
     if (savedItems.length >= this.config.maxItems) {
@@ -245,13 +245,13 @@ class Feed {
       maxItems = this.config.maxItems
     }
     
-    console.log('updateItems maxItems', maxItems, items.length, savedItems.length)
+    //console.log('updateItems maxItems', maxItems, items.length, savedItems.length)
     for (let i = 0; i < maxItems; i++) {
       let subItems = [items[i]]
       
-      console.log('subitems 1', subItems.map(item => item.title))
+      //console.log('subitems 1', subItems.map(item => item.title))
       subItems = await this.ubFeed.filterItems(subItems)
-      console.log('subitems 2', subItems.map(item => item.title))
+      //console.log('subitems 2', subItems.map(item => item.title))
       
       if (subItems.length === 0 && maxItems < items.length) {
         //console.log('')
