@@ -90,7 +90,7 @@ class Feed {
       this.updateItems(feed.items)
     }
     else {
-      //console.log('tempFeed')
+      console.log('tempFeed')
       let tempFeed = await NodeCacheSqlite.get('feed-index', params)
       if (!tempFeed) {
         return false
