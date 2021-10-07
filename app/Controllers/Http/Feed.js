@@ -48,9 +48,9 @@ class Feed {
     
     this.config = ChannelConfig.get(params)
     
-//    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
-//      console.log(this.config)
-//    }
+    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
+      console.log(this.config)
+    }
     
     // 放著讓它跑
     this.ubFeed = new UBFeedItemsModel(params)
@@ -98,6 +98,10 @@ class Feed {
 //    }
     feed.items = await this.podcastFeed.getPodcastItems()
 //    console.log('cached items', feed.items.map(i => i.videoID + ' ' + i.title))
+
+    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
+      console.log('cached items', feed.items.map(i => i.videoID + ' ' + i.title))
+    }
     
     let podcastOptions = await this.podcastFeed.buildFeedOptions(feed)
     //return podcastOptions
