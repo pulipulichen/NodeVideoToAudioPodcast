@@ -655,7 +655,7 @@ class PodcastFeedItemsModel {
       // https://yt3.ggpht.com/a/AATXAJxjIiembTJcisZKRuvcc3Uu5RzGcYlnDz6FrkSz=s1024-b100-c-k-c0xff0000-rj
       
       if (config.thumbnailBorderColor === globalConfig.thumbnailBorderColor) {
-        options.thumbnail = options.thumbnail.split('=s1024-c-k-').join('=s1024-b50-c-k-')
+        options.thumbnail = options.thumbnail.split('=s1024-c-k-').join('=s1024-b10-c-k-')
       }
       else {
         options.thumbnail = options.thumbnail.split('=s1024-c-k-').join('=s1024-b100-c-k-')
