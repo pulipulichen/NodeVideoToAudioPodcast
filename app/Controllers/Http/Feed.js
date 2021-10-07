@@ -48,9 +48,9 @@ class Feed {
     
     this.config = ChannelConfig.get(params)
     
-    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
-      console.log(this.config)
-    }
+//    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
+//      console.log(this.config)
+//    }
     
     // 放著讓它跑
     this.ubFeed = new UBFeedItemsModel(params)
