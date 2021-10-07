@@ -240,6 +240,7 @@ class UBFeedItemsModel {
             break
           }
           else if (key === 'durationMaxSec' 
+                  && value !== 0
                   && duration > value) {
             passed = false
             break
