@@ -80,6 +80,10 @@ class Feed {
     }
 //    console.log(feed.items.map(i => i.title))
     
+    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
+      console.log(feed)
+    }
+    
     if (feed !== false && feed !== null) {
       await NodeCacheSqlite.set('feed-index', params, feed)
       //console.log(feed.items.map(i => i.title))
