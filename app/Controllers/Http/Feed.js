@@ -80,14 +80,16 @@ class Feed {
     }
 //    console.log(feed.items.map(i => i.title))
     
-    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
-      console.log('feed', feed)
-    }
+//    if (params.id === 'PLjjrV9IhkIpcIqZiUfkkxgKtoiD517Kdf') {
+//      console.log('feed', feed)
+//    }
     
     if (feed !== false && feed !== null) {
       await NodeCacheSqlite.set('feed-index', params, feed)
       console.log('feed-index', feed.items.map(i => i.title))
+      console.log('before updateItems ===================')
       this.updateItems(feed.items)
+      console.log('after updateItems ===================')
     }
     else {
       console.log('tempFeed')
@@ -196,6 +198,9 @@ class Feed {
     //console.log(items.map(i => i.title))
 
     let savedItems = await this.podcastFeed.getPodcastItems()
+    
+    console.log(savedItems)
+    
     //console.log(this.config.maxItems)
     if (savedItems.length >= this.config.maxItems) {
       //console.log(savedItems)
