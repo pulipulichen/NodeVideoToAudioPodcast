@@ -204,6 +204,7 @@ class Feed {
     let savedItems = await this.podcastFeed.getPodcastItems()
     
     console.log('savedItems', savedItems)
+    console.log('items', items)
     
     //console.log(this.config.maxItems)
     if (savedItems.length >= this.config.maxItems) {
@@ -244,7 +245,7 @@ class Feed {
       maxItems = this.config.maxItems
     }
     
-    //console.log('updateItems maxItems', maxItems)
+    console.log('updateItems maxItems', maxItems, items.length, savedItems.length)
     for (let i = 0; i < maxItems; i++) {
       let subItems = [items[i]]
       
