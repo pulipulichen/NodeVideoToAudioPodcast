@@ -208,6 +208,10 @@ class LocalFolder {
     }
      */
     
+    if (itemPath.indexOf('/.@__thumb/') > -1) {
+      return 0
+    }
+    
     const stats = fs.statSync(itemPath)
     let mtime = stats.mtime
     
