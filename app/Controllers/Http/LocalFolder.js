@@ -37,7 +37,7 @@ class LocalFolder {
       return await this.getItems()
     }, cacheLimit * 60 * 1000)
     
-    //return items.map(i => i.title)
+    return items.map(i => i.title)
     
     let options = this.buildFeedOptions(items)
     //return options
