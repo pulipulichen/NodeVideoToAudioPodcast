@@ -98,7 +98,7 @@ class LocalFolder {
           subtitles: this.getSubtitles(file),
         }
       }, cacheExpire)
-      console.log(item.filepath)
+      //console.log(item.filepath)
       
       items.push(item)
     }
