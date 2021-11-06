@@ -37,7 +37,7 @@ class LocalFolder {
       return await this.getItems()
     }, cacheLimit * 60 * 1000)
     
-    return items.map(i => i.title)
+    //return items.map(i => i.title)
     
     let options = this.buildFeedOptions(items)
     //return options
@@ -69,13 +69,13 @@ class LocalFolder {
     
     //let dirpath = './public/podcasts/local-folders/ivy/'
     let dirpath = this.config.dirpath
-    //console.log(path.basename(dirpath))
+    console.log(path.basename(dirpath))
     
     let files = await recursive(dirpath, ['*.html'])
     files = this.removeDirPathOverlap(files)
     
     this.subtitles = files.filter(f => f.endsWith('.srt') || f.endsWith('.ssa'))
-    //console.log(this.subtitles)
+    console.log(this.subtitles)
     
     let items = []
     for (let i = 0; i < files.length; i++) {
