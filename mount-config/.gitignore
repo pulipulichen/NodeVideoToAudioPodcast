@@ -1,1 +1,3 @@
 *.js
+!*.example.js
+!config.js
