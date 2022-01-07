@@ -1,4 +1,4 @@
-const fetch = (url) => import('node-fetch').then(({default: fetch}) => fetch(url));
+const fetch = require("node-fetch");
 
 let intervalHour = 6
 let intervalMS = intervalHour * 60 * 60 * 1000
