@@ -91,7 +91,11 @@ let startTor = async function () {
   });
 
   torSpawn.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
+    console.error(`stderr: ${data}`)
+
+    setTimeout(() => {
+      startTor()
+    }, 3000)
   });
 
   torSpawn.on('close', (code) => {
