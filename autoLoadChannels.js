@@ -4,9 +4,9 @@ let intervalHour = 6
 let intervalMS = intervalHour * 60 * 60 * 1000
 
 const autoLoadChannels = async function () {
-  let req = await axios.get('http://localhost/rss-list')
+  let req = await axios.get('http://127.0.0.1/rss-list')
   let list = req.data
-  //console.log(list)
+  console.log(list)
   
   execLoad(list)
   setInterval(() => {
@@ -38,7 +38,7 @@ const execLoad = async function (list) {
   shuffle(list)
   for (let i = 0; i < list.length; i++) {
     let uri = list[i]
-    let url = 'http://localhost' + uri
+    let url = 'http://127.0.0.1' + uri
     console.log('self loading: ' + uri)
     await axios(url)
   }
