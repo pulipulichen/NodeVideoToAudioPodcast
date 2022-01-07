@@ -1,11 +1,12 @@
-const fetch = require("node-fetch");
+const axios = require("axios");
 
 let intervalHour = 6
 let intervalMS = intervalHour * 60 * 60 * 1000
 
 const autoLoadChannels = async function () {
-  let req = await fetch('http://localhost/rss-list')
-  let list = await req.json()
+  let req = await axios.get('http://localhost/rss-list')
+  let list = req
+  
   
   execLoad(list)
   setInterval(() => {
@@ -39,7 +40,7 @@ const execLoad = async function (list) {
     let uri = list[i]
     let url = 'http://localhost' + uri
     console.log('self loading: ' + uri)
-    await fetch(url)
+    await axios(url)
   }
 }
 
