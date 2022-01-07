@@ -7,7 +7,7 @@ let intervalMS = intervalHour * 60 * 60 * 1000
 const autoLoadChannels = async function () {
   let req = await axios.get('http://pulipuli.myqnapcloud.com:30380/rss-list')
   let list = req.data
-  console.log(list)
+  //console.log(list)
   
   execLoad(list)
   setInterval(() => {
