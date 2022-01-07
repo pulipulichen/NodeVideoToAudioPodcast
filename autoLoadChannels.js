@@ -1,4 +1,5 @@
 const axios = require("axios");
+const http = require('http')
 
 let intervalHour = 6
 let intervalMS = intervalHour * 60 * 60 * 1000
@@ -40,11 +41,24 @@ const execLoad = async function (list) {
     let uri = list[i]
     let url = 'http://pulipuli.myqnapcloud.com:30380' + uri
     console.log('self loading: ' + uri)
-    let req = await axios.get(url, {
-      headers: { 'content-type': 'application/x-www-form-urlencoded' }
-    })
-    let rss = req.data
-    console.log(rss)
+    
+    http.get(url, (resp) => {
+      let data = '';
+
+      // A chunk of data has been received.
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      // The whole response has been received. Print out the result.
+      resp.on('end', () => {
+        console.log(data);
+      });
+
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+    });
+    
   }
 }
 
