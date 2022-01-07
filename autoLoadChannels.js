@@ -40,7 +40,7 @@ const execLoad = async function (list) {
     let uri = list[i]
     let url = 'http://pulipuli.myqnapcloud.com:30380' + uri
     console.log('self loading: ' + uri)
-    await axios(url)
+    await axios.get(url)
   }
 }
 
