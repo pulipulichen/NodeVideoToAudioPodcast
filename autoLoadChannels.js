@@ -5,9 +5,8 @@ let intervalMS = intervalHour * 60 * 60 * 1000
 
 const autoLoadChannels = async function () {
   let req = await axios.get('http://localhost/rss-list')
-  let list = req.body
-  console.log(list)
-  
+  let list = req.data
+  //console.log(list)
   
   execLoad(list)
   setInterval(() => {
