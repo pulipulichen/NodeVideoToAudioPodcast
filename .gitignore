@@ -24,3 +24,9 @@ database/*.sqlite
 /local-folders.js
 /package-lock.json.*
 /public
+/mount-database/node-cache_get-feed.sqlite
+/mount-database/node-cache_tor-html-loader.sqlite
+/mount-database/node-cache_feed-index.sqlite
+/mount-database/node-cache_duration.sqlite
+/mount-database/node-cache_ubinfo.sqlite
+/mount-database/feed-item.sqlite

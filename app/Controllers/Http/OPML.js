@@ -177,6 +177,26 @@ class OPML {
     return output.join('\n')
   }
   
+  async rssList () {
+    let configs = await this.getConfigs()
+    
+    // --------------------------
+    
+    let output = []
+    let opmlTitle = Env.get('title')
+    
+    if (!opmlTitle) {
+      opmlTitle = 'Video2Podcast'
+    }
+    
+    configs.forEach(({title, feedLink}) => {
+      output.push(`"${feedLink}"`)
+    })
+    
+    
+    return '[' + output.join(',') + ']'
+  }
+  
   async getConfigTitle (config) {
     if (config.title) {
       return config.title

@@ -25,3 +25,7 @@ new Ignitor(require('@adonisjs/fold'))
   .appRoot(__dirname)
   .fireHttpServer()
   .catch(console.error)
+
+
+const autoLoadChannels = require('./autoLoadChannels.js')
+autoLoadChannels()

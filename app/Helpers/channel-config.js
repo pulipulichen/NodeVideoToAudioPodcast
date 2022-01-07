@@ -81,11 +81,16 @@ for (let i = 0; i < config.length; i++) {
   }
   
   
+  let appURL = Env.get('APP_URL')
+  if (!appURL) {
+    appURL = ''
+  }
+  
   if (c.name) {
-    c.feedLink = Env.get('APP_URL') + '/' + c.name + '.xml'
+    c.feedLink = appURL + '/' + c.name + '.xml'
   }
   else {
-    c.feedLink = Env.get('APP_URL') + '/' + c.type + '/' + c.id + '.xml'
+    c.feedLink = appURL + '/' + c.type + '/' + c.id + '.xml'
   }
   
   if (!c.name && c.id) {
