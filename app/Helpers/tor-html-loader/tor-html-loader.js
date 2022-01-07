@@ -92,14 +92,14 @@ let startTor = async function () {
 
   torSpawn.stderr.on('data', (data) => {
     console.error(`stderr: ${data}`)
-
-    setTimeout(() => {
-      startTor()
-    }, 3000)
+    torInited = true
+    //setTimeout(() => {
+    //  startTor()
+    //}, 3000)
   });
 
   torSpawn.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
+    console.log(`[TOR close]child process exited with code ${code}`);
 
     torInited = true
   });
