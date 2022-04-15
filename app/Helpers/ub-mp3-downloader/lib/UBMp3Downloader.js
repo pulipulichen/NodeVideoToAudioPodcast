@@ -159,7 +159,7 @@ class UBMp3Downloader extends EventEmitter {
                 '-ar', '48000',
                 '-acodec', 'pcm_s16le'
             ];
-            //console.log(outputOptions)
+            console.log(outputOptions)
             if (self.outputOptions) {
                 outputOptions = outputOptions.concat(self.outputOptions);
             }
