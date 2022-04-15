@@ -154,7 +154,7 @@ class UBMp3Downloader extends EventEmitter {
                 '-id3v2_version', '4',
                 '-metadata', 'title=' + title,
                 '-metadata', 'artist=' + artist,
-                '-pix_fmt', 'yuv360p',
+                //'-pix_fmt', 'yuv360p',
                 '-ac', '1', 
                 '-ar', '48000',
                 '-acodec', 'pcm_s16le'
