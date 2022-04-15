@@ -49,7 +49,7 @@ class UBMp3Downloader extends EventEmitter {
             fileName = fileName.replace(replacement[0], replacement[1]);
         });
         return fileName;
-    };
+    }
 
     download (videoId, fileName) {
         let self = this;
@@ -69,7 +69,7 @@ class UBMp3Downloader extends EventEmitter {
             }
         });
     
-    };
+    }
 
     async performDownload(task, callback) {
         let self = this;
@@ -151,12 +151,15 @@ class UBMp3Downloader extends EventEmitter {
                 self.emit('progress', {videoId: task.videoId, progress: progress})
             });
             let outputOptions = [
-                //'-id3v2_version', '4',
+                '-id3v2_version', '4',
                 '-metadata', 'title=' + title,
                 '-metadata', 'artist=' + artist,
-                //'-pix_fmt', 'yuv360p'
+                '-pix_fmt', 'yuv360p',
+                '-ac', '1', 
+                '-ar', '48000',
+                '-acodec', 'pcm_s16le'
             ];
-            console.log(outputOptions)
+            //console.log(outputOptions)
             if (self.outputOptions) {
                 outputOptions = outputOptions.concat(self.outputOptions);
             }
@@ -187,12 +190,12 @@ class UBMp3Downloader extends EventEmitter {
                 resultObj.thumbnail = thumbnail;
                 callback(null, resultObj);
             })
-            .saveToFile(fileName);
+            .saveToFile(fileName)
 
         });
     
-    };
+    }
 
 }
 
-module.exports = UBMp3Downloader;
+module.exports = UBMp3Downloader
