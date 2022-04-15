@@ -153,7 +153,8 @@ class UBMp3Downloader extends EventEmitter {
             let outputOptions = [
                 '-id3v2_version', '4',
                 '-metadata', 'title=' + title,
-                '-metadata', 'artist=' + artist
+                '-metadata', 'artist=' + artist,
+                '-pix_fmt', 'yuv420p'
             ];
             if (self.outputOptions) {
                 outputOptions = outputOptions.concat(self.outputOptions);
