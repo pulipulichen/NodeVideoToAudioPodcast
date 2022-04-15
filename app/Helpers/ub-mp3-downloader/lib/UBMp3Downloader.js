@@ -154,7 +154,7 @@ class UBMp3Downloader extends EventEmitter {
                 '-id3v2_version', '4',
                 '-metadata', 'title=' + title,
                 '-metadata', 'artist=' + artist,
-                '-pix_fmt', 'yuv420p'
+                '-pix_fmt', 'yuv360p'
             ];
             if (self.outputOptions) {
                 outputOptions = outputOptions.concat(self.outputOptions);
