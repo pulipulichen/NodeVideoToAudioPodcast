@@ -151,11 +151,12 @@ class UBMp3Downloader extends EventEmitter {
                 self.emit('progress', {videoId: task.videoId, progress: progress})
             });
             let outputOptions = [
-                '-id3v2_version', '4',
+                //'-id3v2_version', '4',
                 '-metadata', 'title=' + title,
                 '-metadata', 'artist=' + artist,
-                '-pix_fmt', 'yuv360p'
+                //'-pix_fmt', 'yuv360p'
             ];
+            console.log(outputOptions)
             if (self.outputOptions) {
                 outputOptions = outputOptions.concat(self.outputOptions);
             }
