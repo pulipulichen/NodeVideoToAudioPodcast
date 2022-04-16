@@ -129,7 +129,7 @@ class OPML {
     </script>
   </head>
   <body>
-    <iframe id="preview" name="preview" style="position:fixed; right: 0; bottom: 0;"></iframe>
+    <iframe id="preview" name="preview" style="position:fixed; right: 0; bottom: 0; max-width: 20vw;"></iframe>
     <h1><a href="/">${opmlTitle}</a></h1>
     <h2><a href="/dl" target="_blank">Download</a></h2>
     <h2><a href="/opml" target="_blank">OPML</a></h2>
