@@ -20,6 +20,7 @@ const { platform } = require('os');
 const Env = use('Env')
 //const DEBUG_PREVENT_DOWNLOAD = (Env.get('DEBUG_PREVENT_DOWNLOAD') === 'true')
 const DEBUG_DOWNLOAD_AGENT = (Env.get('DEBUG_DOWNLOAD_AGENT') === 'true')
+const NodeCacheSqlite = use('App/Helpers/node-cache-sqlite.js')
 
 let ubDownload = function (type, id, videoID, dateString) {
   let sendMail = async () => {
@@ -105,6 +106,12 @@ let ubDownload = function (type, id, videoID, dateString) {
       return resolve(true)
     }
     catch (e) {
+      if (e.indexOf('ERROR: Sign in to confirm your age') > -1) {
+        await NodeCacheSqlite.getExists('banned-download', videoID, async () => {
+          return true
+        })
+      }
+
       console.error(e)
     }
 

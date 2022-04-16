@@ -205,7 +205,7 @@ class PodcastFeedItemsModel {
         continue
       }
       
-      item.item_status = 3
+      item.item_status = 3  // deleted
       
       tryToRestartServer(async () => {
         item.save()
@@ -366,7 +366,8 @@ class PodcastFeedItemsModel {
       //item.item_status = 1
       //let time = moment(item.date).unix()
       //item.updated_at = time
-      await item.destroy()
+      item.item_status = 4 // banned
+      await item.save()
       setTimeout(() => {
         isDownloading = false 
         this.startDownloadItems() 
@@ -442,6 +443,17 @@ class PodcastFeedItemsModel {
   }
   
   async downloadItem (itemPath, item) {
+    if (await NodeCacheSqlite.isExists('banned-download', item.item_id)) {
+      await item.destroy()
+
+      isDownloading = false
+      
+      setTimeout(() => {
+        this.startDownloadItems()
+      }, 3000 * 100000)
+      return false
+    }
+
     let info = JSON.parse(item.item_info)   
     console.log('[' + moment().format('hh:mm:ss') + '] START download (duration: ' + info.duration + ')' +': ' + itemPath + ' https://www.yo' + 'ut' + 'ube.com/watch?v=' + item.item_id)
     //item.item_status = 1
@@ -493,7 +505,7 @@ class PodcastFeedItemsModel {
     
     let expiredItems = await FeedItem.findAll({
       where: {
-        'item_status': 3
+        'item_status': 3  // to delete
       }
     })
     
