@@ -4,6 +4,7 @@ let path = require('path')
 //var UBMp3Downloader = use("./UBMp3Downloader.js") // 這裡是大問題，可能要從這裡來修改
 //var UBMp3Downloader = use("yo" + "ut" + "ube-mp3-downloader") // 這裡是大問題，可能要從這裡來修改
 var UBMp3Downloader = use("App/Helpers/ub-mp3-downloader/lib/UBMp3Downloader.js") // 這裡是大問題，可能要從這裡來修改
+var UBDL = use("App/Helpers/ub-mp3-downloader/lib/UBDL.js") // 這裡是大問題，可能要從這裡來修改
 let fs = require('fs')
 let nodemailer = require('nodemailer')
 
@@ -50,6 +51,7 @@ let ubDownload = function (type, id, videoID, dateString) {
   }
   
   let updatePackage = () => {
+
     //console.log('auto restart: update yout' + 'ub' + 'e-mp' + '3-dow' + 'nlo' + 'ader')
     console.log('auto restart: update y' + 'td' + 'l-core')
     npm.load(function(err) {
@@ -93,6 +95,26 @@ let ubDownload = function (type, id, videoID, dateString) {
     
     let outputPath = path.resolve("./mount-public/podcasts/" + type + '/' + id + '/')
     
+    // ------------------------------------------------------------
+    try {
+      let result = await UBDL(videoID, outputPath + '/' + dateString + '-' + videoID + '.mp3')
+      // 修改檔案名稱
+      clearTimeout(autoRestartTimer)
+      gotError = false
+      
+//      if (DEBUG_PREVENT_DOWNLOAD === true) {
+//        throw Error('[DEBUG] download ok')
+//      
+      
+      return resolve(true)
+    }
+    catch (e) {
+      console.error(e)
+    }
+
+
+    // ------------------------------------------------------------
+
     //Configure Yo utu beMp 3Down l oad er with your settings
     let options = {
       //"ffmpegPath": path.resolve(__dirname, "./ffmpeg.exe"),        // FFmpeg binary location
