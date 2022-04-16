@@ -34,6 +34,9 @@ for (let i = 0; i < config.length; i++) {
     if (c.url.indexOf('www.yo' + 'utu' + 'be.com/playlist?list=') > -1) {
       c.type = 'ub-playlist'
     }
+    else if (c.url.indexOf('yo' + 'utu' + 'be.com/playlist?list=') > -1) {
+      c.type = 'ub-playlist'
+    }
     else if (c.url.indexOf('www.yo' + 'utu' + 'be.com/channel/') > -1) {
       c.type = 'ub-channel'
     }
