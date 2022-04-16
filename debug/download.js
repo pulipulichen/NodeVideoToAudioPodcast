@@ -1,4 +1,4 @@
-var YoutubeMp3Downloader = require("youtube-mp3-downloader");
+var YoutubeMp3Downloader = require("./../app/Helpers/ub-mp3-downloader/lib/UBMp3Downloader.js");
 
 //Configure YoutubeMp3Downloader with your settings
 var YD = new YoutubeMp3Downloader({
