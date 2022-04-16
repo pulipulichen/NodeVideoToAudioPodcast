@@ -3,10 +3,10 @@ const { exec } = require("child_process");
 
 let UBDL = async function (videoID, outputPath) {
   try {
-    return UBDL1(videoID, outputPath)
+    return await UBDL1(videoID, outputPath)
   }
   catch (e) {
-    return UBDL2(videoID, outputPath)
+    return await UBDL2(videoID, outputPath)
   }
 }
 
