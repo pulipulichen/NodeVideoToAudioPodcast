@@ -101,11 +101,7 @@ let ubDownload = function (type, id, videoID, dateString) {
       // 修改檔案名稱
       clearTimeout(autoRestartTimer)
       gotError = false
-      
-//      if (DEBUG_PREVENT_DOWNLOAD === true) {
-//        throw Error('[DEBUG] download ok')
-//      
-      
+
       return resolve(true)
     }
     catch (e) {
