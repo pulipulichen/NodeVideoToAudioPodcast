@@ -97,7 +97,7 @@ let ubDownload = function (type, id, videoID, dateString) {
     
     // ------------------------------------------------------------
     try {
-      lawait UBDL(videoID, outputPath + '/' + dateString + '-' + videoID + '.mp3')
+      await UBDL(videoID, outputPath + '/' + dateString + '-' + videoID + '.mp3')
       // 修改檔案名稱
       clearTimeout(autoRestartTimer)
       gotError = false
