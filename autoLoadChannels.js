@@ -42,6 +42,7 @@ const execLoad = async function (list) {
     //let url = 'http://pulipuli.myqnapcloud.com:30380' + uri
     console.log('[self loading] ' + uri)
     let req = await axios.get(uri)
+    await sleep(60 * 1000)
     //let rss = req.data
     //console.log(rss)
     /*
@@ -63,6 +64,10 @@ const execLoad = async function (list) {
     });
     */
   }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 module.exports = autoLoadChannels
