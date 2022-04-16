@@ -2,6 +2,7 @@ const { exec } = require("child_process");
 
 
 let UBDL = async function (videoID, outputPath) {
+  console.log('[START UBDL]', videoID, outputPath)
   return new Promise((resolve, reject) => {
     let cmd = 'you' + 'tu' + 'be-dl --extract-audio --audio-format mp3 --output "' + outputPath + '" https://www.you' + 'tu' + 'be.com/watch?v=' + videoID
 
