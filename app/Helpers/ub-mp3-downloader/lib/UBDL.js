@@ -1,5 +1,5 @@
 const { exec } = require("child_process");
-
+const fs = require("fs")
 
 let UBDL = async function (videoID, outputPath) {
   try {
@@ -16,6 +16,7 @@ let UBDL1 = async function (videoID, outputPath) {
     let cmd = 'you' + 'tu' + 'be-dl --extract-audio --audio-format mp3 --output "' + outputPath + '" https://www.you' + 'tu' + 'be.com/watch?v=' + videoID
 
     exec(cmd, (error, stdout, stderr) => {
+      /*
       if (error) {
         //console.log(`error: ${error.message}`);
         reject(error)
@@ -25,8 +26,15 @@ let UBDL1 = async function (videoID, outputPath) {
         reject(error)
         return;
       }
+      */
+      if (fs.existsSync(outputPath)) {
+        resolve(true)
+      }
+      else {
+        reject(error)
+      }
       //console.log(`stdout: ${stdout}`);
-      resolve(true)
+      
     });
   })
 }
@@ -37,14 +45,11 @@ let UBDL2 = async function (videoID, outputPath) {
     let cmd = 'you' + 'tu' + 'be-dl -v --ignore-config -x --audio-format mp3 --output "' + outputPath + '" https://www.you' + 'tu' + 'be.com/watch?v=' + videoID
 
     exec(cmd, (error, stdout, stderr) => {
-      if (error) {
-        //console.log(`error: ${error.message}`);
-        reject(error)
-        return;
+      if (fs.existsSync(outputPath)) {
+        resolve(true)
       }
-      if (stderr) {
+      else {
         reject(error)
-        return;
       }
       //console.log(`stdout: ${stdout}`);
       resolve(true)
