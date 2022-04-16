@@ -443,8 +443,9 @@ class PodcastFeedItemsModel {
   }
   
   async downloadItem (itemPath, item) {
-    if (await NodeCacheSqlite.isExists('banned-download', item.item_id)) {
-      await item.destroy()
+    if (await NodeCacheSqlite.get('banned-download', item.item_id)) {
+      item.item_status = 4 // banned
+      await item.save()
 
       isDownloading = false
       
