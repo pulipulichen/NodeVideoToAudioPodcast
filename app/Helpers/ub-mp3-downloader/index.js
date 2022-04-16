@@ -107,6 +107,7 @@ let ubDownload = function (type, id, videoID, dateString) {
     }
     catch (e) {
       if (e.indexOf('ERROR: Sign in to confirm your age') > -1) {
+        console.log('Banned: ERROR: Sign in to confirm your age', videoID)
         await NodeCacheSqlite.getExists('banned-download', videoID, async () => {
           return true
         })
