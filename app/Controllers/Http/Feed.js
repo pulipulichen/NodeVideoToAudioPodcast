@@ -129,9 +129,9 @@ class Feed {
   async updateItems (items) {
     if (this.config.type === 'ub-playlist') {
       //console.log('updateItems 1')
-      if (this.config.date === 'playlist_sort') {
+      if (this.config.date === 'playlist_sort' && false) {
         //items.reverse()
-        
+        // 這個不行，不能每次都重新下載檔案
         let now = new Date().getTime()
         //item.date = new Date(new Date().getTime() - (i * 1000 * 60 * 10))
         for (let i = 0; i < items.length; i++) {
