@@ -48,6 +48,7 @@
     "puppeteer": "5.3.1",
     "recursive-readdir": "2.2.2",
     "request": "2.88.2",
+    "request-image-size": "2.2.0",
     "rss-parser": "3.9.0",
     "sanitize-filename": "1.6.3",
     "sequelize": "6.3.5",

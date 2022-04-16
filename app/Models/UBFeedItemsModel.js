@@ -296,6 +296,7 @@ class UBFeedItemsModel {
         // http://i3.ytimg.com/vi/FNDgos99-hQ/maxresdefault.jpg
         item.thumbnails = [
           `http://i3.ytimg.com/vi/${item.videoID}/maxresdefault.jpg`,
+          `http://i3.ytimg.com/vi/${item.videoID}/maxresdefault.jpg`,
           `http://i3.ytimg.com/vi/${item.videoID}/1.jpg`,
           `http://i3.ytimg.com/vi/${item.videoID}/2.jpg`,
           `http://i3.ytimg.com/vi/${item.videoID}/3.jpg`,
