@@ -155,11 +155,11 @@ class UBMp3Downloader extends EventEmitter {
                 '-metadata', 'title=' + title,
                 '-metadata', 'artist=' + artist,
                 //'-pix_fmt', 'yuv360p',
-                '-ac', '1', 
-                '-ar', '48000',
-                '-acodec', 'pcm_s16le'
+                //'-ac', '1', 
+                //'-ar', '48000',
+                //'-acodec', 'pcm_s16le'
             ];
-            console.log(outputOptions)
+            //console.log(outputOptions)
             if (self.outputOptions) {
                 outputOptions = outputOptions.concat(self.outputOptions);
             }
