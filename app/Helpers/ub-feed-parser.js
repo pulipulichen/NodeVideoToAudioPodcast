@@ -14,7 +14,10 @@ const UBURLtoFeedURL = function (url) {
           && params.has('list')) {
     feedURL = 'https://www.y' + 'out' + 'ube.com/feeds/videos.xml?playlist_id=' + params.get('list')
   }
-  
+  if (url.startsWith('https://y' + 'out' + 'ube.com/playlist?list=')
+          && params.has('list')) {
+    feedURL = 'https://www.y' + 'out' + 'ube.com/feeds/videos.xml?playlist_id=' + params.get('list')
+  }
   if (url.startsWith('https://www.y' + 'out' + 'ube.com/channel/')) {
     let channelID = urlObject.pathname
     channelID = channelID.slice(channelID.lastIndexOf('/') + 1)

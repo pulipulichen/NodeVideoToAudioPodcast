@@ -44,6 +44,9 @@ class UBFeedItemsModel {
     if (config.url.startsWith('https://www.youtube.com/playlist?list=')) {
       cacheLimitMinute = cachePlaylistLimit
     }
+    else if (config.url.startsWith('https://youtube.com/playlist?list=')) {
+      cacheLimitMinute = cachePlaylistLimit
+    }
      
 //    console.log('有嗎？', cacheLimit * 60 * 1000, ['getFeed', config.url])
     //console.log('getFeed', cacheLimit)

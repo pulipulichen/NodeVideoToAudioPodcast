@@ -23,6 +23,9 @@ class UBInfo {
     else if (url.indexOf('www.y' + 'out' + 'ube.com/playlist?list=') > -1) {
       return this.loadPlaylist(url)
     }
+    else if (url.indexOf('y' + 'out' + 'ube.com/playlist?list=') > -1) {
+      return this.loadPlaylist(url)
+    }
     else {
       return this.loadVideo(url)
     }
