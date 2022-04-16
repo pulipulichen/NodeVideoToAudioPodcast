@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 transporter.sendMail({
   from: 'node-video-to-audio@ethereal.email',
-  to: 'pulipuli.chen@gmail.com',
+  to: 'pudding@nccu.edu.tw',
   subject: 'Test Email Subject',
   html: '<h1>Example HTML Message Body</h1>'
 });
