@@ -9,7 +9,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-await transporter.sendMail({
+transporter.sendMail({
   from: 'node-video-to-audio@ethereal.email',
   to: 'pulipuli.chen@gmail.com',
   subject: 'Test Email Subject',
