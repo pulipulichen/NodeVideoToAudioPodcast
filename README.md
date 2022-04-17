@@ -59,3 +59,12 @@ apt-get install ffmpeg tor -y
 mount-config
 mount-database
 mount-public
+
+
+----
+# Troubleshooting
+
+## 找不到套件
+
+1. 移除 node_modules 資料夾。
+2. `npm i` 整個重新安裝套件
